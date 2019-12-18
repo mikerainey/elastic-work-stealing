@@ -2,6 +2,7 @@
 
 #include <sys/time.h>
 #include <sys/resource.h>
+#include "parallel.h"
 
 #include "cmdline.hpp"
 
@@ -35,6 +36,12 @@ void launch(const Bench& bench) {
   printf("systime  %.3lf\n",
 	 double_of_tv(ru_after.ru_stime) -
 	 double_of_tv(ru_before.ru_stime));
+  int num_workers = fj.num_workers();
+  double stealtime = 0.0;
+  for (int i = 0; i < num_workers; i++) {
+    stealtime += time_in_get_job[i].e;
+  }
+  printf("stealtime %.3lf\n", stealtime);
 }
 
 }
