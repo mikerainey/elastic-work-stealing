@@ -39,6 +39,6 @@ in
   # Benchmarking script
   pbenchOcamlSrcs = pbenchOcamlSrcs;
   benchOcamlSrc = "${projectSrc}/bench/";
-#  benchScript = "${nixSrc}/bench-script.nix";
+  benchScript = "${nixSrc}/bench-script.nix";
 
 }
