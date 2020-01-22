@@ -361,9 +361,9 @@ end
 
 let _ =
   let arg_actions = XCmd.get_others() in
-  let bindings = [ (*
+  let bindings = [ 
       "gen-inputs", ExpGenInputs.all;
-      "benchmarks", ExpBenchmarks.all; *)
+      (*"benchmarks", ExpBenchmarks.all; *)
   ]
   in
   Pbench.execute_from_only_skip arg_actions [] bindings;

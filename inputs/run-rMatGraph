@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+ARGS="$@"
+
+outargs=""
+outfile=""
+nb=""
+impl=""
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+
+    -outfile)
+    outfile="$2"
+    shift
+    shift
+    ;;
+
+    -impl)
+    impl="$2"
+    shift
+    shift
+    ;;
+
+    -n)
+    nb="$2"
+    shift
+    shift
+    ;;
+
+    *)
+    shift
+    ;;
+
+esac
+done
+
+if [ "$impl" == "ligra" ]; then
+    outargs="-t $outargs" # ligra requires that its input graph be symmetrized
+fi
+
+if [ -f "$outfile" ]; then
+    echo "outfile $outfile exits!"
+    exit 1
+fi
+
+rMatGraph -j $outargs $nb $outfile

@@ -36,6 +36,9 @@ in
   pbbsbench = "${pbbsbenchSrc}/default.nix";
   cilkRtsWithStats = "${cilkRtsWithStatsSrc}/default.nix";
 
+  # Input data
+  inputDataSrc = "${projectSrc}/inputs/";
+
   # Benchmarking script
   pbenchOcamlSrcs = pbenchOcamlSrcs;
   benchOcamlSrc = "${projectSrc}/bench/";
