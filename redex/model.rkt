@@ -23,10 +23,10 @@
 
   (j ::=                            ; join identifiers
      variable-not-otherwise-mentioned) 
-  (t ::= T1 T2)                     ; join-target positions
+  (p ::= P1 P2)                     ; join-target positions
   (j+ ::=                           ; join targets:
       ·                             ;   terminal
-      (t j))                        ;   target join j from position t
+      (p j))                        ;   target join j from position t
   ($+ ::=                           ; optional costs:
       ·                             ;   pending cost
       $)                            ;   cost
@@ -79,8 +79,8 @@
 
 (define-metafunction elastic-ws
   ∥-⊕+ : j+ $ $ -> $ or #f
-  [(∥-⊕+ (T1 _) $_1 $_2) (∥-⊕ $_1 $_2)]
-  [(∥-⊕+ (T2 _) $_1 $_2) (∥-⊕ $_2 $_1)]
+  [(∥-⊕+ (P1 _) $_1 $_2) (∥-⊕ $_1 $_2)]
+  [(∥-⊕+ (P2 _) $_1 $_2) (∥-⊕ $_2 $_1)]
   [(∥-⊕+ _ _ _) #f])
 
 ; Reduction relation
@@ -105,7 +105,7 @@
    ; -------------------
    
    (--> (W_b ... ((E g) j+_v) W_m ... S W_a ... (jr ...))
-        (W_b ... ((E_1 g) (T1 j)) W_m ... ((hole g_t) (T2 j)) W_a ... (jr_f jr ...))
+        (W_b ... ((E_1 g) (P1 j)) W_m ... ((hole g_t) (P2 j)) W_a ... (jr_f jr ...))
         (where (E_c E_1 g_t) (Try-to-split-E E))
         (fresh j)
         (where jr_f (j · E_c j+_v))
@@ -117,9 +117,9 @@
         (W_b ... S W_a ... (jr_b ... (j $ E j+) jr_a ...))
         "Join-1")
 
-   (--> (W_b ... ((hole $_1) (t j)) W_a ... (jr_b ... (j $_2 E j+) jr_a ...))
+   (--> (W_b ... ((hole $_1) (p j)) W_a ... (jr_b ... (j $_2 E j+) jr_a ...))
         (W_b ... ((E $) j+) W_a ... (jr_b ... jr_a ...))
-        (where $ (∥-⊕+ (t j) $_1 $_2))
+        (where $ (∥-⊕+ (p j) $_1 $_2))
         "Join-2")
 
    with
@@ -147,7 +147,7 @@
 (define-metafunction elastic-ws
   Mk-M0 : g natural -> M
   [(Mk-M0 g natural)
-   (((hole g) (T1 j0)) W ... ((j0 · hole ·)))
+   (((hole g) (P1 j0)) W ... ((j0 · hole ·)))
    (where (W ...) ,(build-list (term natural) (λ _ (term S))))])
 
 (define g1
