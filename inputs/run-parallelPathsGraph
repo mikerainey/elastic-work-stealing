@@ -30,4 +30,4 @@ case $key in
 esac
 done
 
-parallelPaths -j $outargs $nb $outfile
+parallelPathsGraph -j $outargs $nb $outfile
