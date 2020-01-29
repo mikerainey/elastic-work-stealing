@@ -4,7 +4,7 @@
 ; Grammar for our model of Elastic Work Stealing
 ; ----------------------------------------------
 
-(define-language elastic-ws
+(define-language Elastic-Work-Stealing
 
   ($ ::=                            ; costs:
      (natural                       ;   work
@@ -46,23 +46,29 @@
 ; Metafunctions
 ; -------------
 
-(define-metafunction elastic-ws
-  ∘-⊕ : $ $ -> $
-  [(∘-⊕
+(define-metafunction Elastic-Work-Stealing
+  ⊕-∘ : $ $ -> $
+  [(⊕-∘
     (natural_w1 natural_s1)
     (natural_w2 natural_s2))
    (,(+ (term natural_w1) (term natural_w2) 1)
     ,(+ (term natural_s1) (term natural_s2) 1))])
 
-(define-metafunction elastic-ws
-  ∥-⊕ : $ $ -> $
-  [(∥-⊕
+(define-metafunction Elastic-Work-Stealing
+  ⊕-∥ : $ $ -> $
+  [(⊕-∥
     (natural_w1 natural_s1)
     (natural_w2 natural_s2))
    (,(+ (term natural_w1) (term natural_w2) 1)
     ,(+ (max (term natural_s1) (term natural_s2)) 1))])
 
-(define-metafunction elastic-ws
+(define-metafunction Elastic-Work-Stealing
+  ⊕-∥+ : j+ $ $ -> $ or #f
+  [(⊕-∥+ (P1 _) $_1 $_2) (⊕-∥ $_1 $_2)]
+  [(⊕-∥+ (P2 _) $_1 $_2) (⊕-∥ $_2 $_1)]
+  [(⊕-∥+ _ _ _) #f])
+
+(define-metafunction Elastic-Work-Stealing
   Try-to-split-E : E -> (E E g) or #f
   [(Try-to-split-E (∘ E g))
    (E_c (∘ E_1 g) g_2)
@@ -77,25 +83,19 @@
    (where (E_c E_1 g) (Try-to-split-E E))]
   [(Try-to-split-E _) #f])
 
-(define-metafunction elastic-ws
-  ∥-⊕+ : j+ $ $ -> $ or #f
-  [(∥-⊕+ (P1 _) $_1 $_2) (∥-⊕ $_1 $_2)]
-  [(∥-⊕+ (P2 _) $_1 $_2) (∥-⊕ $_2 $_1)]
-  [(∥-⊕+ _ _ _) #f])
-
 ; Reduction relation
 ; ------------------
 
 (define →
   (reduction-relation
-   elastic-ws #:domain M
+   Elastic-Work-Stealing #:domain M
 
    ; Single-threaded steps
    ; ---------------------
    
    (s--> (E •) (E (1 1)) "•-$")
-   (s--> ((∘ $_1 E) $_2) (E (∘-⊕ $_1 $_2)) "∘-↑")
-   (s--> ((∥ $_1 E) $_2) (E (∥-⊕ $_1 $_2)) "∥-↑")
+   (s--> ((∘ $_1 E) $_2) (E (⊕-∘ $_1 $_2)) "∘-↑")
+   (s--> ((∥ $_1 E) $_2) (E (⊕-∥ $_1 $_2)) "∥-↑")
    (s--> ((∘ E g_2) $_1) ((∘ $_1 E) g_2) "∘-→")
    (s--> ((∥ E g_2) $_1) ((∥ $_1 E) g_2) "∥-→")
    (s--> (E (∘ g_1 g_2)) ((∘ E g_2) g_1) "∘-↓")
@@ -119,7 +119,7 @@
 
    (--> (W_b ... ((hole $_1) (p j)) W_a ... (jr_b ... (j $_2 E j+) jr_a ...))
         (W_b ... ((E $) j+) W_a ... (jr_b ... jr_a ...))
-        (where $ (∥-⊕+ (p j) $_1 $_2))
+        (where $ (⊕-∥+ (p j) $_1 $_2))
         "Join-2")
 
    with
@@ -131,20 +131,20 @@
 ; Unit tests
 ; ----------
 
-(define-metafunction elastic-ws
+(define-metafunction Elastic-Work-Stealing
   g→$ : g -> $
   [(g→$ •)
    (1 1)]
   [(g→$ (∘ g_1 g_2))
-   (∘-⊕ $_1 $_2)
+   (⊕-∘ $_1 $_2)
    (where $_1 (g→$ g_1))
    (where $_2 (g→$ g_2))]
   [(g→$ (∥ g_1 g_2))
-   (∥-⊕ $_1 $_2)
+   (⊕-∥ $_1 $_2)
    (where $_1 (g→$ g_1))
    (where $_2 (g→$ g_2))])
 
-(define-metafunction elastic-ws
+(define-metafunction Elastic-Work-Stealing
   Mk-M0 : g natural -> M
   [(Mk-M0 g natural)
    (((hole g) (P1 j0)) W ... ((j0 · hole ·)))
@@ -157,7 +157,7 @@
 (define M1
   (term (Mk-M0 ,g1 2)))
 
-(define-metafunction elastic-ws
+(define-metafunction Elastic-Work-Stealing
   Get-ans : M -> $ or #f
   [(Get-ans (W ... ((j0 $ hole ·)))) $]
   [(Get-ans _) #f])
