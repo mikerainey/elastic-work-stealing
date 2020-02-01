@@ -74,8 +74,9 @@
        w▹))                         ;   second worker (thief)
   (J ::=                            ; join contexts:
      (∥0 E)                         ;   to join with at least one worker (neither results ready)
-     (∥1 $ E)                       ;   to join with the first worker (exactly one result, namely $, is ready)
-     (∥2 E $)                       ;   to join with the second worker (exactly one result, namely $, is ready)
+     (∥1 E $)                       ;   to join with the first worker (exactly one result, namely $, is ready)
+     (∥2 $ E)                       ;   to join with the second worker (exactly one result, namely $, is ready)
+     ∥I                             ;   to indicate a non-terminal machine state
      (∥F $))                        ;   to terminate the machine, yielding final result $
 
   (SI ::= ((w▹ ...) ...)))
@@ -261,9 +262,14 @@
   #:mode (⇓ I I O O)
   #:contract (⇓ (w▹ W) JS (w▹ W) JS)
 
+  [(where ((j▹_b J_b) ... (j▹ ∥I) (j▹_a J_a) ...) JS_1)
+   (where JS_2 ((j▹_b J_b) ... (j▹ (∥F $)) (j▹_a J_a) ...))
+   --------------------------------------- "jf"
+   (⇓ (w▹_1 ((▽ j▹) $)) JS_1 (w▹_1 S) JS_2)]
+  
   [(where (w▹_1 w▹_2) j▹)
    (where ((j▹_b J_b) ... (j▹ (∥0 E)) (j▹_a J_a) ...) JS_1)
-   (where JS_2 ((j▹_b J_b) ... (j▹ (∥1 $ E)) (j▹_a J_a) ...))
+   (where JS_2 ((j▹_b J_b) ... (j▹ (∥1 E $)) (j▹_a J_a) ...))
    --------------------------------------------------------- "j1"
    (⇓ (w▹_1 ((▽ j▹) $)) JS_1 (w▹_1 S) JS_2)]
 
@@ -274,7 +280,7 @@
    (⇓ (w▹_2 ((▽ j▹) $)) JS_1 (w▹_2 S) JS_2)]
 
   [(where (w▹_1 w▹_2) j▹)
-   (where ((j▹_b J_b) ... (j▹ (∥1 $_2 E)) (j▹_a J_a) ...) JS_1)
+   (where ((j▹_b J_b) ... (j▹ (∥1 E $_2)) (j▹_a J_a) ...) JS_1)
    (where JS_2 ((j▹_b J_b) ... (j▹_a J_a) ...))
    ---------------------------------------------------------- "jc1"
    (⇓ (w▹_1 ((▽ j▹) $_1)) JS_1 (w▹_1 (E (⊕-∥ $_1 $_2))) JS_2)]
@@ -294,7 +300,8 @@
    (where (((w▹_v w▹_t) ...) SI_2) (Make-steal-attempts SI_1))
    (where ((w▹_v W_v) ...) ,(project (term (W_1 ...)) (term (w▹_v ...))))
    (where ((w▹_t W_t) ...) ,(project (term (W_1 ...)) (term (w▹_t ...))))
-   (where (((w▹_sv W_sv) (w▹st W_st) JS_s) ...) ((Handle-steal-attempt (w▹_v W_v) (w▹_t W_t) JS_1) ...))
+
+   (where (((w▹_sv W_sv) (w▹st W_st) JS_s) ...) ((Handle-steal-attempt (w▹_v W_v) (w▹_t W_t) JS_1) ...)) ; <- bogus: need to resolve join conflicts atomically or resolve them properly at the merge below
    (where JS_2 (Merge-JSs (JS_s ...) JS_1))
    (where (W_3 ...) ,(inject (term (W_2 ...)) (term ((w▹_sv W_sv) ... (w▹st W_st) ...))))
    ------------------------------------------------------------------- "Step"
