@@ -79,11 +79,61 @@
      ∥I                             ;   to indicate a non-terminal machine state
      (∥F $))                        ;   to terminate the machine, yielding final result $
 
-  (SI ::= ((w▹ ...) ...)))          ; steal intentions: for each worker, a fifo queue of ids of other workers waiting to steal
+  (△I ::= ((w▹ ...) ...)))          ; steal intentions: for each worker, a fifo queue of ids of other workers waiting to steal
   
 ; Metafunctions
 ; -------------
-   
+
+(define-metafunction WS-Scheduler
+  Mk-right-open-range : natural natural -> (natural ...)
+  [(Mk-right-open-range natural_lo natural_hi)
+   ,(range (term natural_lo) (term natural_hi))])
+
+(define-metafunction WS-Scheduler
+  Length : (any ...) -> natural
+  [(Length (any_1 ...)) ,(length (term (any_1 ...)))])
+
+(define-metafunction WS-Scheduler
+  Set-subtract : (natural ...) (natural ...) -> (natural ...)
+  [(Set-subtract (natural_a ...) (natural_b ...))
+   ,(set->list (set-subtract (list->set (term (natural_a ...))) (list->set (term (natural_b ...)))))])
+
+(define-metafunction WS-Scheduler
+  Set-intersect : (natural ...) (natural ...) -> (natural ...)
+  [(Set-intersect (natural_a ...) (natural_b ...))
+   ,(set->list (set-intersect (list->set (term (natural_a ...))) (list->set (term (natural_b ...)))))])
+
+(define (inject xs ivps)
+  (foldl (λ (p xs)
+           (match p
+             [(list pos value) (list-set xs pos value)]))
+         xs
+         ivps))
+
+(define (project xs is)
+  (reverse
+   (foldl (λ (pos ys)
+            (cons (list pos (list-ref xs pos)) ys))
+          '()
+          is)))
+
+; later: assert that all indices are distinct
+(define-metafunction WS-Scheduler
+  Inject : (any ...) ((natural any) ...) -> (any ...)
+  [(Inject (any_v ...) ((natural_i any_i) ...))
+   ,(inject (term (any_v ...)) (term ((natural_i any_i) ...)))])
+
+; later: assert that all indices are distinct
+(define-metafunction WS-Scheduler
+  Project : (any ...) (natural ...) -> ((natural any) ...)
+  [(Project (any_v ...) (natural_i ...))
+   ,(project (term (any_v ...)) (term (natural_i ...)))])
+
+(define-metafunction WS-Scheduler
+  Sparsify : (any ...) -> ((w▹ any) ...)
+  [(Sparsify (any_1 ...))
+   ,(map list (range (length (term (any_1 ...)))) (term (any_1 ...)))])
+
 (define-metafunction WS-Scheduler
   Try-to-split-E : E w▹ w▹ -> (E E g) or #f
   [(Try-to-split-E (∘ E g) w▹_v w▹_t)
@@ -100,28 +150,20 @@
   [(Try-to-split-E _ _ _) #f])
 
 (define-metafunction WS-Scheduler
-  Insert-JS : (j▹ J) JS -> JS
-  [(Insert-JS (j▹_1 J_1) ((j▹_b2 J_b2) ... (j▹_1 _) (j▹_a2 J_a2) ...))
-   ((j▹_b2 J_b2) ... (j▹_1 J_1) (j▹_a2 J_a2) ...)]
-  [(Insert-JS (j▹_1 J_1) ((j▹_a2 J_a2) ...))
-   ((j▹_1 J_1) (j▹_a2 J_a2) ...)])
-
-(define-metafunction WS-Scheduler
-  Handle-steal-attempt : ((w▹ W) (w▹ W)) (((w▹ W) (w▹ W)) ... JS) -> (((w▹ W) (w▹ W)) ... JS)
-  [(Handle-steal-attempt ((w▹_v (E_v e_v)) (w▹_t S)) (((w▹_va W_va) (w▹_ta W_ta)) ... JS_1))
-   (((w▹_v (E_v2 e_v)) (w▹_t ((▽ j▹_1) g_t))) (((w▹_va W_va) (w▹_ta W_ta)) ... JS_2))
+  Handle-△ : ((w▹ W) (w▹ W)) (((w▹ W) (w▹ W)) ... JS) -> (((w▹ W) (w▹ W)) ... JS)
+  [(Handle-△ ((w▹_v (E_v e_v)) (w▹_t S)) (((w▹_va W_va) (w▹_ta W_ta)) ... ((j▹_a J_a) ...)))
+   (((w▹_v (E_v2 e_v)) (w▹_t ((▽ j▹_1) g_t))) (((w▹_va W_va) (w▹_ta W_ta)) ... ((j▹_1 J_1) (j▹_a J_a) ...)))
    (where (E_c E_v2 g_t) (Try-to-split-E E_v w▹_v w▹_t))
-   (where (j▹_1 J_1) ((w▹_v w▹_t) (∥0 E_c)))
-   (where JS_2 (Insert-JS (j▹_1 J_1) JS_1))] ; later: assert that j▹ is not in JS_1
-  [(Handle-steal-attempt _ (((w▹_va W_va) (w▹_ta W_ta)) ... JS))
+   (where (j▹_1 J_1) ((w▹_v w▹_t) (∥0 E_c)))]
+  [(Handle-△ _ (((w▹_va W_va) (w▹_ta W_ta)) ... JS))
    (((w▹_va W_va) (w▹_ta W_ta)) ... JS)]
-  [(Handle-steal-attempt () JS)
+  [(Handle-△ () JS)
    (JS)])
 
 (define-metafunction WS-Scheduler
-  Handle-steal-attempts : (((w▹ W) (w▹ W)) ...) JS -> (((w▹ W) (w▹ W)) ... JS)
-  [(Handle-steal-attempts (((w▹_v W_v) (w▹_t W_t)) ...) JS)
-  ,(foldl (λ (sa res) (term (Handle-steal-attempt ,sa ,res)))
+  Handle-△s : (((w▹ W) (w▹ W)) ...) JS -> (((w▹ W) (w▹ W)) ... JS)
+  [(Handle-△s (((w▹_v W_v) (w▹_t W_t)) ...) JS)
+  ,(foldl (λ (sa res) (term (Handle-△ ,sa ,res)))
           (term (JS))
           (term (((w▹_v W_v) (w▹_t W_t)) ...)))])
 
@@ -161,39 +203,49 @@
                                 target-idxs)])
           (cons intentions rs)))))
 
-(define (sparsify xs)
-  (let ([n (length xs)])
-    (map list (range n) xs)))
+(define-metafunction WS-Scheduler
+  Mk-all-w▹ : WG -> (w▹ ...)
+  [(Mk-all-w▹ WG) (Mk-right-open-range 0 (Length WG))])
 
 (define-metafunction WS-Scheduler
-  Sparsify : (any ...) -> ((w▹ any) ...)
-  [(Sparsify (any ...)) ,(sparsify (term (any ...)))])
+  Is-stealing? : (w▹ W) -> boolean
+  [(Is-stealing? (_ S)) #t]
+  [(Is-stealing? _) #f])
 
-(define (inject xs ivps)
-  (foldl (λ (p xs)
-           (match p
-             [(list pos value) (list-set xs pos value)]))
-         xs
-         ivps))
-
-(define (project xs is)
-  (reverse
-   (foldl (λ (pos ys)
-            (cons (list pos (list-ref xs pos)) ys))
-          '()
-          is)))
-
-; later: assert that all indices are distinct
 (define-metafunction WS-Scheduler
-  Inject : (any ...) ((natural any) ...) -> (any ...)
-  [(Inject (any_v ...) ((natural_i any_i) ...))
-   ,(inject (term (any_v ...)) (term ((natural_i any_i) ...)))])
+  Filter-△-ready : WG △I -> (w▹ ...)
+  [(Filter-△-ready WG △I)
+   (Set-subtract (w▹ ...) ,(flatten (term △I)))
+   (where ((w▹ W) ...) ,(filter (λ (x) (term (Is-stealing? ,x))) (term (Sparsify WG))))])
 
-; later: assert that all indices are distinct
 (define-metafunction WS-Scheduler
-  Project : (any ...) (natural ...) -> ((natural any) ...)
-  [(Project (any_v ...) (natural_i ...))
-   ,(project (term (any_v ...)) (term (natural_i ...)))])
+  Random-victims : (w▹ ...) (w▹ ...) natural -> (((w▹ w▹) ...) natural)
+  [(Random-victims (w▹_t ...) (w▹_potential ...) natural_rs1)
+   (((w▹_v w▹_t) ...) natural_rs2)
+   (where natural_thieves (Length (w▹_t ...)))
+   (where natural_potentials (Length (w▹_potential ...)))
+   (where ((natural_target ...) natural_rs2)
+          ,(match-let*
+               ([(cons randoms rs2) (random-list (term natural_thieves) (term natural_rs1))]
+                [target-idxs (map (λ (x) (remainder x (term natural_potentials))) randoms)])
+             (list target-idxs rs2)))
+   (where (w▹_v ...) ,(map (λ (pos) (list-ref (term (w▹_potential ...)) pos)) (term (natural_target ...))))])
+             
+(define-metafunction WS-Scheduler
+  Next-△I : WG △I natural -> (△I natural)
+  [(Next-△I WG △I_1 natural_rs1)
+   (△I_2 natural_rs2)
+   (where (((w▹_v w▹_t) ...) natural_rs2)
+          (Random-victims (Filter-△-ready WG △I_1) (Mk-all-w▹ WG) natural_rs1))
+   (where ((w▹_v (w▹_tq1 ...)) ...) (Project △I_1 (w▹_v ...)))
+   (where ((w▹_tq2 ...) ...)
+          ,(map (λ (xs x) (append xs (list x))) (term ((w▹_tq1 ...) ...)) (term (w▹_t ...))))
+   (where △I_2 (Inject △I_1 ((w▹_v (w▹_tq2 ...)) ...)))])
+
+; (term (Random-victims (Filter-△-ready (S S S S Z) (() () () () ())) (Mk-all-w▹ (S S S S Z)) 1122))
+; (term (Next-△I (S S S S Z) (() () () () ()) 1122))
+; todo: fix above metafunction. it needs to use something other than inject, because two or more steals to the same
+; victim need to all end up in the victim queue. also, need to prevent attempt to steal from self.
 
 (define-metafunction WS-Scheduler
   Make-steal-attempt : (w▹ (w▹ ...)) -> ((w▹ w▹) w▹ ...) or #f
@@ -203,12 +255,12 @@
    #f])
 
 (define-metafunction WS-Scheduler
-  Make-steal-attempts : SI -> (((w▹ w▹) ...) SI)
-  [(Make-steal-attempts SI)
-   (((w▹_t w▹_v) ...) SI_2)
-   (where ((w▹_v1 (w▹_t1 ...)) ...) (Sparsify SI))
+  Make-steal-attempts : △I -> (((w▹ w▹) ...) △I)
+  [(Make-steal-attempts △I)
+   (((w▹_t w▹_v) ...) △I_2)
+   (where ((w▹_v1 (w▹_t1 ...)) ...) (Sparsify △I))
    (where (((w▹_t w▹_v) w▹_va ...) ...) ,(filter (λ (x) x) (map (λ (p) (term (Make-steal-attempt ,p))) (term ((w▹_v1 (w▹_t1 ...)) ...)))))
-   (where SI_2 (Inject SI ((w▹_t (w▹_va ...)) ...)))])
+   (where △I_2 (Inject △I ((w▹_t (w▹_va ...)) ...)))])
 
 (define-metafunction WS-Scheduler
   Has-final-result? : JS -> $ or #f
@@ -219,35 +271,35 @@
 ; ------------------
 
 (define-judgment-form WS-Scheduler
-  #:mode (↦ I O)
-  #:contract (↦ B B)
+  #:mode (→B I O)
+  #:contract (→B B B)
 
   [------------------- "•-$"
-   (↦ (E •) (E (1 1)))]
+   (→B (E •) (E (1 1)))]
   
   [------------------------------------- "↑-∘"
-   (↦ ((∘ $_1 E) $_2) (E (⊕-∘ $_1 $_2)))]
+   (→B ((∘ $_1 E) $_2) (E (⊕-∘ $_1 $_2)))]
 
   [------------------------------------- "↑-∥"
-   (↦ ((∥ $_1 E) $_2) (E (⊕-∥ $_1 $_2)))]
+   (→B ((∥ $_1 E) $_2) (E (⊕-∥ $_1 $_2)))]
 
   [----------------------------------- "→-∘"
-   (↦ ((∘ E g_2) $_1) ((∘ $_1 E) g_2))]
+   (→B ((∘ E g_2) $_1) ((∘ $_1 E) g_2))]
 
   [----------------------------------- "→-∥"
-   (↦ ((∥ E g_2) $_1) ((∥ $_1 E) g_2))]
+   (→B ((∥ E g_2) $_1) ((∥ $_1 E) g_2))]
 
   [----------------------------------- "↓-∘"
-   (↦ (E (∘ g_1 g_2)) ((∘ E g_2) g_1))]
+   (→B (E (∘ g_1 g_2)) ((∘ E g_2) g_1))]
 
   [----------------------------------- "↓-∥"
-   (↦ (E (∥ g_1 g_2)) ((∥ E g_2) g_1))])
+   (→B (E (∥ g_1 g_2)) ((∥ E g_2) g_1))])
 
 (define-judgment-form WS-Scheduler
   #:mode (→ I O)
   #:contract (→ W W)
 
-  [(↦ B_1 B_2)
+  [(→B B_1 B_2)
    ----------- "B↦"
    (→ B_1 B_2)]
 
@@ -258,78 +310,76 @@
    (→ Z Z)])
 
 (define-judgment-form WS-Scheduler
-  #:mode (↦▽ I I O O)
-  #:contract (↦▽ (w▹ W) JS (w▹ W) JS)
+  #:mode (→▽ I I O O)
+  #:contract (→▽ (w▹ W) JS (w▹ W) JS)
 
   [(where ((j▹_b J_b) ... (j▹ ∥I) (j▹_a J_a) ...) JS_1)
    (where JS_2 ((j▹_b J_b) ... (j▹ (∥F $)) (j▹_a J_a) ...))
    -------------------------------------------------------- "▽F"
-   (↦▽ (w▹_1 ((▽ j▹) $)) JS_1 (w▹_1 S) JS_2)]
+   (→▽ (w▹_1 ((▽ j▹) $)) JS_1 (w▹_1 S) JS_2)]
   
   [(where (w▹_1 w▹_2) j▹)
    (where ((j▹_b J_b) ... (j▹ (∥0 E)) (j▹_a J_a) ...) JS_1)
    (where JS_2 ((j▹_b J_b) ... (j▹ (∥1 E $)) (j▹_a J_a) ...))
    --------------------------------------------------------- "▽I1"
-   (↦▽ (w▹_1 ((▽ j▹) $)) JS_1 (w▹_1 S) JS_2)]
+   (→▽ (w▹_1 ((▽ j▹) $)) JS_1 (w▹_1 S) JS_2)]
 
   [(where (w▹_1 w▹_2) j▹)
    (where ((j▹_b J_b) ... (j▹ (∥0 E)) (j▹_a J_a) ...) JS_1)
    (where JS_2 ((j▹_b J_b) ... (j▹ (∥2 $ E)) (j▹_a J_a) ...))
    ---------------------------------------------------------- "▽I2"
-   (↦▽ (w▹_2 ((▽ j▹) $)) JS_1 (w▹_2 S) JS_2)]
+   (→▽ (w▹_2 ((▽ j▹) $)) JS_1 (w▹_2 S) JS_2)]
 
   [(where (w▹_1 w▹_2) j▹)
    (where ((j▹_b J_b) ... (j▹ (∥1 E $_2)) (j▹_a J_a) ...) JS_1)
    (where JS_2 ((j▹_b J_b) ... (j▹_a J_a) ...))
    ---------------------------------------------------------- "▽E1"
-   (↦▽ (w▹_1 ((▽ j▹) $_1)) JS_1 (w▹_1 (E (⊕-∥ $_1 $_2))) JS_2)]
+   (→▽ (w▹_1 ((▽ j▹) $_1)) JS_1 (w▹_1 (E (⊕-∥ $_1 $_2))) JS_2)]
 
   [(where (w▹_1 w▹_2) j▹)
    (where ((j▹_b J_b) ... (j▹ (∥2 $_1 E)) (j▹_a J_a) ...) JS_1)
    (where JS_2 ((j▹_b J_b) ... (j▹_a J_a) ...))
    ----------------------------------------------------------- "▽E2"
-   (↦▽ (w▹_2 ((▽ j▹) $_2)) JS_1 (w▹_2 (E (⊕-∥ $_1 $_2))) JS_2)])
+   (→▽ (w▹_2 ((▽ j▹) $_2)) JS_1 (w▹_2 (E (⊕-∥ $_1 $_2))) JS_2)])
 
 (define-judgment-form WS-Scheduler
-  #:mode (step I I O O)
-  #:contract (step ((w▹ W) ...) JS ((w▹ W) ...) JS)
+  #:mode (⇒WJ I I O O)
+  #:contract (⇒WJ ((w▹ W) ...) JS ((w▹ W) ...) JS)
 
   [------------------ "E"
-   (step () JS () JS)]
+   (⇒WJ () JS () JS)]
   
   [(→ W_1 W_2)
-   (step ((w▹_a1 W_a1) ...) JS_1 ((w▹_a2 W_a2) ...) JS_2)
+   (⇒WJ ((w▹_a1 W_a1) ...) JS_1 ((w▹_a2 W_a2) ...) JS_2)
    ------------------------------------------------------------------------ "W"
-   (step ((w▹ W_1) (w▹_a1 W_a1) ...) JS_1 ((w▹ W_2) (w▹_a2 W_a2) ...) JS_2)]
+   (⇒WJ ((w▹ W_1) (w▹_a1 W_a1) ...) JS_1 ((w▹ W_2) (w▹_a2 W_a2) ...) JS_2)]
 
   
-  [(↦▽ (w▹ W_1) JS_1 (w▹ W_2) JS_2)
-   (step ((w▹_a1 W_a1) ...) JS_2 ((w▹_a2 W_a2) ...) JS_3)
+  [(→▽ (w▹ W_1) JS_1 (w▹ W_2) JS_2)
+   (⇒WJ ((w▹_a1 W_a1) ...) JS_2 ((w▹_a2 W_a2) ...) JS_3)
    ------------------------------------------------------------------------ "J"
-   (step ((w▹ W_1) (w▹_a1 W_a1) ...) JS_1 ((w▹ W_2) (w▹_a2 W_a2) ...) JS_3)])
+   (⇒WJ ((w▹ W_1) (w▹_a1 W_a1) ...) JS_1 ((w▹ W_2) (w▹_a2 W_a2) ...) JS_3)])
 
 (define-judgment-form WS-Scheduler
-  #:mode (⟶ I I I I O O O O)
-  #:contract (⟶ WG JS SI natural WG JS SI natural)
+  #:mode (⇒ I I I I O O O O)
+  #:contract (⇒ WG JS △I natural WG JS △I natural)
 
   ; later: introduce rule to handle terminal state
-  ; later: factor out steal attempt into separate rule, just like for non steals
 
   [(side-condition ,(not (term (Has-final-result? JS_1))))
-   (where (((w▹_v w▹_t) ...) SI_2) (Make-steal-attempts SI_1))
-   (where ((w▹_v W_v) ...) (Project (W_1 ...) (w▹_v ...)))
-   (where ((w▹_t W_t) ...) (Project (W_1 ...) (w▹_t ...)))
-   (where (((w▹_sv W_sv) (w▹_st W_st)) ... JS_2)
-          (Handle-steal-attempts (((w▹_v W_v) (w▹_t W_t)) ...) JS_1))
-   (where (w▹_steal ...) (w▹_sv ... w▹_st ...))
-   (where (W_2 ...) (Inject (W_1 ...) ((w▹_sv W_sv) ... (w▹st W_st) ...)))
-   (where (w▹_all ...) ,(build-list (length (term (W_1 ...))) values))
-   (where (w▹_step ...) ,(filter (λ (x) (not (member x (term (w▹_steal ...))))) (term (w▹_all ...))))
-   (where ((w▹_r W_r) ...) (Project (W_1 ...) (w▹_step ...)))
-   (step ((w▹_r W_r) ...) JS_2 ((w▹_r2 W_r2) ...) JS_3)
+   (where (((w▹_v? w▹_t?) ...) △I_2) (Make-steal-attempts △I_1))
+   (where ((w▹_v? W_v?) ...) (Project (W_1 ...) (w▹_v? ...)))
+   (where ((w▹_t? W_t?) ...) (Project (W_1 ...) (w▹_t? ...)))
+   (where (((w▹_v* W_v*) (w▹_t* W_t*)) ... JS_2)
+          (Handle-△s (((w▹_v? W_v?) (w▹_t? W_t?)) ...) JS_1))
+   (where (W_2 ...) (Inject (W_1 ...) ((w▹_v* W_v*) ... (w▹_t* W_t*) ...)))
+   (where (w▹_all ...) (Mk-all-w▹ (W_1 ...)))
+   (where (w▹_step ...) (Set-subtract (w▹_all ...) (w▹_v* ... w▹_t* ...)))
+   (⇒WJ (Project (W_1 ...) (w▹_step ...)) JS_2 ((w▹_r2 W_r2) ...) JS_3)
    (where (W_3 ...) (Inject (W_2 ...) ((w▹_r2 W_r2) ...)))
+   (where (△I_3 natural_rs2) (Next-△I (W_3 ...) △I_2 natural_rs1))
    ------------------------------------------------------------------- "Step"
-   (⟶ (W_1 ...) JS_1 SI_1 natural_rs1 (W_3 ...) JS_3 SI_2 natural_rs1)])
+   (⇒ (W_1 ...) JS_1 △I_1 natural_rs1 (W_3 ...) JS_3 △I_3 natural_rs2)])
 
 ; Unit tests
 ; ----------
@@ -341,4 +391,4 @@
   (term
    (∥ (∘ • •) (∘ • •))))
 
-;(build-derivations (⟶ ((,E1 •)) () (()) 0 WG JS SI natural))
+;(build═derivations (⟶ ((,E1 •)) () (()) 0 WG JS SI natural))
