@@ -188,21 +188,6 @@
                     (f (sub1 n) (hash rs) (cons rs xs))))])
         (f n rs '())))
 
-(define (steal-intentions rs stealers targets)
-  (let ([nb-targets (length targets)])
-    (if (= nb-targets 0)
-        (cons '() rs)
-        (match-let*
-            ([nb-stealers (length stealers)]
-             [(cons rvs rs) (random-list nb-stealers rs)]
-             [target-idxs (map (λ (x) (remainder x nb-targets)) rvs)]
-             [intentions (foldl (λ (stealer target-idx res)
-                                  (list-update res target-idx (λ (ts) (append ts (list stealer)))))
-                                (map list targets)
-                                stealers
-                                target-idxs)])
-          (cons intentions rs)))))
-
 (define-metafunction WS-Scheduler
   Mk-all-w▹ : WG -> (w▹ ...)
   [(Mk-all-w▹ WG) (Mk-right-open-range 0 (Length WG))])
@@ -220,8 +205,10 @@
 
 (define-metafunction WS-Scheduler
   Random-victims : (w▹ ...) (w▹ ...) natural -> (((w▹ w▹) ...) natural)
+  [(Random-victims (w▹_t ...) () natural_rs)
+   (() natural_rs)]
   [(Random-victims (w▹_t ...) (w▹_potential ...) natural_rs1)
-   (((w▹_v w▹_t) ...) natural_rs2)
+   (((w▹_v w▹_t2) ...) natural_rs2)
    (where natural_thieves (Length (w▹_t ...)))
    (where natural_potentials (Length (w▹_potential ...)))
    (where ((natural_target ...) natural_rs2)
@@ -229,7 +216,22 @@
                ([(cons randoms rs2) (random-list (term natural_thieves) (term natural_rs1))]
                 [target-idxs (map (λ (x) (remainder x (term natural_potentials))) randoms)])
              (list target-idxs rs2)))
-   (where (w▹_v ...) ,(map (λ (pos) (list-ref (term (w▹_potential ...)) pos)) (term (natural_target ...))))])
+   (where ((w▹_v w▹_t2) ...)
+          ,(let ([potential-ixs (term (natural_target ...))]
+                 [w▹-ts (term (w▹_t ...))]
+                 [potentials (term (w▹_potential ...))]
+                 [nb-potentials (term natural_potentials)])
+             (filter (λ (p)
+                       (match p
+                         [(list w▹-v w▹-t)
+                          (not (= w▹-v w▹-t))]))
+                     (map (λ (w▹-t potential-ix)
+                            (let* ([w▹-v (list-ref potentials potential-ix)]
+                                   [w▹-v (if (= w▹-t w▹-v) ; to prevent a thief targeting itself
+                                             (list-ref potentials (remainder (add1 potential-ix) nb-potentials))
+                                             w▹-v)])
+                              (term (,w▹-v ,w▹-t))))
+                          w▹-ts potential-ixs))))])
              
 (define-metafunction WS-Scheduler
   Next-△I : WG △I natural -> (△I natural)
@@ -237,10 +239,17 @@
    (△I_2 natural_rs2)
    (where (((w▹_v w▹_t) ...) natural_rs2)
           (Random-victims (Filter-△-ready WG △I_1) (Mk-all-w▹ WG) natural_rs1))
-   (where ((w▹_v (w▹_tq1 ...)) ...) (Project △I_1 (w▹_v ...)))
-   (where ((w▹_tq2 ...) ...)
-          ,(map (λ (xs x) (append xs (list x))) (term ((w▹_tq1 ...) ...)) (term (w▹_t ...))))
-   (where △I_2 (Inject △I_1 ((w▹_v (w▹_tq2 ...)) ...)))])
+   (where △I_2
+          ,(foldl (λ (w▹-v w▹-t △I)
+                    (list-set △I w▹-v (append (list-ref △I w▹-v) (list w▹-t))))
+                  (term △I_1)
+                  (term (w▹_v ...))
+                  (term (w▹_t ...))))])
+
+;   (where ((w▹_v (w▹_tq1 ...)) ...) (Project △I_1 (w▹_v ...)))
+;   (where ((w▹_tq2 ...) ...)
+;          ,(map (λ (xs x) (append xs (list x))) (term ((w▹_tq1 ...) ...)) (term (w▹_t ...))))
+;   (where △I_2 (Inject △I_1 ((w▹_v (w▹_tq2 ...)) ...)))])
 
 ; (term (Random-victims (Filter-△-ready (S S S S Z) (() () () () ())) (Mk-all-w▹ (S S S S Z)) 1122))
 ; (term (Next-△I (S S S S Z) (() () () () ()) 1122))
