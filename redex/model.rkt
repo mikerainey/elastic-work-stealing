@@ -60,26 +60,24 @@
 
   (e ::= $ g)                       ; expressions
   (E ::=                            ; evaluation contexts:
-     (▽ j▹)                         ;   to join at join point j▹
+     (▽ j)                          ;   to join at join point associated with j
      (∘ E g)                        ;   to evaluate the second branch of a serial composition
      (∘ $ E)                        ;   to yield the result of a serial composition
      (∥ E g)                        ;   to evaluate the second branch of a parallel composition
      (∥ $ E))                       ;   to yield the result of a parallel composition
 
-  (w▹ ::= natural)                  ; worker identifiers (index of a worker in W)
-
-  (JS ::= ((j▹ J) ...))             ; join stores
-  (j▹ ::=                           ; join identifiers (w▹1 w▹2): inv. w▹1 < w▹2
-      (w▹                           ;   first worker (victim)
-       w▹))                         ;   second worker (thief)
+  (JS ::= (J ...))                  ; join stores
   (J ::=                            ; join contexts:
-     (∥0 E)                         ;   to join with at least one worker (neither results ready)
-     (∥v E $)                       ;   to join with the first worker (exactly one result, namely $, is ready)
-     (∥t $ E)                       ;   to join with the second worker (exactly one result, namely $, is ready)
-     ∥I                             ;   to indicate a non-terminal machine state
+     (∥0 j j E)                     ;   to join with victim and thief, with continuation E
+     (∥v j $ E)                     ;   to join with the victim j, with thief result $, and continuation E
+     (∥t $ j E)                     ;   to join with the thief, with victim result $, and continuation E
+     (∥I j)                         ;   to indicate a non-terminal machine state
      (∥F $))                        ;   to terminate the machine, yielding final result $
+  (j ::=                            ; join identifiers
+     variable-not-otherwise-mentioned)
 
-  (△I ::= ((w▹ ...) ...)))          ; steal intentions: for each worker, a fifo queue of ids of other workers waiting to steal
+  (△I ::= ((w▹ ...) ...))           ; steal intentions: for each worker, a fifo queue of ids of other workers waiting to steal
+  (w▹ ::= natural))                 ; worker identifiers (index of a worker in W)
   
 ; Metafunctions
 ; -------------
@@ -135,26 +133,27 @@
    ,(map list (range (length (term (any_1 ...)))) (term (any_1 ...)))])
 
 (define-metafunction WS-Scheduler
-  Try-to-split-E : E w▹ w▹ -> (E E g) or #f
-  [(Try-to-split-E (∘ E g) w▹_v w▹_t)
+  Try-to-split-E : E j -> (E E g) or #f
+  [(Try-to-split-E (∘ E g) j_v)
    (E_c (∘ E_1 g) g_2)
-   (where (E_c E_1 g_2) (Try-to-split-E E w▹_v w▹_t))]
-  [(Try-to-split-E (∘ $ E) w▹_v w▹_t)
+   (where (E_c E_1 g_2) (Try-to-split-E E j_v))]
+  [(Try-to-split-E (∘ $ E) j_v)
    (E_c (∘ $ E_1) g)
-   (where (E_c E_1 g) (Try-to-split-E E w▹_v w▹_t))]
-  [(Try-to-split-E (∥ E g) w▹_v w▹_t)
-   (E (▽ (w▹_v w▹_t)) g)]
-  [(Try-to-split-E (∥ $ E) w▹_v w▹_t)
+   (where (E_c E_1 g) (Try-to-split-E E j_v))]
+  [(Try-to-split-E (∥ E g) j_v)
+   (E (▽ j_v) g)]
+  [(Try-to-split-E (∥ $ E) j_v)
    (E_c (∥ $ E_1) g)
-   (where (E_c E_1 g) (Try-to-split-E E w▹_v w▹_t))]
-  [(Try-to-split-E _ _ _) #f])
+   (where (E_c E_1 g) (Try-to-split-E E j_v))]
+  [(Try-to-split-E _ _) #f])
 
 (define-metafunction WS-Scheduler
   Handle-△ : ((w▹ W) (w▹ W)) (((w▹ W) (w▹ W)) ... JS) -> (((w▹ W) (w▹ W)) ... JS)
-  [(Handle-△ ((w▹_v (E_v e_v)) (w▹_t S)) (((w▹_va W_va) (w▹_ta W_ta)) ... ((j▹_a J_a) ...)))
-   (((w▹_v (E_v2 e_v)) (w▹_t ((▽ j▹_1) g_t))) ((w▹_va W_va) (w▹_ta W_ta)) ... ((j▹_1 J_1) (j▹_a J_a) ...))
-   (where (E_c E_v2 g_t) (Try-to-split-E E_v w▹_v w▹_t))
-   (where (j▹_1 J_1) ((w▹_v w▹_t) (∥0 E_c)))]
+  [(Handle-△ ((w▹_v (E_v e_v)) (w▹_t S)) (((w▹_va W_va) (w▹_ta W_ta)) ... (J_a ...)))
+   (((w▹_v (E_v2 e_v)) (w▹_t ((▽ j_t) g_t))) ((w▹_va W_va) (w▹_ta W_ta)) ... (J_1 J_a ...))
+   (where (j_v j_t) ,(variables-not-in (term (J_a ...)) (term (jv jt))))
+   (where (E_c E_v2 g_t) (Try-to-split-E E_v j_v))
+   (where J_1 (∥0 j_v j_t E_c))]
   [(Handle-△ _ (((w▹_va W_va) (w▹_ta W_ta)) ... JS))
    (((w▹_va W_va) (w▹_ta W_ta)) ... JS)]
   [(Handle-△ () JS)
@@ -261,11 +260,9 @@
    (where (((w▹_t w▹_v) w▹_va ...) ...) ,(filter (λ (x) x) (map (λ (p) (term (Make-steal-attempt ,p))) (term ((w▹_v1 (w▹_t1 ...)) ...)))))
    (where △I_2 (Inject △I ((w▹_t (w▹_va ...)) ...)))])
 
-(define j▹0 (term (0 0)))
-
 (define-metafunction WS-Scheduler
-  Has-final-result? : JS -> $ or #f
-  [(Has-final-result? ((j▹_b J_b) ... (_ (∥F $)) (j▹_a J_a) ...)) $]
+  Has-final-result? : JS -> boolean
+  [(Has-final-result? (J_b ... (∥F $) J_a ...)) #t]
   [(Has-final-result? _) #f])
 
 ; Reduction relation
@@ -314,34 +311,30 @@
   #:mode (→▽ I I O O)
   #:contract (→▽ (w▹ W) JS (w▹ W) JS)
 
-  [(where ((j▹_b J_b) ... (j▹ ∥I) (j▹_a J_a) ...) JS_1)
-   (where JS_2 ((j▹_b J_b) ... (j▹ (∥F $)) (j▹_a J_a) ...))
+  [(where (J_b ... (∥I j) J_a ...) JS_1)
+   (where JS_2 (J_b ... (∥F $) J_a ...))
    -------------------------------------------------------- "▽F"
-   (→▽ (w▹_1 ((▽ j▹) $)) JS_1 (w▹_1 S) JS_2)]
+   (→▽ (w▹_1 ((▽ j) $)) JS_1 (w▹_1 S) JS_2)]
   
-  [(where (w▹_v w▹_t) j▹)
-   (where ((j▹_b J_b) ... (j▹ (∥0 E)) (j▹_a J_a) ...) JS_1)
-   (where JS_2 ((j▹_b J_b) ... (j▹ (∥v E $)) (j▹_a J_a) ...))
+  [(where (J_b ... (∥0 j_v j_t E) J_a ...) JS_1)
+   (where JS_2 (J_b ... (∥v j_v $ E) J_a ...))
    --------------------------------------------------------- "▽-∥0-∥v"
-   (→▽ (w▹_t ((▽ j▹) $)) JS_1 (w▹_t S) JS_2)]
+   (→▽ (w▹_t ((▽ j_t) $)) JS_1 (w▹_t S) JS_2)]
 
-  [(where (w▹_v w▹_t) j▹)
-   (where ((j▹_b J_b) ... (j▹ (∥0 E)) (j▹_a J_a) ...) JS_1)
-   (where JS_2 ((j▹_b J_b) ... (j▹ (∥t $ E)) (j▹_a J_a) ...))
+  [(where (J_b ... (∥0 j_v j_t E) J_a ...) JS_1)
+   (where JS_2 (J_b ... (∥t $ j_t E) J_a ...))
    ---------------------------------------------------------- "▽-∥0-∥t"
-   (→▽ (w▹_v ((▽ j▹) $)) JS_1 (w▹_v S) JS_2)]
+   (→▽ (w▹_v ((▽ j_v) $)) JS_1 (w▹_v S) JS_2)]
 
-  [(where (w▹_v w▹_t) j▹)
-   (where ((j▹_b J_b) ... (j▹ (∥v E $_t)) (j▹_a J_a) ...) JS_1)
-   (where JS_2 ((j▹_b J_b) ... (j▹_a J_a) ...))
+  [(where (J_b ... (∥v j_v $_t E) J_a ...) JS_1)
+   (where JS_2 (J_b ... J_a ...))
    ---------------------------------------------------------- "▽-∥v"
-   (→▽ (w▹_v ((▽ j▹) $_v)) JS_1 (w▹_v (E (⊕-∥ $_v $_t))) JS_2)]
+   (→▽ (w▹_v ((▽ j_v) $_v)) JS_1 (w▹_v (E (⊕-∥ $_v $_t))) JS_2)]
 
-  [(where (w▹_v w▹_t) j▹)
-   (where ((j▹_b J_b) ... (j▹ (∥t $_v E)) (j▹_a J_a) ...) JS_1)
-   (where JS_2 ((j▹_b J_b) ... (j▹_a J_a) ...))
+  [(where (J_b ... (∥t $_v j_t E) J_a ...) JS_1)
+   (where JS_2 (J_b ... J_a ...))
    ----------------------------------------------------------- "▽-∥t"
-   (→▽ (w▹_t ((▽ j▹) $_t)) JS_1 (w▹_t (E (⊕-∥ $_v $_t))) JS_2)])
+   (→▽ (w▹_t ((▽ j_t) $_t)) JS_1 (w▹_t (E (⊕-∥ $_v $_t))) JS_2)])
 
 (define-judgment-form WS-Scheduler
   #:mode (⇒WJ I I O O)
@@ -370,19 +363,19 @@
    (⇒ WG JS △I natural_rs WG JS △I natural_rs)]
 
   [(side-condition ,(not (term (Has-final-result? JS_1))))
-                  (side-condition ,(printf "Step1 ~a * ~a~n" (term (W_1 ...)) (term JS_1)))
-   (where (((w▹_v? w▹_t?) ...) △I_2) (Make-steal-attempts △I_1))
-   (where ((w▹_v? W_v?) ...) (Project (W_1 ...) (w▹_v? ...)))
-   (where ((w▹_t? W_t?) ...) (Project (W_1 ...) (w▹_t? ...)))
-   (where (((w▹_v* W_v*) (w▹_t* W_t*)) ... JS_2)
+                 ; (side-condition ,(printf "Step1 ~a * ~a~n" (term (W_1 ...)) (term JS_1)))
+   (where/error (((w▹_v? w▹_t?) ...) △I_2) (Make-steal-attempts △I_1))
+   (where/error ((w▹_v? W_v?) ...) (Project (W_1 ...) (w▹_v? ...)))
+   (where/error ((w▹_t? W_t?) ...) (Project (W_1 ...) (w▹_t? ...)))
+   (where/error (((w▹_v* W_v*) (w▹_t* W_t*)) ... JS_2)
           (Handle-△s (((w▹_v? W_v?) (w▹_t? W_t?)) ...) JS_1))
-   (where (W_2 ...) (Inject (W_1 ...) ((w▹_v* W_v*) ... (w▹_t* W_t*) ...)))
-   (where (w▹_all ...) (Mk-all-w▹ (W_1 ...)))
-   (where (w▹_step ...) (Set-subtract (w▹_all ...) (w▹_v* ... w▹_t* ...)))
+   (where/error (W_2 ...) (Inject (W_1 ...) ((w▹_v* W_v*) ... (w▹_t* W_t*) ...)))
+   (where/error (w▹_all ...) (Mk-all-w▹ (W_1 ...)))
+   (where/error (w▹_step ...) (Set-subtract (w▹_all ...) (w▹_v* ... w▹_t* ...)))
    (⇒WJ (Project (W_1 ...) (w▹_step ...)) JS_2 ((w▹_r2 W_r2) ...) JS_3)
-   (where (W_3 ...) (Inject (W_2 ...) ((w▹_r2 W_r2) ...)))
-   (where (△I_3 natural_rs2) (Next-△I (W_3 ...) △I_2 natural_rs1))
-            (side-condition ,(printf "Step2 ~a~n" (term (W_1 ...))))
+   (where/error (W_3 ...) (Inject (W_2 ...) ((w▹_r2 W_r2) ...)))
+   (where/error (△I_3 natural_rs2) (Next-△I (W_3 ...) △I_2 natural_rs1))
+           ; (side-condition ,(printf "Step2 ~a~n" (term (W_1 ...))))
    (⇒ (W_3 ...) JS_3 △I_3 natural_rs2 (W_4 ...) JS_4 △I_4 natural_rs3)
    ------------------------------------------------------------------- "Step"
    (⇒ (W_1 ...) JS_1 △I_1 natural_rs1 (W_4 ...) JS_4 △I_4 natural_rs3)])
@@ -391,12 +384,12 @@
   #:mode (⇒0 I I I O)
   #:contract (⇒0 g natural natural $)
 
-  [(where JS ((,j▹0 ∥I)))
+  [(where JS ((∥I j0)))
    (where (W ...) ,(make-list (sub1 (term natural_workers)) (term S)))
-   (where WG (((▽ ,j▹0) g) W ...))
+   (where WG (((▽ j0) g) W ...))
    (where △I ,(make-list (term natural_workers) (term ())))
    (⇒ WG JS △I natural_rs _ JS_f _ _)
-   (where (_ ... (j▹ (∥F $)) _ ...) JS_f)
+   (where (_ ... (∥F $) _ ...) JS_f)
    --------------------------------------------------------------------------- "eval"
    (⇒0 g natural_workers natural_rs $)])
 
@@ -415,7 +408,7 @@
     '()))
 
 (define E1
-  (term (∘ (∥ (∘ (▽ ,j▹0) (∘ • •)) (∥ • •)) •)))
+  (term (∘ (∥ (∘ (▽ j0) (∘ • •)) (∥ • •)) •)))
 
 (define g1
   (term
