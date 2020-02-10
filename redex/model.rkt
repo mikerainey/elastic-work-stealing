@@ -265,105 +265,100 @@
   [(Has-final-result? (J_b ... (∥F $) J_a ...)) #t]
   [(Has-final-result? _) #f])
 
+(define-metafunction WS-Scheduler
+  Divide : (any ...) -> ((any ...) (any ...)) or #f
+  [(Divide ()) #f]
+  [(Divide (_)) #f]
+  [(Divide (any_1 ... any_2 ...))
+   ((any_1 ...) (any_2 ...))
+   (side-condition (let ([n (length (term (any_1 ... any_2 ...)))])
+                     (= (length (term (any_1 ...))) (quotient n 2))))])
+   
 ; Reduction relation
 ; ------------------
 
 (define-judgment-form WS-Scheduler
-  #:mode (→B I O)
-  #:contract (→B B B)
+  #:mode (→ I O)
+  #:contract (→ B B)
 
   [------------------- "•-$"
-   (→B (E •) (E (1 1)))]
+   (→ (E •) (E (1 1)))]
   
   [------------------------------------- "↑-∘"
-   (→B ((∘ $_1 E) $_2) (E (⊕-∘ $_1 $_2)))]
+   (→ ((∘ $_1 E) $_2) (E (⊕-∘ $_1 $_2)))]
 
   [------------------------------------- "↑-∥"
-   (→B ((∥ $_1 E) $_2) (E (⊕-∥ $_1 $_2)))]
+   (→ ((∥ $_1 E) $_2) (E (⊕-∥ $_1 $_2)))]
 
   [----------------------------------- "→-∘"
-   (→B ((∘ E g_2) $_1) ((∘ $_1 E) g_2))]
+   (→ ((∘ E g_2) $_1) ((∘ $_1 E) g_2))]
 
   [----------------------------------- "→-∥"
-   (→B ((∥ E g_2) $_1) ((∥ $_1 E) g_2))]
+   (→ ((∥ E g_2) $_1) ((∥ $_1 E) g_2))]
 
   [----------------------------------- "↓-∘"
-   (→B (E (∘ g_1 g_2)) ((∘ E g_2) g_1))]
+   (→ (E (∘ g_1 g_2)) ((∘ E g_2) g_1))]
 
   [----------------------------------- "↓-∥"
-   (→B (E (∥ g_1 g_2)) ((∥ E g_2) g_1))])
+   (→ (E (∥ g_1 g_2)) ((∥ E g_2) g_1))])
 
 (define-judgment-form WS-Scheduler
-  #:mode (→ I O)
-  #:contract (→ W W)
+  #:mode (⟶ I I O O)
+  #:contract (⟶ ((w▹ W) ...) JS ((w▹ W) ...) JS)
 
-  [(→B B_1 B_2)
-   ----------- "B↦"
-   (→ B_1 B_2)]
+  [------------------ "⟶:∅"
+   (⟶ () JS () JS)]
 
-  [------- "S"
-   (→ S S)]
+  [------------------ "⟶:S"
+   (⟶ ((w▹ S)) JS ((w▹ S)) JS)]
 
-  [------- "Z"
-   (→ Z Z)])
+  [------------------ "⟶:Z"
+   (⟶ ((w▹ Z)) JS ((w▹ Z)) JS)]
 
-(define-judgment-form WS-Scheduler
-  #:mode (→▽ I I O O)
-  #:contract (→▽ (w▹ W) JS (w▹ W) JS)
+  [(→ B_1 B_2)
+   ------------------ "⟶:→"
+   (⟶ ((w▹ B_1)) JS ((w▹ B_2)) JS)]
 
   [(where (J_b ... (∥I j) J_a ...) JS_1)
    (where JS_2 (J_b ... (∥F $) J_a ...))
-   -------------------------------------------------------- "▽F"
-   (→▽ (w▹_1 ((▽ j) $)) JS_1 (w▹_1 S) JS_2)]
+   -------------------------------------------- "⟶:▽F"
+   (⟶ ((w▹_1 ((▽ j) $))) JS_1 ((w▹_1 S)) JS_2)]
   
   [(where (J_b ... (∥0 j_v j_t E) J_a ...) JS_1)
    (where JS_2 (J_b ... (∥v j_v $ E) J_a ...))
-   --------------------------------------------------------- "▽-∥0-∥v"
-   (→▽ (w▹_t ((▽ j_t) $)) JS_1 (w▹_t S) JS_2)]
+   --------------------------------------------- "⟶:▽-∥0-∥v"
+   (⟶ ((w▹_t ((▽ j_t) $))) JS_1 ((w▹_t S)) JS_2)]
 
   [(where (J_b ... (∥0 j_v j_t E) J_a ...) JS_1)
    (where JS_2 (J_b ... (∥t $ j_t E) J_a ...))
-   ---------------------------------------------------------- "▽-∥0-∥t"
-   (→▽ (w▹_v ((▽ j_v) $)) JS_1 (w▹_v S) JS_2)]
+   --------------------------------------------- "⟶:▽-∥0-∥t"
+   (⟶ ((w▹_v ((▽ j_v) $))) JS_1 ((w▹_v S)) JS_2)]
 
   [(where (J_b ... (∥v j_v $_t E) J_a ...) JS_1)
    (where JS_2 (J_b ... J_a ...))
-   ---------------------------------------------------------- "▽-∥v"
-   (→▽ (w▹_v ((▽ j_v) $_v)) JS_1 (w▹_v (E (⊕-∥ $_v $_t))) JS_2)]
+   --------------------------------------------------------------- "⟶:▽-∥v"
+   (⟶ ((w▹_v ((▽ j_v) $_v))) JS_1 ((w▹_v (E (⊕-∥ $_v $_t)))) JS_2)]
 
   [(where (J_b ... (∥t $_v j_t E) J_a ...) JS_1)
    (where JS_2 (J_b ... J_a ...))
-   ----------------------------------------------------------- "▽-∥t"
-   (→▽ (w▹_t ((▽ j_t) $_t)) JS_1 (w▹_t (E (⊕-∥ $_v $_t))) JS_2)])
+   --------------------------------------------------------------- "⟶:▽-∥t"
+   (⟶ ((w▹_t ((▽ j_t) $_t))) JS_1 ((w▹_t (E (⊕-∥ $_v $_t)))) JS_2)]
+
+  [(where (((w▹_1 W_1) ...) ((w▹_2 W_2) ...)) (Divide ((w▹ W) ...)))
+   (⟶ ((w▹_1 W_1) ...) JS ((w▹_1a W_1a) ...) JS_1)
+   (⟶ ((w▹_2 W_2) ...) JS_1 ((w▹_2a W_2a) ...) JS_2)
+   ----------------------------------------------------------------- "⟶:÷"
+   (⟶ ((w▹ W) ...) JS ((w▹_1a W_1a) ... (w▹_2a W_2a) ...) JS_2)])
 
 (define-judgment-form WS-Scheduler
-  #:mode (⇒WJ I I O O)
-  #:contract (⇒WJ ((w▹ W) ...) JS ((w▹ W) ...) JS)
-
-  [------------------ "E"
-   (⇒WJ () JS () JS)]
-  
-  [(→ W_1 W_2)
-   (⇒WJ ((w▹_a1 W_a1) ...) JS_1 ((w▹_a2 W_a2) ...) JS_2)
-   ------------------------------------------------------------------------ "W"
-   (⇒WJ ((w▹ W_1) (w▹_a1 W_a1) ...) JS_1 ((w▹ W_2) (w▹_a2 W_a2) ...) JS_2)]
-
-  
-  [(→▽ (w▹ W_1) JS_1 (w▹ W_2) JS_2)
-   (⇒WJ ((w▹_a1 W_a1) ...) JS_2 ((w▹_a2 W_a2) ...) JS_3)
-   ------------------------------------------------------------------------ "J"
-   (⇒WJ ((w▹ W_1) (w▹_a1 W_a1) ...) JS_1 ((w▹ W_2) (w▹_a2 W_a2) ...) JS_3)])
-
-(define-judgment-form WS-Scheduler
-  #:mode (⇒ I I I I O O O O)
-  #:contract (⇒ WG JS △I natural WG JS △I natural)
+  #:mode (⇒★ I I I I O O O O)
+  #:contract (⇒★ WG JS △I natural WG JS △I natural)
 
   [(side-condition (Has-final-result? JS))
-   ----------------------------------------------- "T"
-   (⇒ WG JS △I natural_rs WG JS △I natural_rs)]
+   ----------------------------------------------- "⇒★:t"
+   (⇒★ WG JS △I natural_rs WG JS △I natural_rs)]
 
   [(side-condition ,(not (term (Has-final-result? JS_1))))
-                 ; (side-condition ,(printf "Step1 ~a * ~a~n" (term (W_1 ...)) (term JS_1)))
    (where/error (((w▹_v? w▹_t?) ...) △I_2) (Make-steal-attempts △I_1))
    (where/error ((w▹_v? W_v?) ...) (Project (W_1 ...) (w▹_v? ...)))
    (where/error ((w▹_t? W_t?) ...) (Project (W_1 ...) (w▹_t? ...)))
@@ -372,26 +367,25 @@
    (where/error (W_2 ...) (Inject (W_1 ...) ((w▹_v* W_v*) ... (w▹_t* W_t*) ...)))
    (where/error (w▹_all ...) (Mk-all-w▹ (W_1 ...)))
    (where/error (w▹_step ...) (Set-subtract (w▹_all ...) (w▹_v* ... w▹_t* ...)))
-   (⇒WJ (Project (W_1 ...) (w▹_step ...)) JS_2 ((w▹_r2 W_r2) ...) JS_3)
+   (⟶ (Project (W_1 ...) (w▹_step ...)) JS_2 ((w▹_r2 W_r2) ...) JS_3)
    (where/error (W_3 ...) (Inject (W_2 ...) ((w▹_r2 W_r2) ...)))
    (where/error (△I_3 natural_rs2) (Next-△I (W_3 ...) △I_2 natural_rs1))
-           ; (side-condition ,(printf "Step2 ~a~n" (term (W_1 ...))))
-   (⇒ (W_3 ...) JS_3 △I_3 natural_rs2 (W_4 ...) JS_4 △I_4 natural_rs3)
-   ------------------------------------------------------------------- "Step"
-   (⇒ (W_1 ...) JS_1 △I_1 natural_rs1 (W_4 ...) JS_4 △I_4 natural_rs3)])
+   (⇒★ (W_3 ...) JS_3 △I_3 natural_rs2 (W_4 ...) JS_4 △I_4 natural_rs3)
+   ------------------------------------------------------------------- "⇒★:s"
+   (⇒★ (W_1 ...) JS_1 △I_1 natural_rs1 (W_4 ...) JS_4 △I_4 natural_rs3)])
 
 (define-judgment-form WS-Scheduler
-  #:mode (⇒0 I I I O)
-  #:contract (⇒0 g natural natural $)
+  #:mode (⇒ I I I O)
+  #:contract (⇒ g natural natural $)
 
   [(where JS ((∥I j0)))
    (where (W ...) ,(make-list (sub1 (term natural_workers)) (term S)))
    (where WG (((▽ j0) g) W ...))
    (where △I ,(make-list (term natural_workers) (term ())))
-   (⇒ WG JS △I natural_rs _ JS_f _ _)
+   (⇒★ WG JS △I natural_rs _ JS_f _ _)
    (where (_ ... (∥F $) _ ...) JS_f)
-   --------------------------------------------------------------------------- "eval"
-   (⇒0 g natural_workers natural_rs $)])
+   --------------------------------------------------------------------------- "⇒:i"
+   (⇒ g natural_workers natural_rs $)])
 
 ; Unit tests
 ; ----------
@@ -403,7 +397,7 @@
             [rs (hash i)])
         (begin
           (printf "~a~n" g)
-        (test-equal (judgment-holds (⇒0 ,g ,p ,rs $) $)
+        (test-equal (judgment-holds (⇒ ,g ,p ,rs $) $)
                     (term ((g→$ ,g)))))))
     '()))
 
@@ -419,6 +413,6 @@
    (∥ (∘ • •) (∥ • •))))
 
 (define g4 (term (∘ (∥ (∥ • •) •) (∥ • (∥ • •)))))
-(judgment-holds (⇒0 ,g4 3 2313 $) $)
+(judgment-holds (⇒ ,g4 3 2313 $) $)
 
 ;(build═derivations (⟶ ((,E1 •)) () (()) 0 WG JS SI natural))
