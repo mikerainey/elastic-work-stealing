@@ -3,8 +3,8 @@ let pkgs = import <nixpkgs> {};
     cmdlineSrc = pkgs.fetchFromGitHub {
       owner  = "deepsea-inria";
       repo   = "cmdline";
-      rev    = "c5f96b4aecb2019b5a690176195d37f7df3ed34b";
-      sha256 = "1rz9bfdd5242gy3vq4n9vj2rcr5pwp0j4cjycpn3pm7rnwrrcjnh";
+      rev    = "67b01773169de11bf04253347dd1087e5863a874";
+      sha256 = "1bzmxdmnp7kn6arv3cy0h4a6xk03y7wdg0mdkayqv5qsisppazmg";
     };
     cilkRtsWithStatsSrc = pkgs.fetchFromGitHub {
       owner  = "deepsea-inria";
@@ -21,6 +21,7 @@ let pkgs = import <nixpkgs> {};
     pbenchOcamlSrcs = import "${pbenchSrc}/nix/local-sources.nix";
     pbbslibSrc = ../../pbbslib;
     pbbsbenchSrc = ../../pbbsbench;
+    mcslSrc = ../../mcsl;
 in
 
 let
@@ -28,12 +29,14 @@ let
 in
 
 {
+  # Source package dependencies
   nixSrc = nixSrc;
 
-  # External package dependencies for C++ benchmarks
+  # External package dependencies
   cmdline = "${cmdlineSrc}/script/default.nix";
   pbbslib = "${pbbslibSrc}/default.nix";
   pbbsbench = "${pbbsbenchSrc}/default.nix";
+  mcsl = "${mcslSrc}/nix/default.nix";
   cilkRtsWithStats = "${cilkRtsWithStatsSrc}/default.nix";
 
   # Input data

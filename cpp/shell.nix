@@ -1,8 +1,17 @@
 { pkgs   ? import <nixpkgs> {},
   stdenv ? pkgs.stdenv,
   sources ? import ../nix/local-sources.nix,
+  cmdline ? import sources.cmdline {},
   cilkRtsWithStats ? import sources.cilkRtsWithStats {},
-  hwloc ? pkgs.hwloc # use hwloc, unless this parameter equals null
+  jemalloc ? pkgs.jemalloc450, # use jemalloc, unless this parameter equals null (for now, use v4.5.0, because 5.1.0 has a deadlock bug)
+  gcc ? pkgs.gcc,
+  hwloc ? pkgs.hwloc, # use hwloc, unless this parameter equals null
+  pviewSrc ? pkgs.fetchFromGitHub {
+    owner  = "deepsea-inria";
+    repo   = "pview";
+    rev    = "78d432b80cc1ea2767e1172d56e473f484db7f51";
+    sha256 = "1hd57237xrdczc6x2gxpf304iv7xmd5dlsvqdlsi2kzvkzysjaqn";
+  }
 }:
 
 with pkgs; {
@@ -10,8 +19,7 @@ with pkgs; {
     name = "cpp";
     
     buildInputs = [
-        gcc7
-        gdb
+        gcc
         jemalloc
         which
         cilkRtsWithStats
@@ -27,9 +35,13 @@ with pkgs; {
                 export HWLOC_LDFLAGS="-L ${hwloc.lib}/lib/ -lhwloc"
               '';
       in
+        let pview = import "${pviewSrc}/default.nix" {}; in
       ''
+      export CMDLINE_PATH="${cmdline}"
+      export MCSL_INCLUDE_PATH="../../mcsl/include/"
       export CILK_EXTRAS_PREFIX="-L ${cilkRtsWithStats}/lib -I ${cilkRtsWithStats}/include -ldl -DCILK_RUNTIME_WITH_STATS"
       ${hwlocFlgs}
+      export PATH=${pview}/bin:$PATH
       '';
   };
 }
