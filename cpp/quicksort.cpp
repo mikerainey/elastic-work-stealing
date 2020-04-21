@@ -11,7 +11,7 @@ int main () {
   auto infile = deepsea::cmdline::parse_or_default_string("infile", "grep.txt");
   char* filename = (char*)infile.c_str();
   sequence<T> in;
-  mcsl::launch([&] {
+  launch([&] {
     auto D = benchIO::readSequenceFromFile(infile.c_str());
     in = sequence<T>((T*)D.A, D.n);
   },

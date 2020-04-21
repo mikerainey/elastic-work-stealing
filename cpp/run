@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+ARGS="$@"
+PROBLEM=""
+IMPL=""
+OTHER_ARGS=""
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -p|-proc|--proc)
+    PROCS="$2"
+    shift
+    shift
+    ;;
+
+    -problem)
+    PROBLEM="$2"
+    shift
+    shift
+    ;;
+
+    -impl)
+    IMPL="$2"
+    shift
+    shift
+    ;;
+
+    *)
+    OTHER_ARGS="$1 $2 $OTHER_ARGS"
+    shift
+    shift
+    ;;
+esac
+done
+
+if [ "$PROBLEM" == "" ]; then
+  echo "[ERR] missing problem"
+  echo $ARGS
+  exit 1
+fi
+if [ "$IMPL" == "" ]; then
+  echo "[ERR] missing impl"
+  echo $ARGS
+  exit 1
+fi
+
+export NUM_THREADS=$PROCS
+SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+
+$SCRIPTPATH/$PROBLEM.$IMPL $ARGS $OTHER_ARGS
+rc=$?
+# the line below is needed because for some reason prun isn't properly
+# interpreting crashes, which exit with positive exit codes
+if [[ $rc != 0 ]]; then echo "exectime ERROR"; fi 
+exit $rc

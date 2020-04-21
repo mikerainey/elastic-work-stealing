@@ -3,6 +3,9 @@ PBBSLIB_PATH=../../pbbslib/
 PBBSBENCH_PATH=../../pbbsbench/
 INSTALL_FOLDER=.
 
+# Common compilation flags
+# ------------------------
+
 ifeq (, $(shell which jemalloc-config))
 	JEMALLOC =
 else
@@ -32,15 +35,20 @@ INCLUDE_PREFIX=\
 	-I $(PBBSBENCH_PATH) \
 	-I $(PBBSBENCH_PATH)/common
 
-WARNINGS_PREFIX=-Wno-subobject-linkage -Wno-overflow
-COMMON_PREFIX=--std=c++17 -pthread -mcx16 $(WARNINGS_PREFIX) $(HWLOC_CFLAGS) -DMCSL -Wno-return-type
+WARNINGS_PREFIX=-Wno-subobject-linkage -Wno-overflow -Wno-cpp -Wno-return-type
+COMMON_PREFIX=--std=c++17 -pthread -mcx16 $(WARNINGS_PREFIX) $(HWLOC_CFLAGS)
+OPT_BASE_PREFIX=-O2 -m64 -march=native --save-temps -DNDEBUG
+DBG_BASE_PREFIX=-O0 -g3
 LINKER_PREFIX=$(HWLOC_LDFLAGS) $(JEMALLOC)
 
-OPT_BASE_PREFIX=$(COMMON_PREFIX) -O2 -m64 -march=native --save-temps -DNDEBUG #  -fno-asynchronous-unwind-tables
-OPT_PREFIX=$(OPT_BASE_PREFIX) $(INCLUDE_PREFIX)
+# MCSL binaries
+# -------------
+
+MCSL_PREFIX=-DMCSL $(COMMON_PREFIX)
+OPT_PREFIX=$(MCSL_PREFIX) $(OPT_BASE_PREFIX) $(INCLUDE_PREFIX)
 STA_PREFIX=-DMCSL_ENABLE_STATS $(OPT_PREFIX)
 LOG_PREFIX=-DMCSL_ENABLE_LOGGING $(STA_PREFIX)
-DBG_PREFIX=-DMCSL_ENABLE_STATS -DMCSL_ENABLE_LOGGING $(COMMON_PREFIX) -O0 -g3 $(INCLUDE_PREFIX) -Wno-cpp
+DBG_PREFIX=-DMCSL_ENABLE_STATS -DMCSL_ENABLE_LOGGING $(MCSL_PREFIX) $(DBG_BASE_PREFIX) $(INCLUDE_PREFIX)
 
 %.opt: %.cpp $(INCLUDE_FILES)
 	$(CPP) $(OPT_PREFIX) -o $@ $< $(LINKER_PREFIX)
@@ -54,8 +62,26 @@ DBG_PREFIX=-DMCSL_ENABLE_STATS -DMCSL_ENABLE_LOGGING $(COMMON_PREFIX) -O0 -g3 $(
 %.dbg: %.cpp $(INCLUDE_FILES)
 	$(CPP) $(DBG_PREFIX) -o $@ $< $(LINKER_PREFIX)
 
+# Cilk Plus binaries
+# ------------------
+
+CILK_BASE_PREFIX=-fcilkplus -lcilkrts -DCILK -ldl
+CILK_PREFIX=$(COMMON_PREFIX) $(OPT_BASE_PREFIX) $(CILK_BASE_PREFIX) $(CILK_EXTRAS_PREFIX) $(INCLUDE_PREFIX)
+
+%.cilk: %.cpp $(INCLUDE_FILES)
+	$(CPP) $(CILK_PREFIX) -o $@ $< $(LINKER_PREFIX)
+
+# Installation and cleanup
+# ------------------------
+
+BENCHMARKS=\
+	fib \
+	grep
+
+all: $(BENCHMARKS:%=%.opt) $(BENCHMARKS:%=%.sta) $(BENCHMARKS:%=%.cilk)
+
 install:
-	cp *.opt $(INSTALL_FOLDER)
+	cp *.opt *.sta *.cilk run $(INSTALL_FOLDER)
 
 clean:
-	rm -f *.o *.ii *.s *.opt *.sta *.log *.dbg 
+	rm -f *.o *.ii *.s *.opt *.sta *.log *.dbg *.cilk

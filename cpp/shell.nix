@@ -4,7 +4,7 @@
   cmdline ? import sources.cmdline {},
   cilkRtsWithStats ? import sources.cilkRtsWithStats {},
   jemalloc ? pkgs.jemalloc450, # use jemalloc, unless this parameter equals null (for now, use v4.5.0, because 5.1.0 has a deadlock bug)
-  gcc ? pkgs.gcc,
+  gcc ? pkgs.gcc7,
   hwloc ? pkgs.hwloc, # use hwloc, unless this parameter equals null
   pviewSrc ? pkgs.fetchFromGitHub {
     owner  = "deepsea-inria";
@@ -41,7 +41,7 @@ with pkgs; {
       export MCSL_INCLUDE_PATH="../../mcsl/include/"
       export CILK_EXTRAS_PREFIX="-L ${cilkRtsWithStats}/lib -I ${cilkRtsWithStats}/include -ldl -DCILK_RUNTIME_WITH_STATS"
       ${hwlocFlgs}
-      export PATH=${pview}/bin:$PATH
+      export PATH=${gcc}/bin/:${pview}/bin:$PATH
       '';
   };
 }

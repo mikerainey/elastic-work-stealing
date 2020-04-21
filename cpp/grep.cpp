@@ -1,3 +1,4 @@
+#include "benchmark.hpp"
 #include "get_time.h"
 #include "parse_command_line.h"
 #include "grep.h"
@@ -10,7 +11,7 @@ int main (int argc, char *argv[]) {
   timer t("grep", true);
   sequence<char> out_str, search_str;
   range<char*> str;
-  mcsl::launch([&] {
+  launch([&] {
     infile = deepsea::cmdline::parse_or_default_string("infile", "grep.txt");
      pattern = deepsea::cmdline::parse_or_default_string("pattern", "xxy");
     char* filename = (char*)infile.c_str();

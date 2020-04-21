@@ -115,35 +115,9 @@ let eval_exectime = fun env all_results results ->
 (*****************************************************************************)
 (** Benchmark settings *)
 
-let mk_config n = mk string "config" n
-let mk_config_pbbscpp = mk_config "pbbscpp"
-let mk_config_pbbscpphg = mk_config "pbbscpphg"
-let mk_config_mpl = mk_config "mpl"
-let mk_config_mpl_cd = mk_config "mpl-cd"
-
-let impl_array = "array"
-let impl_delay = "delay"
-let impl_dc = "dc"
-let impl_merge = "merge"
-let impl_sample = "sample"
-let impl_imperative = "imperative"
-let impl_nondet = "nondet"
-let impl_effectful = "effectful3"
-                    
-let mk_impl n = mk string "impl" n
-
-let mk_prog_mlton n = mk_prog "run-SML"
-let mk_prog_cpp n =
-  let mk_prog = mk_prog "run-CPP" in
-  if arg_numa_alloc_interleaved then
-    mk_prog (* the default is for C++ benchmarks to use numa round robin *)
-  else
-    mk_prog & (mk bool "numa_alloc_interleaved" false)
-                  
 let mk_proc = mk int "proc" 
 
 let mk_n n = mk int "n" n
-let mk_problem n = mk string "problem" n
 
 let string_of_millions v =
    let x = v /. 1000000. in
@@ -316,8 +290,8 @@ let mk_grep_input nb_rows row_len nb_occurrences pat_str impl =
   & (mk_outfile outfile)
   & (mk string "!pretty_name" pretty_name)
 
-let mk_grep_input1 = mk_grep_input 2000000 100 10 "foobarbaz" "delay"
-let mk_grep_input2 = mk_grep_input 2000000 100 100000 "foobar" "delay"
+let mk_grep_input1 = mk_grep_input 100000 1000 100 "foobarbaz" "delay"
+let mk_grep_input2 = mk_grep_input 1000000 100 100000 "foobar" "delay"
 (*let mk_grep_input3 = mk_grep_input 10000 10000 100 "foobarbaz" "delay"*) (* this input causes mpl to crash *)
 
 let mk_grep_inputs = mk_grep_input1 ++ mk_grep_input2 (* ++ mk_grep_input3*)
@@ -357,13 +331,100 @@ let all () = select make run check plot
 end
 
 (*****************************************************************************)
+(** Benchmark data *)
+
+let pretty_name = "!pretty_name" 
+let mk_pretty_name = mk string pretty_name
+
+let mk_textsearch_inputs_from_outputs mk_outputs =
+  let input_descriptions =
+    ExpGenInputs.input_descriptions_of mk_outputs ["outfile"; pretty_name; "pattern";]
+  in
+  let f [outfile; pretty_name; pattern;] =
+    (mk string "infile" outfile) & (mk string "pattern" pattern) & (mk_pretty_name pretty_name)
+  in
+  mk_all f input_descriptions
+
+type benchmark_descr = {
+    bd_problem : string;
+    bd_mk_input : Params.t;
+}
+
+let benchmarks : benchmark_descr list = [
+    { bd_problem = "grep";
+      bd_mk_input = mk_textsearch_inputs_from_outputs ExpGenInputs.mk_grep_inputs; };
+
+    { bd_problem = "fib";
+      bd_mk_input = mk_n 38; };
+]
+
+(*****************************************************************************)
+(** Running-time experiment *)
+
+module ExpExectime = struct
+
+let name = "exectime"
+
+let mk_impl = mk string "impl"
+let mk_problem = mk string "problem"
+
+let mk_prog bd =
+  (mk_prog "run-CPP") & (mk_problem bd.bd_problem)
+
+let mk_runs_of_bd (bd : benchmark_descr) =
+  (mk_prog bd) & bd.bd_mk_input
+
+let impls = ["opt"; "cilk";]
+
+let mk_all_impls = mk_list string "impl" impls
+
+let mk_all_runs =
+  mk_all mk_runs_of_bd benchmarks
+
+let make () = ()
+
+let run() = (
+  Mk_runs.(call (par_run_modes @ [
+    Output (file_results name);
+    Timeout 4000;
+    Args (mk_all_runs & mk_all_impls & (mk_proc arg_proc))])))
+
+let check () = ()
+
+let formatter =
+     Env.format (Env.(
+       [ ("prog", Format_custom (fun s -> ""));
+         ("!pretty_name", Format_custom (fun s -> ""));
+         ("problem", Format_custom (fun s -> s));
+       ]))
+
+let plot() =
+  Mk_bar_plot.(call ([
+      Bar_plot_opt Bar_plot.([
+         X_titles_dir Vertical;
+         Y_axis [Axis.Lower (Some 0.)] ]);
+      Formatter formatter;
+      Charts mk_unit;
+      Series mk_all_impls;
+      X mk_all_runs;
+      Input (file_results name);
+      Output (file_plots name);
+      Y_label "exectime";
+      Y eval_exectime;
+  ]))
+  
+let all () = select make run check plot
+
+end
+
+(*****************************************************************************)
 (** Main *)
 
 let _ =
   let arg_actions = XCmd.get_others() in
   let bindings = [ 
       "gen-inputs", ExpGenInputs.all;
-      (*"benchmarks", ExpBenchmarks.all; *)
+      "exectime", ExpExectime.all;
   ]
   in
   Pbench.execute_from_only_skip arg_actions [] bindings;

@@ -47,4 +47,8 @@ in
   benchOcamlSrc = "${projectSrc}/bench/";
   benchScript = "${nixSrc}/bench-script.nix";
 
+  # C++ Benchmarks
+  benchmarksCppSrc = "${projectSrc}/cpp";
+  benchmarksCpp = "${nixSrc}/benchmarks-cpp.nix";
+
 }
