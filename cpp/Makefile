@@ -76,7 +76,9 @@ CILK_PREFIX=$(COMMON_PREFIX) $(OPT_BASE_PREFIX) $(CILK_BASE_PREFIX) $(CILK_EXTRA
 
 BENCHMARKS=\
 	fib \
-	grep
+	grep \
+	samplesort \
+	quickhull
 
 all: $(BENCHMARKS:%=%.opt) $(BENCHMARKS:%=%.sta) $(BENCHMARKS:%=%.cilk)
 

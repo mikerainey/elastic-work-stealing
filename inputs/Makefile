@@ -45,10 +45,10 @@ PBBSLIBCPP_PREFIX=$(OPT_PREFIX) $(CILK_COMMON_PREFIX)
 %.pbbscpp.bin: %.cpp $(INCLUDE_FILES)
 	$(CPP) $(PBBSLIBCPP_PREFIX) $(INCLUDE_DIRECTIVES) -o $@ $< $(JEMALLOC)
 
-all:
+all: text.pbbscpp.bin
 
 install:
-	cp run-* $(INSTALL_FOLDER)
+	cp run-* *.bin $(INSTALL_FOLDER)
 
 clean:
 	rm -f *.bin

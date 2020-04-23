@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+ARGS="$@"
+
+outargs=""
+outfile=""
+nb=""
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+
+    -distribution)
+    case $2 in
+    insphere)
+    outargs="-s $outargs"
+    ;;
+    onsphere)
+    outargs="-S $outargs"
+    ;;
+    plummer)
+    outargs="-p $outargs"
+    ;;
+    kuzmin)
+    outargs="-k $outargs"
+    esac
+    shift
+    shift
+    ;;
+
+    -dims)
+    outargs="-d $2 $outargs"
+    shift
+    shift
+    ;;
+
+    -outfile)
+    outfile="$2"
+    shift
+    shift
+    ;;
+
+    -n)
+    nb="$2"
+    shift
+    shift
+    ;;
+
+    *)
+    shift
+    ;;
+
+esac
+done
+
+randPoints $outargs $nb $outfile

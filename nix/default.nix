@@ -3,6 +3,7 @@
   makeWrapper ? pkgs.makeWrapper,
   buildDunePackage ? pkgs.ocamlPackages.buildDunePackage,
   sources ? import ./local-sources.nix,
+  inputData ? import sources.inputData { sources = sources; },
   benchmarksCpp ? import sources.benchmarksCpp { sources = sources; },
   benchScript ? import sources.benchScript { sources = sources; }
 }:
@@ -26,6 +27,7 @@ stdenv.mkDerivation rec {
     cp pbench $out/pbench
     wrapProgram $out/pbench \
       --prefix PATH ":" $out/ \
+      --prefix PATH ":" ${inputData} \
       --prefix PATH ":" ${benchmarksCpp} \
       --add-flags "-skip make"
     ln -s ${benchmarksCpp} $out/benchmarksCpp

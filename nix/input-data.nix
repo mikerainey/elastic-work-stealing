@@ -31,6 +31,13 @@ stdenv.mkDerivation rec {
     in
     ''
     ${jemallocCfg}
+    make clean
+    make -j $NIX_BUILD_CORES \
+      all \
+      CMDLINE_PATH=${cmdline} \
+      PBBSLIB_PATH=${pbbslib} \
+      PBBSBENCH_PATH=${pbbsbench} \
+      CPP=${gcc}/bin/g++
     '';
 
   installPhase = ''
@@ -54,6 +61,15 @@ stdenv.mkDerivation rec {
       --prefix PATH ":" $out/
     wrapProgram $out/run-randomSeq \
       --prefix PATH ":" ${pbbsbench.testData}/sequenceData \
+      --prefix PATH ":" $out/
+    wrapProgram $out/run-exptSeq \
+      --prefix PATH ":" ${pbbsbench.testData}/sequenceData \
+      --prefix PATH ":" $out/
+    wrapProgram $out/run-almostSortedSeq \
+      --prefix PATH ":" ${pbbsbench.testData}/sequenceData \
+      --prefix PATH ":" $out/
+    wrapProgram $out/run-randPoints \
+      --prefix PATH ":" ${pbbsbench.testData}/geometryData \
       --prefix PATH ":" $out/
 
     ln -s ${pbbsbench.testData} $out/pbbsbench-testData

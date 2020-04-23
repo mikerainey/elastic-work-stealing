@@ -300,6 +300,10 @@ let input_descriptions_of mk_outputs params =
   ~~ List.map (Params.to_envs mk_outputs) (fun e ->
       List.map (Env.get_as_string e) params)
 
+let input_descriptions_of mk_outputs params =
+  ~~ List.map (Params.to_envs mk_outputs) (fun e ->
+      List.map (Env.get_as_string e) params)
+
 let mk_inputs_to_download = mk_orkut_graph
   
 let file_to_download_of mk_inputs =
@@ -312,15 +316,15 @@ let make() =
 
 let run() =
   let _ = system ("mkdir -p " ^ arg_input_files_folder) arg_virtual_run in
-  let _ =  fetch_infiles_of (file_to_download_of mk_inputs_to_download) in
+  (*  let _ =  fetch_infiles_of (file_to_download_of mk_inputs_to_download) in*)
   Mk_runs.(call (gen_inputs_run_modes @ [
     Output (file_results name);
     Timeout 4000;
     Args (    mk_rndpts_2d
            ++ mk_seq_inputs
-           ++ mk_grep_inputs
+           ++ mk_grep_inputs (*
            ++ mk_bfs_pure_inputs
-           ++ mk_bfs_ligra_inputs )]))
+           ++ mk_bfs_ligra_inputs *) )]))
 
 let check = nothing  (* do something here *)
   
@@ -335,6 +339,14 @@ end
 
 let pretty_name = "!pretty_name" 
 let mk_pretty_name = mk string pretty_name
+
+let mk_inputs_from_outputs mk_outputs =
+  let input_descriptions = ExpGenInputs.input_descriptions_of mk_outputs ["outfile"; pretty_name;]
+  in
+  let f [outfile; pretty_name;] =
+    (mk string "infile" outfile) & (mk_pretty_name pretty_name)
+  in
+  mk_all f input_descriptions
 
 let mk_textsearch_inputs_from_outputs mk_outputs =
   let input_descriptions =
@@ -356,6 +368,12 @@ let benchmarks : benchmark_descr list = [
 
     { bd_problem = "fib";
       bd_mk_input = mk_n 38; };
+
+    { bd_problem = "samplesort";
+      bd_mk_input = mk_inputs_from_outputs ExpGenInputs.mk_seq_inputs; };
+
+    { bd_problem = "quickhull";
+      bd_mk_input = mk_inputs_from_outputs ExpGenInputs.mk_rndpts_2d; };
 ]
 
 (*****************************************************************************)

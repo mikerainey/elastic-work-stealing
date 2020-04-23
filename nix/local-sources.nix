@@ -40,6 +40,7 @@ in
   cilkRtsWithStats = "${cilkRtsWithStatsSrc}/default.nix";
 
   # Input data
+  inputData = "${nixSrc}/input-data.nix";
   inputDataSrc = "${projectSrc}/inputs/";
 
   # Benchmarking script
