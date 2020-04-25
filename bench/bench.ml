@@ -168,10 +168,8 @@ let ipfs_get_if_needed hash outfile force_get is_virtual =
   else
     ()
 
-let path_of_outfile f = arg_input_files_folder ^ "/" ^ f
-                      
 let ipfs_get_files table force_get is_virtual =
-  List.iter (fun (h, p) -> ipfs_get_if_needed h (path_of_outfile p) force_get is_virtual) table
+  List.iter (fun (h, p) -> ipfs_get_if_needed h p force_get is_virtual) table
 
 let infiles_by_hash = [
     "QmUet78nvvDXwDtQPC8bQqULmFdk4uerW9WieMNiiBy1Zk", "com-orkut.ungraph.txt_SJ";
@@ -185,7 +183,9 @@ let row_of_infile infile =
 let fetch_infiles_of infiles =
   let table = List.map row_of_infile infiles in
   ipfs_get_files table arg_force_get arg_virtual_run
-  
+
+let path_of_outfile f = arg_input_files_folder ^ "/" ^ f
+                      
 let mk_outfile f =
   mk string "outfile" (path_of_outfile f)
 
@@ -271,7 +271,7 @@ let mk_rmat_graph_pure = mk_rmat_graph 20000000 "pure"
 let mk_rmat_graph_ligra = mk_rmat_graph 20000000 "ligra"
 let mk_orkut_graph = mk_real_world_graph "com-orkut.ungraph.txt_SJ" "orkut" 1
 let mk_twitter_graph = mk_real_world_graph "twitter_SJ" "twitter" 1
-let mk_bfs_pure_inputs = mk_rmat_graph_pure ++ mk_orkut_graph ++ mk_twitter_graph
+let mk_bfs_pure_inputs = mk_rmat_graph_pure (* ++ mk_orkut_graph ++ mk_twitter_graph*)
 let mk_bfs_ligra_inputs = mk_rmat_graph_ligra ++ mk_orkut_graph ++ mk_twitter_graph
 
 let mk_grep_input nb_rows row_len nb_occurrences pat_str impl =
@@ -304,7 +304,7 @@ let input_descriptions_of mk_outputs params =
   ~~ List.map (Params.to_envs mk_outputs) (fun e ->
       List.map (Env.get_as_string e) params)
 
-let mk_inputs_to_download = mk_orkut_graph
+let mk_inputs_to_download = mk_orkut_graph ++ mk_twitter_graph
   
 let file_to_download_of mk_inputs =
   let input_descriptions = input_descriptions_of mk_inputs ["!file_name";] in
@@ -316,14 +316,14 @@ let make() =
 
 let run() =
   let _ = system ("mkdir -p " ^ arg_input_files_folder) arg_virtual_run in
-  (*  let _ =  fetch_infiles_of (file_to_download_of mk_inputs_to_download) in*)
+  let _ =  fetch_infiles_of (file_to_download_of mk_inputs_to_download) in
   Mk_runs.(call (gen_inputs_run_modes @ [
     Output (file_results name);
     Timeout 4000;
     Args (    mk_rndpts_2d
            ++ mk_seq_inputs
-           ++ mk_grep_inputs (*
-           ++ mk_bfs_pure_inputs
+           ++ mk_grep_inputs 
+           ++ mk_bfs_pure_inputs (*
            ++ mk_bfs_ligra_inputs *) )]))
 
 let check = nothing  (* do something here *)
@@ -357,14 +357,25 @@ let mk_textsearch_inputs_from_outputs mk_outputs =
   in
   mk_all f input_descriptions
 
+let mk_graph_inputs_from_outputs mk_outputs =
+  let input_descriptions =
+    ExpGenInputs.input_descriptions_of mk_outputs ["outfile"; pretty_name; "source";]
+  in
+  let f [outfile; pretty_name; source;] =
+    (mk string "infile" outfile) & (mk_pretty_name pretty_name) &
+      (mk int "source" (int_of_string source))
+  in
+  mk_all f input_descriptions
+
 type benchmark_descr = {
     bd_problem : string;
     bd_mk_input : Params.t;
 }
 
 let benchmarks : benchmark_descr list = [
-    { bd_problem = "grep";
-      bd_mk_input = mk_textsearch_inputs_from_outputs ExpGenInputs.mk_grep_inputs; };
+    
+    { bd_problem = "bfs";
+      bd_mk_input = mk_graph_inputs_from_outputs ExpGenInputs.mk_bfs_pure_inputs; };
 
     { bd_problem = "fib";
       bd_mk_input = mk_n 38; };
@@ -374,6 +385,10 @@ let benchmarks : benchmark_descr list = [
 
     { bd_problem = "quickhull";
       bd_mk_input = mk_inputs_from_outputs ExpGenInputs.mk_rndpts_2d; };
+
+    { bd_problem = "grep";
+      bd_mk_input = mk_textsearch_inputs_from_outputs ExpGenInputs.mk_grep_inputs; };
+
 ]
 
 (*****************************************************************************)

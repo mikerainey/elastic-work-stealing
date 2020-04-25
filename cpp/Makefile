@@ -78,7 +78,8 @@ BENCHMARKS=\
 	fib \
 	grep \
 	samplesort \
-	quickhull
+	quickhull \
+	bfs
 
 all: $(BENCHMARKS:%=%.opt) $(BENCHMARKS:%=%.sta) $(BENCHMARKS:%=%.cilk)
 
