@@ -18,7 +18,7 @@ point2d<double> randPt(uint64_t seed) {
   return point2d<double>(1.0 + r * cos(theta), 1.0 + r * sin(theta));
 }
 
-int main(int argc, char** argv) {
+int main() {
   using point = point2d<double>;
   string infile = deepsea::cmdline::parse_or_default_string("infile", "");
   string outfile = deepsea::cmdline::parse_or_default_string("outfile", "");
@@ -26,9 +26,6 @@ int main(int argc, char** argv) {
 
   sequence<point> Points;
 
-  /* NOTE: this is solving a slightly relaxed version, which permits duplicates
-   * in the output. The SML code is more strict (guarantees no duplicates in
-   * output). */
   sequence<indexT> I;
   launch([&] {
     if (infile != "") {
