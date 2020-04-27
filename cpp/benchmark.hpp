@@ -21,9 +21,15 @@ void launch(const Bench_pre& bench_pre,
   mcsl::launch(bench_pre, bench_post, bench_body);
 #elif defined(CILK)
   bench_pre();
+#ifdef CILK_RUNTIME_WITH_STATS
+  __cilkg_take_snapshot_for_stats();
+#endif
   auto start_time = mcsl::clock::now();
   bench_body();
   mcsl::aprintf("exectime %.3f\n", mcsl::clock::since(start_time));
+#ifdef CILK_RUNTIME_WITH_STATS
+  __cilkg_dump_encore_stats_to_stderr();
+#endif
   bench_post();
 #endif
 }
