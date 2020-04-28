@@ -65,7 +65,7 @@ DBG_PREFIX=-DMCSL_ENABLE_STATS -DMCSL_ENABLE_LOGGING $(MCSL_PREFIX) $(DBG_BASE_P
 # Cilk Plus binaries
 # ------------------
 
-CILK_BASE_PREFIX=-fcilkplus -lcilkrts -DCILK -ldl
+CILK_BASE_PREFIX=-fcilkplus -lcilkrts -DCILK -ldl -Wno-format-zero-length
 CILK_PREFIX=$(COMMON_PREFIX) $(OPT_BASE_PREFIX) $(CILK_BASE_PREFIX) $(CILK_EXTRAS_PREFIX) $(INCLUDE_PREFIX)
 
 %.cilk: %.cpp $(INCLUDE_FILES)
