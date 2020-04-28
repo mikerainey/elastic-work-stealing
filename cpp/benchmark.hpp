@@ -5,6 +5,9 @@
 
 #ifdef CILK
 #include "mcsl_fjnative.hpp"
+void trigger_cilk() { // dummy function, to force Cilk's runtime to start up
+  printf("");
+}
 __attribute__((constructor))
 void initialize(int argc, char **argv) {
   deepsea::cmdline::set(argc, argv);
@@ -20,6 +23,8 @@ void launch(const Bench_pre& bench_pre,
 #if defined(MCSL)
   mcsl::launch(bench_pre, bench_post, bench_body);
 #elif defined(CILK)
+  cilk_spawn trigger_cilk();
+  cilk_sync;
   bench_pre();
 #ifdef CILK_RUNTIME_WITH_STATS
   __cilkg_take_snapshot_for_stats();
