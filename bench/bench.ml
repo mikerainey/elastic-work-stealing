@@ -112,6 +112,11 @@ let file_tables exp_name =
 let eval_exectime = fun env all_results results ->
    Results.get_mean_of "exectime" results
 
+let eval_sleeppct = fun env all_results results ->
+  let idle = Results.get_mean_of "total_idle_time" results in
+  let sleep = Results.get_mean_of "total_sleep_time" results in
+  (sleep /. idle)
+
 (*****************************************************************************)
 (** Benchmark settings *)
 
@@ -456,6 +461,64 @@ let all () = select make run check plot
 end
 
 (*****************************************************************************)
+(** Sleep-time experiment *)
+
+module ExpSleeptime = struct
+
+let name = "sleeptime"
+
+let mk_impl = mk string "impl"
+let mk_problem = mk string "problem"
+
+let mk_prog bd =
+  (mk_prog "run-CPP") & (mk_problem bd.bd_problem)
+
+let mk_runs_of_bd (bd : benchmark_descr) =
+  (mk_prog bd) & bd.bd_mk_input
+
+let mk_all_impls =
+  (mk_impl "sta") & (mk_list string "steal_policy" ["once"; "coupon";])
+
+let mk_all_runs =
+  mk_all mk_runs_of_bd benchmarks
+
+let make () = ()
+
+let run() = (
+  Mk_runs.(call (par_run_modes @ [
+    Output (file_results name);
+    Timeout 4000;
+    Args (mk_all_runs & mk_all_impls & (mk_proc arg_proc))])))
+
+let check () = ()
+
+let formatter =
+     Env.format (Env.(
+       [ ("prog", Format_custom (fun s -> ""));
+         ("!pretty_name", Format_custom (fun s -> ""));
+         ("problem", Format_custom (fun s -> s));
+       ]))
+
+let plot() =
+  Mk_bar_plot.(call ([
+      Bar_plot_opt Bar_plot.([
+         X_titles_dir Vertical;
+         Y_axis [Axis.Lower (Some 0.)] ]);
+      Formatter formatter;
+      Charts mk_unit;
+      Series mk_all_impls;
+      X mk_all_runs;
+      Input (file_results name);
+      Output (file_plots name);
+      Y_label "sleep pct. of idle time";
+      Y eval_sleeppct;
+  ]))
+  
+let all () = select make run check plot
+
+end
+
+(*****************************************************************************)
 (** Main *)
 
 let _ =
@@ -463,6 +526,7 @@ let _ =
   let bindings = [ 
       "gen-inputs", ExpGenInputs.all;
       "exectime", ExpExectime.all;
+      "sleeptime", ExpSleeptime.all;
   ]
   in
   Pbench.execute_from_only_skip arg_actions [] bindings;
