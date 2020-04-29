@@ -391,6 +391,12 @@ let benchmarks : benchmark_descr list = [
 
 ]
 
+let benchmarks =
+  if arg_problems = [] then
+    benchmarks
+  else
+    List.filter (fun b -> List.exists (fun a -> a = b.bd_problem) arg_problems) benchmarks
+
 (*****************************************************************************)
 (** Running-time experiment *)
 
