@@ -413,9 +413,8 @@ let mk_prog bd =
 let mk_runs_of_bd (bd : benchmark_descr) =
   (mk_prog bd) & bd.bd_mk_input
 
-let impls = ["opt"; "cilk";]
-
-let mk_all_impls = mk_list string "impl" impls
+let mk_all_impls =
+  ((mk_impl "opt") & (mk_list string "steal_policy" ["once"; "coupon";])) ++ (mk_impl "cilk")
 
 let mk_all_runs =
   mk_all mk_runs_of_bd benchmarks
