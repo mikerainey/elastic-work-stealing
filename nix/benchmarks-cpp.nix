@@ -22,6 +22,8 @@ stdenv.mkDerivation rec {
     [ gcc which ]
     ++ (if hwloc == null then [] else [ hwloc ])
     ++ (if jemalloc == null then [] else [ jemalloc ]);
+
+  enableParallelBuilding = true;
   
   buildPhase =
     let hwlocFlgs =
@@ -41,7 +43,7 @@ stdenv.mkDerivation rec {
     ''
     ${jemallocCfg}
     make clean
-    make \
+    make -j $NIX_BUILD_CORES \
       all \
       CMDLINE_PATH=${cmdline} \
       PBBSLIB_PATH=${pbbslib} \

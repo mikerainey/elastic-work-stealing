@@ -37,7 +37,7 @@ INCLUDE_PREFIX=\
 
 WARNINGS_PREFIX=-Wno-subobject-linkage -Wno-overflow -Wno-cpp -Wno-return-type
 COMMON_PREFIX=--std=c++17 -pthread -mcx16 $(WARNINGS_PREFIX) $(HWLOC_CFLAGS)
-OPT_BASE_PREFIX=-O2 -m64 -march=native --save-temps -DNDEBUG
+OPT_BASE_PREFIX=-O2 -m64 -march=native -DNDEBUG
 DBG_BASE_PREFIX=-O0 -g3
 LINKER_PREFIX=$(HWLOC_LDFLAGS) $(JEMALLOC)
 
