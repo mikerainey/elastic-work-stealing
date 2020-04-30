@@ -78,6 +78,7 @@ BENCHMARKS=\
 	fib \
 	grep \
 	samplesort \
+	quicksort \
 	quickhull \
 	bfs
 
