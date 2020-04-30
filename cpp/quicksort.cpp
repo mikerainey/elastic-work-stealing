@@ -6,8 +6,8 @@ using namespace std;
 using namespace pbbs;
 
 int main () {
-  using T = int;
-  long cutsize = deepsea::cmdline::parse_or_default_int("cutsize", 1<<10);
+  using T = double;
+  long cutsize = deepsea::cmdline::parse_or_default_long("cutsize", 1<<10);
   auto infile = deepsea::cmdline::parse_or_default_string("infile", "grep.txt");
   char* filename = (char*)infile.c_str();
   sequence<T> in;

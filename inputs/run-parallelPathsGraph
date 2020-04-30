@@ -4,6 +4,7 @@ ARGS="$@"
 outargs=""
 outfile=""
 nb=""
+p=""
 
 while [[ $# -gt 0 ]]
 do
@@ -23,6 +24,12 @@ case $key in
     shift
     ;;
 
+    -p)
+    p="$2"
+    shift
+    shift
+    ;;
+
     *)
     shift
     ;;
@@ -30,4 +37,4 @@ case $key in
 esac
 done
 
-parallelPathsGraph -j $outargs $nb $outfile
+parallelPathsGraph -p $p -j $outargs $nb $outfile

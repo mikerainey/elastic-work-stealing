@@ -233,6 +233,7 @@ let mk_rand_seq = mk_rand_seq "double" dflt_nb_items
 let mk_almost_sorted_seq = mk_almost_sorted_seq "double" dflt_nb_items
 let mk_expt_seq = mk_expt_seq "double" dflt_nb_items
 let mk_seq_inputs = mk_rand_seq ++ mk_almost_sorted_seq ++ mk_expt_seq
+let mk_quicksort_inputs = mk_seq_inputs & mk_list int "cutsize" [1024; dflt_nb_items;]
   
 let mk_rand_points distribution dims n =
   let outfile = Printf.sprintf "rand-points-%s-%d-%d" distribution dims n in
@@ -265,6 +266,15 @@ let mk_rmat_graph n impl =
   & (mk int "source" 0)
   & (mk string "impl" impl)
 
+let mk_parallel_paths_graph n p =
+  let outfile = Printf.sprintf "parPaths-%d-%d" n p in
+  let pretty_name = outfile in
+    (mk_prog "run-parallelPathsGraph")
+  & (mk int "n" n)
+  & (mk int "p" p)
+  & (mk_outfile outfile)
+  & (mk string "!pretty_name" pretty_name)  
+
 let mk_real_world_graph n pretty_name source =
     (mk_prog "run-getRealWorldGraph")
   & (mk_outfile n)
@@ -273,11 +283,19 @@ let mk_real_world_graph n pretty_name source =
   & (mk int "source" source)
   
 let mk_rmat_graph_pure = mk_rmat_graph 20000000 "pure"
-let mk_rmat_graph_ligra = mk_rmat_graph 20000000 "ligra"
+let mk_chain = mk_parallel_paths_graph 10000000 1
+let mk_parallel_paths_8 = mk_parallel_paths_graph 10000000 8
+let mk_parallel_paths_72 = mk_parallel_paths_graph 10000000 72
 let mk_orkut_graph = mk_real_world_graph "com-orkut.ungraph.txt_SJ" "orkut" 1
 let mk_twitter_graph = mk_real_world_graph "twitter_SJ" "twitter" 1
-let mk_bfs_pure_inputs = mk_rmat_graph_pure (* ++ mk_orkut_graph ++ mk_twitter_graph*)
+let mk_bfs_pure_inputs =
+  mk_chain ++ mk_parallel_paths_8 ++ mk_parallel_paths_72 ++
+    mk_rmat_graph_pure ++ mk_orkut_graph ++ mk_twitter_graph
+
+(*
+let mk_rmat_graph_ligra = mk_rmat_graph 20000000 "ligra"
 let mk_bfs_ligra_inputs = mk_rmat_graph_ligra ++ mk_orkut_graph ++ mk_twitter_graph
+ *)
 
 let mk_grep_input nb_rows row_len nb_occurrences pat_str impl =
   let outfile = Printf.sprintf "grep-%d-%d-%d-%s" nb_rows row_len nb_occurrences pat_str in
@@ -384,6 +402,9 @@ let benchmarks : benchmark_descr list = [
 
     { bd_problem = "fib";
       bd_mk_input = mk_n 38; };
+
+    { bd_problem = "quicksort";
+      bd_mk_input = mk_inputs_from_outputs ExpGenInputs.mk_quicksort_inputs; };
 
     { bd_problem = "samplesort";
       bd_mk_input = mk_inputs_from_outputs ExpGenInputs.mk_seq_inputs; };
@@ -499,7 +520,7 @@ let formatter =
          ("problem", Format_custom (fun s -> s));
        ]))
 
-let plot() =
+let plot() = (
   Mk_bar_plot.(call ([
       Bar_plot_opt Bar_plot.([
          X_titles_dir Vertical;
@@ -512,7 +533,21 @@ let plot() =
       Output (file_plots name);
       Y_label "sleep pct. of idle time";
       Y eval_sleeppct;
-  ]))
+  ]));
+  Mk_bar_plot.(call ([
+      Bar_plot_opt Bar_plot.([
+         X_titles_dir Vertical;
+         Y_axis [Axis.Lower (Some 0.)] ]);
+      Formatter formatter;
+      Charts mk_unit;
+      Series mk_all_impls;
+      X mk_all_runs;
+      Input (file_results name);
+      Output (file_plots (name^"sleeps"));
+      Y_label "nb sleeps";
+      Y (fun env all_results results ->
+          Results.get_mean_of "nb_sleeps" results);
+  ])))
   
 let all () = select make run check plot
 
