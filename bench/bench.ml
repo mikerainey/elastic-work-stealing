@@ -164,12 +164,17 @@ module ExpGenInputs = struct
 
 let name = "gen-inputs"
 
-let ipfs_get hash outfile is_virtual =
-  system (sprintf "ipget -o %s/%s %s" arg_input_files_folder outfile hash) is_virtual
+let input_file_path_of fname =
+  arg_input_files_folder ^ "/" ^ fname  
+
+let ipfs_get hash fpath is_virtual =
+  system (sprintf "ipget -o %s %s" fpath hash) is_virtual
 
 let ipfs_get_if_needed hash outfile force_get is_virtual =
-  if force_get || not (Sys.file_exists outfile) then
-    ipfs_get hash outfile is_virtual
+  let outfile_path = input_file_path_of outfile in
+  if force_get || not (Sys.file_exists outfile_path) then (
+    printf "downloading %s to \n" outfile_path;
+    ipfs_get hash outfile_path is_virtual)
   else
     ()
 
@@ -266,7 +271,7 @@ let mk_rmat_graph n impl =
   & (mk int "source" 0)
   & (mk string "impl" impl)
 
-let mk_parallel_paths_graph n p =
+let mk_parallel_paths_graph n p impl =
   let outfile = Printf.sprintf "parPaths-%d-%d" n p in
   let pretty_name = outfile in
     (mk_prog "run-parallelPathsGraph")
@@ -274,6 +279,8 @@ let mk_parallel_paths_graph n p =
   & (mk int "p" p)
   & (mk_outfile outfile)
   & (mk string "!pretty_name" pretty_name)  
+  & (mk int "source" 0)
+  & (mk string "impl" impl)
 
 let mk_real_world_graph n pretty_name source =
     (mk_prog "run-getRealWorldGraph")
@@ -282,10 +289,10 @@ let mk_real_world_graph n pretty_name source =
   & (mk string "!file_name" n)
   & (mk int "source" source)
   
-let mk_rmat_graph_pure = mk_rmat_graph 20000000 "pure"
-let mk_chain = mk_parallel_paths_graph 10000000 1
-let mk_parallel_paths_8 = mk_parallel_paths_graph 10000000 8
-let mk_parallel_paths_72 = mk_parallel_paths_graph 10000000 72
+let mk_rmat_graph_pure = mk_rmat_graph 10000000 "pure"
+let mk_chain = mk_parallel_paths_graph 10000000 1 "pure"
+let mk_parallel_paths_8 = mk_parallel_paths_graph 10000000 8 "pure"
+let mk_parallel_paths_72 = mk_parallel_paths_graph 10000000 72 "pure"
 let mk_orkut_graph = mk_real_world_graph "com-orkut.ungraph.txt_SJ" "orkut" 1
 let mk_twitter_graph = mk_real_world_graph "twitter_SJ" "twitter" 1
 let mk_bfs_pure_inputs =
