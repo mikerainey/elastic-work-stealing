@@ -547,6 +547,20 @@ let plot() = (
       Y_label "nb sleeps";
       Y (fun env all_results results ->
           Results.get_mean_of "nb_sleeps" results);
+  ]));
+  Mk_bar_plot.(call ([
+      Bar_plot_opt Bar_plot.([
+         X_titles_dir Vertical;
+         Y_axis [Axis.Lower (Some 0.)] ]);
+      Formatter formatter;
+      Charts mk_unit;
+      Series mk_all_impls;
+      X mk_all_runs;
+      Input (file_results name);
+      Output (file_plots (name^"utilization"));
+      Y_label "nb sleeps";
+      Y (fun env all_results results ->
+          Results.get_mean_of "utilization" results);
   ])))
   
 let all () = select make run check plot
