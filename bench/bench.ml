@@ -300,7 +300,7 @@ let mk_orkut_graph = mk_real_world_graph "com-orkut.ungraph.txt_SJ" "orkut" 1
 let mk_twitter_graph = mk_real_world_graph "twitter_SJ" "twitter" 1
 let mk_bfs_pure_inputs =
   mk_chain ++ mk_parallel_paths_8 ++ mk_parallel_paths_72 ++
-    mk_rmat_graph_pure ++ mk_orkut_graph ++ mk_twitter_graph
+    (*mk_rmat_graph_pure ++ *) mk_orkut_graph ++ mk_twitter_graph
 
 (*
 let mk_rmat_graph_ligra = mk_rmat_graph 20000000 "ligra"
