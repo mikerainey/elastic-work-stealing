@@ -466,8 +466,12 @@ let mk_all_runs =
 let make () = ()
 
 let run() = (
+  Mk_runs.(call (seq_run_modes @ [
+    Output (file_results_seq name);
+    Timeout 4000;
+    Args (mk_all_runs & mk_all_impls & (mk_proc 1))]));
   Mk_runs.(call (par_run_modes @ [
-    Output (file_results name);
+    Output (file_results_par name);
     Timeout 4000;
     Args (mk_all_runs & mk_all_impls & (mk_proc arg_proc))])))
 
@@ -476,7 +480,6 @@ let check () = ()
 let plot() = 
   let tex_file = file_tables_src name in
   let pdf_file = file_tables name in
-  let procs = [arg_proc;] in
   let nb_procs = List.length procs in
   let base_impl = "cilk" in
   let nb_steal_pols = List.length steal_pols in
@@ -514,7 +517,10 @@ let plot() =
             let bench_str = Printf.sprintf "%s (%s)" bd.bd_problem pn in
             Mk_table.cell ~escape:true ~last:false add bench_str;
             ~~ List.iteri procs (fun proc_i proc ->
-                let results_all = Results.from_file (file_results name) in
+                let results_all =
+                  let f = if proc = 1 then file_results_seq else file_results_par in
+                  Results.from_file (f name)
+                in
                 let last = proc_i+1 = nb_procs in
                 let exectime_of mk_p =
                   let [col] = (( mk_p & (mk_pretty_name pn) ) & (mk_proc proc)) Env.empty in
