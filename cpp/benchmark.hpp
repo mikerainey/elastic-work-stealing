@@ -2,6 +2,7 @@
 
 #include "cmdline.hpp"
 #include "parallel.h"
+#include "mcsl_machine.hpp"
 
 #ifdef CILK
 #include "mcsl_fjnative.hpp"
@@ -20,6 +21,11 @@ template <typename Bench_pre, typename Bench_post, typename Bench_body>
 void launch(const Bench_pre& bench_pre,
             const Bench_post& bench_post,
             const Bench_body& bench_body) {
+  {
+    bool numa_alloc_interleaved = deepsea::cmdline::parse_or_default_bool("numa_round_robin", true);
+    unsigned nb_workers = deepsea::cmdline::parse_or_default_int("proc", 1);
+    mcsl::initialize_hwloc(nb_workers, numa_alloc_interleaved);
+  }
 #if defined(MCSL)
   mcsl::launch(bench_pre, bench_post, bench_body);
 #elif defined(CILK)
