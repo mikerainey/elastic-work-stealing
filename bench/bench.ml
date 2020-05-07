@@ -449,16 +449,22 @@ let mk_prog bd =
 let mk_runs_of_bd (bd : benchmark_descr) =
   (mk_prog bd) & bd.bd_mk_input
 
-let mk_steal_policy =
-  mk string "steal_policy"
-
+let mk_steal_policy = mk string "steal_policy"
 let steal_policy_once = "once"
 let steal_policy_coupon = "coupon"
+let steal_policies = [steal_policy_once; steal_policy_coupon;]
+let mk_steal_policies = mk_all mk_steal_policy steal_policies
 
-let steal_pols = [steal_policy_once; steal_policy_coupon;]
+let elastic_policy_default = "default"
+let elastic_policy_disabled = "disabled"
+let elastic_policies = [elastic_policy_default; elastic_policy_disabled;]
+let mk_elastic_policy = mk string "elastic_policy"
+let mk_elastic_policies = mk_all mk_elastic_policy elastic_policies
+
+let mk_mcsl_config = mk_steal_policies & mk_elastic_policies
 
 let mk_all_impls =
-  ((mk_impl "opt") & ((mk_steal_policy steal_policy_once) ++ (mk_steal_policy steal_policy_coupon))) ++ (mk_impl "cilk")
+  ((mk_impl "opt") & mk_mcsl_config) ++ (mk_impl "cilk")
 
 let mk_all_runs =
   mk_all mk_runs_of_bd benchmarks
@@ -482,8 +488,12 @@ let plot() =
   let pdf_file = file_tables name in
   let nb_procs = List.length procs in
   let base_impl = "cilk" in
-  let nb_steal_pols = List.length steal_pols in
-  let nb_cols_per_proc = nb_steal_pols + 1 in
+  let mcsl_configs =
+    ~~ List.map (Params.to_envs mk_mcsl_config) (fun e ->
+        (Env.get_as_string e "steal_policy", Env.get_as_string e "elastic_policy"))
+  in
+  let nb_mcsl_configs = List.length mcsl_configs in
+  let nb_cols_per_proc = nb_mcsl_configs + 1 in
   let nb_cols = nb_cols_per_proc * nb_procs in
   Mk_table.build_table tex_file pdf_file (fun add ->
       let hdr =
@@ -503,9 +513,9 @@ let plot() =
       ~~ List.iteri procs (fun proc_i proc ->
           let last = proc_i+1 = nb_procs in
           let _ = Mk_table.cell ~escape:true ~last:false add base_impl in
-          ~~ List.iteri steal_pols (fun steal_policy_i steal_pol ->
-              let last = steal_policy_i+1 = nb_steal_pols && last in
-              Mk_table.cell ~escape:true ~last:last add (Printf.sprintf "\shortstack{%s\\\\ vs\\\\ %s}" steal_pol "Cilk"))
+          ~~ List.iteri mcsl_configs (fun mcsl_config_i (steal_pol, elastic_pol) ->
+              let last = mcsl_config_i+1 = nb_mcsl_configs && last in
+              Mk_table.cell ~escape:true ~last:last add (Printf.sprintf "\shortstack{%s/%s\\\\ vs\\\\ %s}" steal_pol elastic_pol "Cilk"))
         );
       add Latex.tabular_newline;
       (* Benchmarks *)
@@ -531,9 +541,9 @@ let plot() =
                 let base_time = exectime_of (mk_prog bd & mk_impl "cilk") in
                 let base_pretty = pretty_exectime_of base_time in
                 let _ = Mk_table.cell ~escape:true ~last:false add base_pretty in
-                ~~ List.iteri steal_pols (fun steal_pol_i steal_pol ->
-                    let last = steal_pol_i+1 = nb_steal_pols && last in
-                    let impl_time = exectime_of (mk_prog bd & mk_steal_policy steal_pol & mk_impl "opt") in
+                ~~ List.iteri mcsl_configs (fun mcsl_config_i (steal_pol, elastic_pol) ->
+                    let last = mcsl_config_i+1 = nb_mcsl_configs && last in
+                    let impl_time = exectime_of (mk_prog bd & mk_elastic_policy elastic_pol & mk_steal_policy steal_pol & mk_impl "opt") in
                     let pct = string_of_percentage_change ~show_plus:true base_time impl_time in
                     Mk_table.cell ~escape:true ~last:last add pct)
             );
