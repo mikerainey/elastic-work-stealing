@@ -11,6 +11,7 @@ $ git clone git@github.com:mikerainey/elastic-work-stealing
 $ git clone git@github.com:mikerainey/mcsl -b elastic
 $ git clone git@github.com:mikerainey/pbbslib.git -b mcsl
 $ git clone git@github.com:mikerainey/pbbsbench.git
+$ git clone git@github.com:shwestrick/mini-uts.git
 ```
 
 ### Nix
