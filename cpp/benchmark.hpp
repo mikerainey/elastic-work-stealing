@@ -28,13 +28,17 @@ void launch(const Bench_pre& bench_pre,
   }
 #if defined(MCSL)
   mcsl::launch(bench_pre, bench_post, bench_body);
-#elif defined(CILK)
+  return;
+#endif
+// support for all other schedulers
+#ifdef CILK
   cilk_spawn trigger_cilk();
   cilk_sync;
-  bench_pre();
+#endif
 #ifdef CILK_RUNTIME_WITH_STATS
   __cilkg_take_snapshot_for_stats();
 #endif
+  bench_pre();
   auto start_time = mcsl::clock::now();
   bench_body();
   mcsl::aprintf("exectime %.3f\n", mcsl::clock::since(start_time));
@@ -42,5 +46,4 @@ void launch(const Bench_pre& bench_pre,
   __cilkg_dump_encore_stats_to_stderr();
 #endif
   bench_post();
-#endif
 }

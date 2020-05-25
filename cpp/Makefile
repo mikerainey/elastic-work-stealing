@@ -50,8 +50,8 @@ INCLUDE_PREFIX=\
 	-I $(PBBSBENCH_PATH)/common
 
 WARNINGS_PREFIX=-Wno-subobject-linkage -Wno-overflow -Wno-cpp -Wno-return-type
-COMMON_PREFIX=--std=c++17 -pthread -mcx16 $(WARNINGS_PREFIX) $(HWLOC_CFLAGS)
-OPT_BASE_PREFIX=-O2 -m64 -march=native -DNDEBUG
+COMMON_PREFIX=--std=c++17 -pthread -mcx16 $(WARNINGS_PREFIX) $(HWLOC_CFLAGS) #-DUSEMALLOC
+OPT_BASE_PREFIX=-O3 -m64 -march=native -DNDEBUG
 DBG_BASE_PREFIX=-O0 -g3
 LINKER_PREFIX=$(HWLOC_LDFLAGS) $(JEMALLOC)
 
@@ -100,6 +100,17 @@ uts.cilk: uts.cpp $(UTS_INCLUDE_FILES)
 %.cilk: %.cpp $(INCLUDE_FILES)
 	$(CPP) $(CILK_PREFIX) -o $@ $< $(LINKER_PREFIX)
 
+# Homegrown scheduler binaries
+# ----------------------------
+
+HOMEGROWN_PREFIX=$(COMMON_PREFIX) $(OPT_BASE_PREFIX) -DHOMEGROWN $(INCLUDE_PREFIX)
+
+uts.hg: uts.cpp $(UTS_INCLUDE_FILES)
+	$(CPP) $(COMMON_PREFIX) $(OPT_BASE_PREFIX) $(HOMEGROWN_PREFIX) $(UTS_INCLUDE_PREFIX) -o $@ uts.cpp $(UTS_INCLUDE_FILES) $(LINKER_PREFIX) -lm
+
+%.hg: %.cpp $(INCLUDE_FILES)
+	$(CPP) $(HOMEGROWN_PREFIX) -o $@ $< $(LINKER_PREFIX)
+
 # Installation and cleanup
 # ------------------------
 
@@ -118,4 +129,4 @@ install:
 	cp *.opt *.sta *.cilk run $(INSTALL_FOLDER)
 
 clean:
-	rm -f *.o *.ii *.s *.opt *.sta *.log *.dbg *.cilk
+	rm -f *.o *.ii *.s *.opt *.sta *.log *.dbg *.cilk *.hg
