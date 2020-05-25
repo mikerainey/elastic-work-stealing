@@ -116,6 +116,9 @@ uts.hg: uts.cpp $(UTS_INCLUDE_FILES)
 
 BENCHMARKS=\
 	fib \
+	reduce \
+	scan \
+	filter \
 	grep \
 	samplesort \
 	quicksort \
