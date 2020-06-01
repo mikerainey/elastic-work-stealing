@@ -13,7 +13,7 @@ else
 	JEMALLOCLD = $(shell jemalloc-config --libdir)
 	JEMALLOC = -L$(JEMALLOCLD) -ljemalloc
 endif
-	JEMALLOC =
+
 ifdef USE_HWLOC
 	HWLOC_CFLAGS+=-DMCSL_HAVE_HWLOC
 endif
@@ -50,7 +50,7 @@ INCLUDE_PREFIX=\
 	-I $(PBBSBENCH_PATH)/common
 
 WARNINGS_PREFIX=-Wno-subobject-linkage -Wno-overflow -Wno-cpp -Wno-return-type
-COMMON_PREFIX=--std=c++17 -pthread -mcx16 $(WARNINGS_PREFIX) $(HWLOC_CFLAGS) -DUSEMALLOC
+COMMON_PREFIX=--std=c++17 -pthread -mcx16 $(WARNINGS_PREFIX) $(HWLOC_CFLAGS) #-DUSEMALLOC
 OPT_BASE_PREFIX=-O3 -m64 -march=native -DNDEBUG
 DBG_BASE_PREFIX=-O0 -g3
 LINKER_PREFIX=$(HWLOC_LDFLAGS) $(JEMALLOC)

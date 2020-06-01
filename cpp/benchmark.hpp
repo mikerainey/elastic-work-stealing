@@ -39,6 +39,7 @@ void launch(const Bench_pre& bench_pre,
   __cilkg_take_snapshot_for_stats();
 #endif
   bench_pre();
+  mcsl::started = true;
   auto start_time = mcsl::clock::now();
   bench_body();
   mcsl::aprintf("exectime %.3f\n", mcsl::clock::since(start_time));
