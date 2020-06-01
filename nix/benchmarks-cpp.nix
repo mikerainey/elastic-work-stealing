@@ -7,7 +7,7 @@
   pbbsbench ? import sources.pbbsbench { pbbslib = pbbslib; },
   cmdline ? import sources.cmdline {},
   cilkRtsWithStats ? import sources.cilkRtsWithStats {},
-  mini-utsSrc ? import sources.mini-utsSrc,
+#  mini-utsSrc ? import sources.mini-utsSrc,
   gcc ? pkgs.gcc7,
   which ? pkgs.which,
   hwloc ? pkgs.hwloc, # use hwloc, unless this parameter equals null
@@ -50,7 +50,6 @@ stdenv.mkDerivation rec {
       PBBSLIB_PATH=${pbbslib} \
       PBBSBENCH_PATH=${pbbsbench} \
       MCSL_INCLUDE_PATH=${mcsl}/include \
-      MINI_UTS_PATH=${mini-utsSrc} \
       CILK_EXTRAS_PREFIX="-L ${cilkRtsWithStats}/lib -I ${cilkRtsWithStats}/include -ldl -DCILK_RUNTIME_WITH_STATS" \
       CPP=${gcc}/bin/g++ \
       ${hwlocFlgs}

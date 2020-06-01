@@ -124,8 +124,8 @@ BENCHMARKS=\
 	samplesort \
 	quicksort \
 	quickhull \
-	bfs \
-	uts
+	bfs 
+#	uts
 
 all: $(BENCHMARKS:%=%.opt) $(BENCHMARKS:%=%.sta) $(BENCHMARKS:%=%.cilk)
 

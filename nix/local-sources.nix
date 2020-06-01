@@ -31,7 +31,7 @@ in
 {
   # Source package dependencies
   nixSrc = nixSrc;
-  mini-utsSrc = ../../mini-uts;
+#  mini-utsSrc = ../../mini-uts;
 
   # External package dependencies
   cmdline = "${cmdlineSrc}/script/default.nix";
