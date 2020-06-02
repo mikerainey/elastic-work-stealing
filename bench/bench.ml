@@ -134,6 +134,12 @@ let string_of_millions v =
      else if x >= 0.1 then sprintf "%.2f" x
      else sprintf "%.3f" x 
 
+let mk_microseq_n n =
+    mk int "n" n
+  & (mk string "!pretty_name" ("$n="^string_of_millions (float_of_int n)^"$"))
+
+let dflt_microseq_n = 100000000
+
 let mk_all f xs =
   let rec g xs =
     match xs with
@@ -201,6 +207,8 @@ let path_of_outfile f = arg_input_files_folder ^ "/" ^ f
                       
 let mk_outfile f =
   mk string "outfile" (path_of_outfile f)
+
+let mk_microseq_input = mk_microseq_n dflt_microseq_n
 
 let mk_rand_seq item_ty n =
   let outfile = Printf.sprintf "rand-seq-%s-%d" item_ty n in
@@ -406,7 +414,19 @@ type benchmark_descr = {
 }
 
 let benchmarks : benchmark_descr list = [
-    
+
+    { bd_problem = "tabulate";
+      bd_mk_input = ExpGenInputs.mk_microseq_input; };
+
+    { bd_problem = "reduce";
+      bd_mk_input = ExpGenInputs.mk_microseq_input; };
+
+    { bd_problem = "scan";
+      bd_mk_input = ExpGenInputs.mk_microseq_input; };
+
+    { bd_problem = "filter";
+      bd_mk_input = ExpGenInputs.mk_microseq_input; };
+
     { bd_problem = "bfs";
       bd_mk_input = mk_graph_inputs_from_outputs ExpGenInputs.mk_bfs_pure_inputs; };
 
