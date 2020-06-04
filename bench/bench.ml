@@ -453,12 +453,14 @@ let benchmarks =
   else
     List.filter (fun b -> List.exists (fun a -> a = b.bd_problem) arg_problems) benchmarks
 
-
 let mk_impl = mk string "impl"
 let mk_problem = mk string "problem"
 
 let mk_prog_of_bd bd =
   (mk_prog "run-CPP") & (mk_problem bd.bd_problem)
+
+let mk_runs_of_bd (bd : benchmark_descr) =
+  (mk_prog_of_bd bd) & bd.bd_mk_input
 
 let mk_steal_policy = mk string "steal_policy"
 let steal_policy_once = "once"
@@ -472,18 +474,12 @@ let elastic_policies = [elastic_policy_default; elastic_policy_disabled;]
 let mk_elastic_policy = mk string "elastic_policy"
 let mk_elastic_policies = mk_all mk_elastic_policy elastic_policies
 
-let mk_mcsl_config = mk_steal_policies & mk_elastic_policies
-
-
 (*****************************************************************************)
 (** Baseline experiment *)
 
 module ExpBaseline = struct
 
 let name = "baseline"
-
-let mk_runs_of_bd (bd : benchmark_descr) =
-  (mk_prog_of_bd bd) & bd.bd_mk_input
 
 let mk_all_seq_impls =
   (mk_impl "opt") ++ (mk_impl "cilk")
@@ -578,35 +574,31 @@ let all () = select make run check plot
 end
 
 (*****************************************************************************)
-(** Running-time experiment *)
+(** Elastic running time experiment *)
 
-module ExpExectime = struct
+module ExpElasticExectime = struct
 
-let name = "exectime"
+let name = "elastic_exectime"
 
-let mk_runs_of_bd (bd : benchmark_descr) =
-  (mk_prog_of_bd bd) & bd.bd_mk_input
+let procs = List.filter (fun p -> p <> 1) procs
 
-let mk_all_seq_impls =
-  (mk_impl "opt") ++ (mk_impl "cilk")
+let mk_mcsl_config =
+     (mk_elastic_policy elastic_policy_disabled)
+  ++ ((mk_elastic_policy elastic_policy_default) & mk_steal_policies)
 
 let mk_all_par_impls =
-  ((mk_impl "opt") & mk_mcsl_config) ++ (mk_impl "cilk")
+  (mk_impl "opt") & mk_mcsl_config
 
 let mk_all_runs =
   mk_all mk_runs_of_bd benchmarks
 
 let make () = ()
 
-let run() = (
-  Mk_runs.(call (seq_run_modes @ [
-    Output (file_results_seq name);
-    Timeout 4000;
-    Args (mk_all_runs & mk_all_seq_impls & (mk_proc 1))]));
+let run() = 
   Mk_runs.(call (par_run_modes @ [
     Output (file_results_par name);
     Timeout 4000;
-    Args (mk_all_runs & mk_all_par_impls & (mk_proc arg_proc))])))
+    Args (mk_all_runs & mk_all_par_impls & (mk_proc arg_proc))]))
 
 let check () = ()
 
@@ -614,13 +606,13 @@ let plot() =
   let tex_file = file_tables_src name in
   let pdf_file = file_tables name in
   let nb_procs = List.length procs in
-  let base_impl = "cilk" in
-  let mcsl_configs =
-    ~~ List.map (Params.to_envs mk_mcsl_config) (fun e ->
-        (Env.get_as_string e "steal_policy", Env.get_as_string e "elastic_policy"))
+  let base_impl = "nonelastic" in
+  let steal_policies =
+    ~~ List.map (Params.to_envs mk_steal_policies) (fun e ->
+        (Env.get_as_string e "steal_policy"))
   in
-  let nb_mcsl_configs = List.length mcsl_configs in
-  let nb_cols_per_proc = nb_mcsl_configs + 1 in
+  let nb_steal_policies = List.length steal_policies in
+  let nb_cols_per_proc = nb_steal_policies + 1 in
   let nb_cols = nb_cols_per_proc * nb_procs in
   Mk_table.build_table tex_file pdf_file (fun add ->
       let hdr =
@@ -632,7 +624,6 @@ let plot() =
       Mk_table.cell ~escape:true ~last:false add "";
       ~~ List.iteri procs (fun proc_i proc ->
           let last = proc_i+1 = nb_procs in
-          let nb_cols_per_proc = if proc = 1 then 2 else nb_cols_per_proc in
           Mk_table.cell ~escape:true ~last:last add (Latex.tabular_multicol nb_cols_per_proc "c|" (Printf.sprintf "$P$ = %d" proc))
         );
       add Latex.tabular_newline;
@@ -641,12 +632,9 @@ let plot() =
       ~~ List.iteri procs (fun proc_i proc ->
           let last = proc_i+1 = nb_procs in
           let _ = Mk_table.cell ~escape:true ~last:false add base_impl in
-          if proc = 1 then
-            Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "\shortstack{ours\\\\ vs\\\\ %s}" "Cilk")
-          else
-            ~~ List.iteri mcsl_configs (fun mcsl_config_i (steal_pol, elastic_pol) ->
-                let last = mcsl_config_i+1 = nb_mcsl_configs && last in
-                Mk_table.cell ~escape:true ~last:last add (Printf.sprintf "\shortstack{%s/%s\\\\ vs\\\\ %s}" steal_pol elastic_pol "Cilk"))
+          ~~ List.iteri steal_policies (fun steal_policy_i steal_pol ->
+              let last = steal_policy_i+1 = nb_steal_policies && last in
+              Mk_table.cell ~escape:true ~last:last add (Printf.sprintf "\shortstack{elastic (%s)\\\\ vs\\\\ %s}" steal_pol "nonelastic"))
         );
       add Latex.tabular_newline;
       (* Benchmarks *)
@@ -659,8 +647,7 @@ let plot() =
             Mk_table.cell ~escape:true ~last:false add bench_str;
             ~~ List.iteri procs (fun proc_i proc ->
                 let results_all =
-                  let f = if proc = 1 then file_results_seq else file_results_par in
-                  Results.from_file (f name)
+                  Results.from_file (file_results_par name)
                 in
                 let last = proc_i+1 = nb_procs in
                 let exectime_of mk_p =
@@ -669,19 +656,14 @@ let plot() =
                   Results.get_mean_of "exectime" results
                 in
                 let pretty_exectime_of =  Printf.sprintf "%.3f" in
-                let base_time = exectime_of (mk_prog_of_bd bd & mk_impl "cilk") in
+                let base_time = exectime_of (mk_prog_of_bd bd & mk_elastic_policy elastic_policy_disabled & mk_impl "opt") in
                 let base_pretty = pretty_exectime_of base_time in
                 let _ = Mk_table.cell ~escape:true ~last:false add base_pretty in
-                if proc = 1 then
-                  let impl_time = exectime_of (mk_prog_of_bd bd & mk_impl "opt") in
-                  let pct = string_of_percentage_change ~show_plus:true base_time impl_time in
-                  Mk_table.cell ~escape:true ~last:false add pct
-                else
-                  ~~ List.iteri mcsl_configs (fun mcsl_config_i (steal_pol, elastic_pol) ->
-                      let last = mcsl_config_i+1 = nb_mcsl_configs && last in
-                      let impl_time = exectime_of (mk_prog_of_bd bd & mk_elastic_policy elastic_pol & mk_steal_policy steal_pol & mk_impl "opt") in
-                      let pct = string_of_percentage_change ~show_plus:true base_time impl_time in
-                      Mk_table.cell ~escape:true ~last:last add pct)
+                ~~ List.iteri steal_policies (fun steal_policy_i steal_pol ->
+                    let last = steal_policy_i+1 = nb_steal_policies && last in
+                    let impl_time = exectime_of (mk_prog_of_bd bd & mk_elastic_policy elastic_policy_default & mk_steal_policy steal_pol & mk_impl "opt") in
+                    let pct = string_of_percentage_change ~show_plus:true base_time impl_time in
+                    Mk_table.cell ~escape:true ~last:last add pct)
             );
         add Latex.tabular_newline));
       add Latex.tabular_end;)
@@ -796,7 +778,7 @@ let _ =
   let bindings = [ 
       "gen-inputs", ExpGenInputs.all;
       "baseline", ExpBaseline.all;
-      "exectime", ExpExectime.all;
+      "elastic_exectime", ExpElasticExectime.all;
       "sleeptime", ExpSleeptime.all;
   ]
   in
