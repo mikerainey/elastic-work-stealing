@@ -1,5 +1,6 @@
 #pragma once
 
+#define MCSL_LINUX 1
 #include "cmdline.hpp"
 #include "parallel.h"
 #include "mcsl_machine.hpp"
