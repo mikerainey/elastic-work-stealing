@@ -36,10 +36,10 @@ void launch(const Bench_pre& bench_pre,
   cilk_spawn trigger_cilk();
   cilk_sync;
 #endif
+  bench_pre();
 #ifdef CILK_RUNTIME_WITH_STATS
   __cilkg_take_snapshot_for_stats();
 #endif
-  bench_pre();
   mcsl::started = true;
   auto start_time = mcsl::clock::now();
   bench_body();
