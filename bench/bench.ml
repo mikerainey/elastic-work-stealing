@@ -679,6 +679,8 @@ module ExpSleeptime = struct
 
 let name = "sleeptime_"^arg_steal_policy
 
+let procs = List.filter (fun p -> p <> 1) procs
+
 let mk_impl = mk string "impl"
 let mk_problem = mk string "problem"
 
@@ -688,11 +690,12 @@ let mk_prog bd =
 let mk_runs_of_bd (bd : benchmark_descr) =
   (mk_prog bd) & bd.bd_mk_input
 
-let mk_steal_policy =
-  mk string "steal_policy"
+let mk_mcsl_config =
+     (mk_elastic_policy elastic_policy_disabled)
+  ++ (mk_elastic_policy elastic_policy_default)
 
 let mk_all_impls =
-  ((mk_impl "sta") & ((mk_steal_policy arg_steal_policy) ))
+  ((mk_impl "sta") & mk_mcsl_config)
 
 let mk_all_runs =
   mk_all mk_runs_of_bd benchmarks
@@ -703,17 +706,15 @@ let run() = (
   Mk_runs.(call (par_run_modes @ [
     Output (file_results name);
     Timeout 4000;
-    Args (mk_all_runs & mk_all_impls & (mk_proc arg_proc))])))
+    Args (mk_all_runs & mk_all_impls & (mk_list int "proc" procs))])))
 
 let check () = ()
 
 let plot() =
   let tex_file = file_tables_src name in
   let pdf_file = file_tables name in
-  let procs = [arg_proc;] in
   let nb_procs = List.length procs in
-  let nb_stats = 3 in
-  let nb_cols_per_proc = nb_stats in
+  let nb_cols_per_proc = 9 in
   let nb_cols = nb_cols_per_proc * nb_procs in
   Mk_table.build_table tex_file pdf_file (fun add ->
       let hdr =
@@ -728,13 +729,29 @@ let plot() =
           Mk_table.cell ~escape:true ~last:last add (Latex.tabular_multicol nb_cols_per_proc "c|" (Printf.sprintf "$P$ = %d" proc))
         );
       add Latex.tabular_newline;
+      (* Nonelastic/elastic header *)
+      Mk_table.cell ~escape:true ~last:false add "";
+      ~~ List.iteri procs (fun proc_i proc ->
+          let last = proc_i+1 = nb_procs in
+          let _ = Mk_table.cell ~escape:true ~last:false add (Latex.tabular_multicol 3 "c|" (Printf.sprintf "Nonelastic")) in
+          let _ = Mk_table.cell ~escape:true ~last:last add (Latex.tabular_multicol 6 "c|" (Printf.sprintf "Elastic")) in
+          ()
+        );
+      add Latex.tabular_newline;
       (* Binary header *)
       Mk_table.cell ~escape:true ~last:false add "";
       ~~ List.iteri procs (fun proc_i proc ->
           let last = proc_i+1 = nb_procs in
-          let _ = Mk_table.cell ~escape:true ~last:false add "Pct. sleep" in
-          let _ = Mk_table.cell ~escape:true ~last:false add "Nb. sleep" in
-          Mk_table.cell ~escape:true ~last:true add "Utilization" 
+          let _ = Mk_table.cell ~escape:true ~last:false add "work (s)" in
+          let _ = Mk_table.cell ~escape:true ~last:false add "idle (s)" in
+          let _ = Mk_table.cell ~escape:true ~last:false add "nb. steals" in
+          let _ = Mk_table.cell ~escape:true ~last:false add "work" in
+          let _ = Mk_table.cell ~escape:true ~last:false add "idle" in
+          let _ = Mk_table.cell ~escape:true ~last:false add "work+idle" in
+          let _ = Mk_table.cell ~escape:true ~last:false add "nb. steals" in
+          let _ = Mk_table.cell ~escape:true ~last:false add "nb. sleeps" in
+          let _ = Mk_table.cell ~escape:true ~last:last add "pct. sleep" in
+          ()
         );
       add Latex.tabular_newline;
       (* Benchmarks *)
@@ -748,19 +765,30 @@ let plot() =
             ~~ List.iteri procs (fun proc_i proc ->
                 let results_all = Results.from_file (file_results name) in
                 let last = proc_i+1 = nb_procs in
-                let stat_of stat =
-                  let [col] = (((mk_impl "sta") & (mk_prog bd) & (mk_pretty_name pn) ) & (mk_proc proc)) Env.empty in
+                let stat_of mk_mcsl_config stat =
+                  let [col] = (((mk_impl "sta") & (mk_prog bd) & (mk_pretty_name pn) ) & (mk_proc proc) & mk_mcsl_config) Env.empty in
                   let results = Results.filter col results_all in
                   Results.get_mean_of stat results
                 in
-                let total_idle_time = stat_of "total_idle_time" in
-                let total_sleep_time = stat_of "total_sleep_time" in
-                let pct = 100.0 *. (total_sleep_time /. total_idle_time) in
-                let utilization = 100.0 *. (stat_of "utilization") in
-                let nb_sleeps = stat_of "nb_sleeps" in
-                let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.1f" pct) in
-                let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%d" (int_of_float nb_sleeps)) in
-                let _ = Mk_table.cell ~escape:true ~last:last add (Printf.sprintf "%.1f" utilization) in
+                let total_idle_time_ne = stat_of (mk_elastic_policy elastic_policy_disabled) "total_idle_time" in
+                let total_work_time_ne = stat_of (mk_elastic_policy elastic_policy_disabled) "total_work_time" in
+                let nb_steals_ne = stat_of (mk_elastic_policy elastic_policy_disabled) "nb_steals" in
+                let total_time_ne = total_idle_time_ne +. total_work_time_ne in
+                let total_idle_time_e = stat_of (mk_elastic_policy elastic_policy_default) "total_idle_time" in
+                let total_work_time_e = stat_of (mk_elastic_policy elastic_policy_default) "total_work_time" in
+                let launch_time_e = stat_of (mk_elastic_policy elastic_policy_default) "launch_duration" in
+                let nb_sleeps_e = stat_of (mk_elastic_policy elastic_policy_default) "nb_sleeps" in
+                let nb_steals_e = stat_of (mk_elastic_policy elastic_policy_default) "nb_steals" in                
+                let total_time_e = total_idle_time_e +. total_work_time_e in
+                let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.3f" total_work_time_ne) in
+                let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.3f" total_idle_time_ne) in
+                let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.0f" nb_steals_ne) in
+                let _ = Mk_table.cell ~escape:true ~last:false add (string_of_percentage_change ~show_plus:true total_work_time_ne total_work_time_e) in
+                let _ = Mk_table.cell ~escape:true ~last:false add (string_of_percentage_change ~show_plus:true total_idle_time_ne total_idle_time_e) in
+                let _ = Mk_table.cell ~escape:true ~last:false add (string_of_percentage_change ~show_plus:true total_time_ne total_time_e) in
+                let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.0f" nb_steals_e) in
+                let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.0f" nb_sleeps_e) in
+                let _ = Mk_table.cell ~escape:true ~last:last add (string_of_percentage_change ~show_plus:true total_time_e launch_time_e) in
                 ()
               );
         add Latex.tabular_newline));
