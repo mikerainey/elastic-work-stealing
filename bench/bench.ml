@@ -19,7 +19,7 @@ let arg_problems = XCmd.parse_or_default_list_string "problems" []
 let arg_numa_alloc_interleaved = XCmd.parse_or_default_bool "numa_alloc_interleaved" true
 let arg_input_files_folder = XCmd.parse_or_default_string "infile_folder" "/var/tmp/infiles/"
 let arg_input_real_world_graphs_folder = XCmd.parse_or_default_string "graphs_folder" arg_input_files_folder
-let arg_steal_policy = XCmd.parse_or_default_string "steal_policy" "once"
+let arg_steal_policy = XCmd.parse_or_default_string "steal_policy" "coupon"
 let arg_proc = 
   let cmdline_proc = XCmd.parse_or_default_int "proc" 0 in
   let default =
@@ -714,7 +714,7 @@ let plot() =
   let tex_file = file_tables_src name in
   let pdf_file = file_tables name in
   let nb_procs = List.length procs in
-  let nb_cols_per_proc = 9 in
+  let nb_cols_per_proc = 10 in
   let nb_cols = nb_cols_per_proc * nb_procs in
   Mk_table.build_table tex_file pdf_file (fun add ->
       let hdr =
@@ -733,7 +733,7 @@ let plot() =
       Mk_table.cell ~escape:true ~last:false add "";
       ~~ List.iteri procs (fun proc_i proc ->
           let last = proc_i+1 = nb_procs in
-          let _ = Mk_table.cell ~escape:true ~last:false add (Latex.tabular_multicol 3 "c|" (Printf.sprintf "Nonelastic")) in
+          let _ = Mk_table.cell ~escape:true ~last:false add (Latex.tabular_multicol 4 "c|" (Printf.sprintf "Nonelastic")) in
           let _ = Mk_table.cell ~escape:true ~last:last add (Latex.tabular_multicol 6 "c|" (Printf.sprintf "Elastic")) in
           ()
         );
@@ -745,12 +745,13 @@ let plot() =
           let _ = Mk_table.cell ~escape:true ~last:false add "work (s)" in
           let _ = Mk_table.cell ~escape:true ~last:false add "idle (s)" in
           let _ = Mk_table.cell ~escape:true ~last:false add "nb. steals" in
+          let _ = Mk_table.cell ~escape:true ~last:false add "utilization" in
           let _ = Mk_table.cell ~escape:true ~last:false add "work" in
           let _ = Mk_table.cell ~escape:true ~last:false add "idle" in
           let _ = Mk_table.cell ~escape:true ~last:false add "work+idle" in
           let _ = Mk_table.cell ~escape:true ~last:false add "nb. steals" in
           let _ = Mk_table.cell ~escape:true ~last:false add "nb. sleeps" in
-          let _ = Mk_table.cell ~escape:true ~last:last add "pct. sleep" in
+          let _ = Mk_table.cell ~escape:true ~last:last add "utilization" in
           ()
         );
       add Latex.tabular_newline;
@@ -773,6 +774,7 @@ let plot() =
                 let total_idle_time_ne = stat_of (mk_elastic_policy elastic_policy_disabled) "total_idle_time" in
                 let total_work_time_ne = stat_of (mk_elastic_policy elastic_policy_disabled) "total_work_time" in
                 let nb_steals_ne = stat_of (mk_elastic_policy elastic_policy_disabled) "nb_steals" in
+                let utilization_ne = stat_of (mk_elastic_policy elastic_policy_disabled) "utilization" in
                 let total_time_ne = total_idle_time_ne +. total_work_time_ne in
                 let total_idle_time_e = stat_of (mk_elastic_policy elastic_policy_default) "total_idle_time" in
                 let total_work_time_e = stat_of (mk_elastic_policy elastic_policy_default) "total_work_time" in
@@ -780,15 +782,17 @@ let plot() =
                 let nb_sleeps_e = stat_of (mk_elastic_policy elastic_policy_default) "nb_sleeps" in
                 let nb_steals_e = stat_of (mk_elastic_policy elastic_policy_default) "nb_steals" in                
                 let total_time_e = total_idle_time_e +. total_work_time_e in
+                let utilization_e = stat_of (mk_elastic_policy elastic_policy_default) "utilization" in
                 let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.3f" total_work_time_ne) in
                 let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.3f" total_idle_time_ne) in
                 let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.0f" nb_steals_ne) in
+                let _ = Mk_table.cell ~escape:true ~last:false add (string_of_percentage utilization_ne) in
                 let _ = Mk_table.cell ~escape:true ~last:false add (string_of_percentage_change ~show_plus:true total_work_time_ne total_work_time_e) in
                 let _ = Mk_table.cell ~escape:true ~last:false add (string_of_percentage_change ~show_plus:true total_idle_time_ne total_idle_time_e) in
                 let _ = Mk_table.cell ~escape:true ~last:false add (string_of_percentage_change ~show_plus:true total_time_ne total_time_e) in
                 let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.0f" nb_steals_e) in
                 let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.0f" nb_sleeps_e) in
-                let _ = Mk_table.cell ~escape:true ~last:last add (string_of_percentage_change ~show_plus:true total_time_e launch_time_e) in
+                let _ = Mk_table.cell ~escape:true ~last:last add (string_of_percentage utilization_e) in
                 ()
               );
         add Latex.tabular_newline));

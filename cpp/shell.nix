@@ -35,7 +35,7 @@ with pkgs; {
                 export HWLOC_LDFLAGS="-L ${hwloc.lib}/lib/ -lhwloc"
               '';
       in
-        let pview = import "${pviewSrc}/default.nix" {}; in
+      let pview = import "${pviewSrc}/default.nix" {}; in
       ''
       export CMDLINE_PATH="${cmdline}"
       export MCSL_INCLUDE_PATH="../../mcsl/include/"
