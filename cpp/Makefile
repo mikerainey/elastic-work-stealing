@@ -15,7 +15,7 @@ else
 endif
 
 ifdef USE_HWLOC
-	HWLOC_CFLAGS+=-DMCSL_HAVE_HWLOC
+	HWLOC_FLAGS+=-DMCSL_HAVE_HWLOC
 endif
 
 UTS_INCLUDE_FILES=\
@@ -50,7 +50,7 @@ INCLUDE_PREFIX=\
 	-I $(PBBSBENCH_PATH)/common
 
 WARNINGS_PREFIX=-Wno-subobject-linkage -Wno-overflow -Wno-cpp -Wno-return-type
-COMMON_PREFIX=--std=c++17 -pthread -mcx16 $(WARNINGS_PREFIX) $(HWLOC_CFLAGS) #-DUSEMALLOC
+COMMON_PREFIX=--std=c++17 -pthread -mcx16 $(WARNINGS_PREFIX) $(HWLOC_FLAGS) $(HWLOC_CFLAGS) #-DUSEMALLOC
 OPT_BASE_PREFIX=-O3 -m64 -march=native -DNDEBUG
 DBG_BASE_PREFIX=-O0 -g3
 LINKER_PREFIX=$(HWLOC_LDFLAGS) $(JEMALLOC)
@@ -152,4 +152,4 @@ install:
 	cp *.opt *.opt_elasticspin *.opt_elasticoff *.sta *.sta_elasticspin *.sta_elasticoff *.cilk run $(INSTALL_FOLDER)
 
 clean:
-	rm -f *.o *.ii *.s *.opt *.opt_elasticspin *.opt_elasticoff *.sta *.sta_elasticspin *.sta_elasticoff *.log *.dbg *.cilk *.hg
+	rm -f *.o *.ii *.s *.opt *.opt_elasticspin *.opt_elasticoff *.sta *.sta_elasticspin *.sta_elasticoff *.log *.dbg *.cilk *.hg vgcore.* LOG_BIN
