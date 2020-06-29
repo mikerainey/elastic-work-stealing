@@ -27,6 +27,12 @@ case $key in
     shift
     ;;
 
+    -elastic_policy)
+    ELASTIC_POLICY="$2"
+    shift
+    shift
+    ;;
+                
     *)
     OTHER_ARGS="$1 $2 $OTHER_ARGS"
     shift
@@ -44,6 +50,11 @@ if [ "$IMPL" == "" ]; then
   echo "[ERR] missing impl"
   echo $ARGS
   exit 1
+fi
+if [ "$ELASTIC_POLICY" == "spinsleep" ]; then
+    IMPL="${IMPL}_elasticspin"
+elif [ "$ELASTIC_POLICY" == "off" ]; then
+    IMPL="${IMPL}_elasticoff"
 fi
 
 export NUM_THREADS=$PROCS

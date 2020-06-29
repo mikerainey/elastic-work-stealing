@@ -457,7 +457,7 @@ let mk_impl = mk string "impl"
 let mk_problem = mk string "problem"
 
 let mk_prog_of_bd bd =
-  (mk_prog "run-CPP") & (mk_problem bd.bd_problem)
+  (mk_prog "run") & (mk_problem bd.bd_problem)
 
 let mk_runs_of_bd (bd : benchmark_descr) =
   (mk_prog_of_bd bd) & bd.bd_mk_input
@@ -468,9 +468,10 @@ let steal_policy_coupon = "coupon"
 let steal_policies = [steal_policy_once; steal_policy_coupon;]
 let mk_steal_policies = mk_all mk_steal_policy steal_policies
 
-let elastic_policy_default = "default"
-let elastic_policy_disabled = "disabled"
-let elastic_policies = [elastic_policy_default; elastic_policy_disabled;]
+let elastic_policy_semaphore = "semaphore"
+let elastic_policy_disabled = "off"
+let elastic_policy_spinsleep = "spinsleep"
+let elastic_policies = [elastic_policy_semaphore; elastic_policy_disabled; elastic_policy_spinsleep;]
 let mk_elastic_policy = mk string "elastic_policy"
 let mk_elastic_policies = mk_all mk_elastic_policy elastic_policies
 
@@ -584,7 +585,7 @@ let procs = List.filter (fun p -> p <> 1) procs
 
 let mk_mcsl_config =
      (mk_elastic_policy elastic_policy_disabled)
-  ++ ((mk_elastic_policy elastic_policy_default) & mk_steal_policies)
+  ++ ((mk_elastic_policy elastic_policy_semaphore) & mk_steal_policies)
 
 let mk_all_par_impls =
   (mk_impl "opt") & mk_mcsl_config
@@ -661,7 +662,7 @@ let plot() =
                 let _ = Mk_table.cell ~escape:true ~last:false add base_pretty in
                 ~~ List.iteri steal_policies (fun steal_policy_i steal_pol ->
                     let last = steal_policy_i+1 = nb_steal_policies && last in
-                    let impl_time = exectime_of (mk_prog_of_bd bd & mk_elastic_policy elastic_policy_default & mk_steal_policy steal_pol & mk_impl "opt") in
+                    let impl_time = exectime_of (mk_prog_of_bd bd & mk_elastic_policy elastic_policy_semaphore & mk_steal_policy steal_pol & mk_impl "opt") in
                     let pct = string_of_percentage_change ~show_plus:true base_time impl_time in
                     Mk_table.cell ~escape:true ~last:last add pct)
             );
@@ -684,15 +685,12 @@ let procs = List.filter (fun p -> p <> 1) procs
 let mk_impl = mk string "impl"
 let mk_problem = mk string "problem"
 
-let mk_prog bd =
-  (mk_prog "run-CPP") & (mk_problem bd.bd_problem)
-
 let mk_runs_of_bd (bd : benchmark_descr) =
-  (mk_prog bd) & bd.bd_mk_input
+  (mk_prog_of_bd bd) & bd.bd_mk_input
 
 let mk_mcsl_config =
      (mk_elastic_policy elastic_policy_disabled)
-  ++ (mk_elastic_policy elastic_policy_default)
+  ++ (mk_elastic_policy elastic_policy_semaphore)
 
 let mk_all_impls =
   ((mk_impl "sta") & mk_mcsl_config)
@@ -767,7 +765,7 @@ let plot() =
                 let results_all = Results.from_file (file_results name) in
                 let last = proc_i+1 = nb_procs in
                 let stat_of mk_mcsl_config stat =
-                  let [col] = (((mk_impl "sta") & (mk_prog bd) & (mk_pretty_name pn) ) & (mk_proc proc) & mk_mcsl_config) Env.empty in
+                  let [col] = (((mk_impl "sta") & (mk_prog_of_bd bd) & (mk_pretty_name pn) ) & (mk_proc proc) & mk_mcsl_config) Env.empty in
                   let results = Results.filter col results_all in
                   Results.get_mean_of stat results
                 in
@@ -776,13 +774,13 @@ let plot() =
                 let nb_steals_ne = stat_of (mk_elastic_policy elastic_policy_disabled) "nb_steals" in
                 let utilization_ne = stat_of (mk_elastic_policy elastic_policy_disabled) "utilization" in
                 let total_time_ne = total_idle_time_ne +. total_work_time_ne in
-                let total_idle_time_e = stat_of (mk_elastic_policy elastic_policy_default) "total_idle_time" in
-                let total_work_time_e = stat_of (mk_elastic_policy elastic_policy_default) "total_work_time" in
-                let launch_time_e = stat_of (mk_elastic_policy elastic_policy_default) "launch_duration" in
-                let nb_sleeps_e = stat_of (mk_elastic_policy elastic_policy_default) "nb_sleeps" in
-                let nb_steals_e = stat_of (mk_elastic_policy elastic_policy_default) "nb_steals" in                
+                let total_idle_time_e = stat_of (mk_elastic_policy elastic_policy_semaphore) "total_idle_time" in
+                let total_work_time_e = stat_of (mk_elastic_policy elastic_policy_semaphore) "total_work_time" in
+                let launch_time_e = stat_of (mk_elastic_policy elastic_policy_semaphore) "launch_duration" in
+                let nb_sleeps_e = stat_of (mk_elastic_policy elastic_policy_semaphore) "nb_sleeps" in
+                let nb_steals_e = stat_of (mk_elastic_policy elastic_policy_semaphore) "nb_steals" in                
                 let total_time_e = total_idle_time_e +. total_work_time_e in
-                let utilization_e = stat_of (mk_elastic_policy elastic_policy_default) "utilization" in
+                let utilization_e = stat_of (mk_elastic_policy elastic_policy_semaphore) "utilization" in
                 let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.3f" total_work_time_ne) in
                 let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.3f" total_idle_time_ne) in
                 let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.0f" nb_steals_ne) in

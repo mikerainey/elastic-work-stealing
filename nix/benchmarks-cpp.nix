@@ -61,8 +61,6 @@ stdenv.mkDerivation rec {
     make install \
       INSTALL_FOLDER=$out
 
-    mv $out/run $out/run-CPP
-
     ln -s ${pbbslib} $out/pbbslib
     ln -s ${pbbslib.test} $out/pbbslib-test
     ln -s ${pbbslib.examples} $out/pbbslib-examples
