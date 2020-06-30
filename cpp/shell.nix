@@ -11,7 +11,8 @@
     repo   = "pview";
     rev    = "78d432b80cc1ea2767e1172d56e473f484db7f51";
     sha256 = "1hd57237xrdczc6x2gxpf304iv7xmd5dlsvqdlsi2kzvkzysjaqn";
-  }
+  },
+  miniUTS ? import sources.miniUTS {}
 }:
 
 with pkgs; {
@@ -40,6 +41,7 @@ with pkgs; {
       export CMDLINE_PATH="${cmdline}"
       export MCSL_INCLUDE_PATH="../../mcsl/include/"
       export CILK_EXTRAS_PREFIX="-L ${cilkRtsWithStats}/lib -I ${cilkRtsWithStats}/include -ldl -DCILK_RUNTIME_WITH_STATS"
+      export MINI_UTS_PATH="${miniUTS}"
       ${hwlocFlgs}
       export PATH=${gcc}/bin/:${pview}/bin:$PATH
       '';

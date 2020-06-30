@@ -21,6 +21,7 @@ let pkgs = import <nixpkgs> {};
     pbenchOcamlSrcs = import "${pbenchSrc}/nix/local-sources.nix";
     pbbslibSrc = ../../pbbslib;
     pbbsbenchSrc = ../../pbbsbench;
+    miniUTSSrc = ../../mini-uts;
     mcslSrc = ../../mcsl;
 in
 
@@ -37,6 +38,7 @@ in
   cmdline = "${cmdlineSrc}/script/default.nix";
   pbbslib = "${pbbslibSrc}/default.nix";
   pbbsbench = "${pbbsbenchSrc}/default.nix";
+  miniUTS = "${miniUTSSrc}/nix/default.nix";
   mcsl = "${mcslSrc}/nix/default.nix";
   cilkRtsWithStats = "${cilkRtsWithStatsSrc}/default.nix";
 
