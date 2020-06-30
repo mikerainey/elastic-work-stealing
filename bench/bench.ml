@@ -465,15 +465,47 @@ let mk_runs_of_bd (bd : benchmark_descr) =
 let mk_steal_policy = mk string "steal_policy"
 let steal_policy_once = "once"
 let steal_policy_coupon = "coupon"
-let steal_policies = [steal_policy_once; steal_policy_coupon;]
-let mk_steal_policies = mk_all mk_steal_policy steal_policies
 
 let elastic_policy_semaphore = "semaphore"
 let elastic_policy_disabled = "off"
 let elastic_policy_spinsleep = "spinsleep"
-let elastic_policies = [elastic_policy_semaphore; elastic_policy_disabled; elastic_policy_spinsleep;]
 let mk_elastic_policy = mk string "elastic_policy"
-let mk_elastic_policies = mk_all mk_elastic_policy elastic_policies
+
+let pretty_mcsl_configname = "!pretty_mcsl"
+let mk_pretty_mcsl_config = mk string pretty_mcsl_configname
+
+let pretty_elastic_disabled_name = "Nonelastic"
+
+let mk_mcsl_config_elastic_disabled =
+  (mk_elastic_policy elastic_policy_disabled) &
+  (mk_pretty_mcsl_config pretty_elastic_disabled_name)
+
+let mk_mcsl_config_elastic_dflt =
+  (mk_elastic_policy elastic_policy_semaphore) &
+  (mk_pretty_mcsl_config "Elastic")
+
+let mk_mcsl_config_steal_once =
+  (mk_elastic_policy elastic_policy_semaphore) &
+  (mk_steal_policy steal_policy_once) &
+  (mk_pretty_mcsl_config "Steal-1")
+
+let mk_mcsl_config_spinsleep =
+  (mk_elastic_policy elastic_policy_spinsleep) &
+  (mk_pretty_mcsl_config "Spin-sleep")
+
+let mk_pin_core_dense =
+  (mk bool "pinning_enabled" true) & (mk string "resource_packing" "dense") & (mk string "resource_binding" "by_core")
+
+let mk_mcsl_config_cpu_pin =
+  (mk_elastic_policy elastic_policy_semaphore) &
+  mk_pin_core_dense &
+  (mk_pretty_mcsl_config "Pinned")
+
+let mk_mcsl_elastic_configs =
+  mk_mcsl_config_elastic_dflt ++
+  mk_mcsl_config_steal_once ++
+  mk_mcsl_config_spinsleep ++
+  mk_mcsl_config_cpu_pin
 
 (*****************************************************************************)
 (** Baseline experiment *)
@@ -583,12 +615,8 @@ let name = "elastic_exectime"
 
 let procs = List.filter (fun p -> p <> 1) procs
 
-let mk_mcsl_config =
-     (mk_elastic_policy elastic_policy_disabled)
-  ++ ((mk_elastic_policy elastic_policy_semaphore) & mk_steal_policies)
-
 let mk_all_par_impls =
-  (mk_impl "opt") & mk_mcsl_config
+  (mk_impl "opt") & (mk_mcsl_config_elastic_disabled ++ mk_mcsl_elastic_configs)
 
 let mk_all_runs =
   mk_all mk_runs_of_bd benchmarks
@@ -597,7 +625,7 @@ let make () = ()
 
 let run() = 
   Mk_runs.(call (par_run_modes @ [
-    Output (file_results_par name);
+    Output (file_results name);
     Timeout 4000;
     Args (mk_all_runs & mk_all_par_impls & (mk_proc arg_proc))]))
 
@@ -607,13 +635,11 @@ let plot() =
   let tex_file = file_tables_src name in
   let pdf_file = file_tables name in
   let nb_procs = List.length procs in
-  let base_impl = "nonelastic" in
-  let steal_policies =
-    ~~ List.map (Params.to_envs mk_steal_policies) (fun e ->
-        (Env.get_as_string e "steal_policy"))
+  let mcsl_elastic_configs = ~~ List.map (Params.to_envs mk_mcsl_elastic_configs) (fun e ->
+                           (Env.get_as_string e pretty_mcsl_configname))
   in
-  let nb_steal_policies = List.length steal_policies in
-  let nb_cols_per_proc = nb_steal_policies + 1 in
+  let nb_mcsl_elastic_configs = List.length mcsl_elastic_configs in
+  let nb_cols_per_proc = nb_mcsl_elastic_configs + 1 in
   let nb_cols = nb_cols_per_proc * nb_procs in
   Mk_table.build_table tex_file pdf_file (fun add ->
       let hdr =
@@ -632,13 +658,14 @@ let plot() =
       Mk_table.cell ~escape:true ~last:false add "";
       ~~ List.iteri procs (fun proc_i proc ->
           let last = proc_i+1 = nb_procs in
-          let _ = Mk_table.cell ~escape:true ~last:false add base_impl in
-          ~~ List.iteri steal_policies (fun steal_policy_i steal_pol ->
-              let last = steal_policy_i+1 = nb_steal_policies && last in
-              Mk_table.cell ~escape:true ~last:last add (Printf.sprintf "\shortstack{elastic (%s)\\\\ vs\\\\ %s}" steal_pol "nonelastic"))
+          let _ = Mk_table.cell ~escape:true ~last:false add pretty_elastic_disabled_name in
+          ~~ List.iteri mcsl_elastic_configs (fun mcsl_elastic_config_i mcsl_elastic_config ->
+              let last = mcsl_elastic_config_i+1 = nb_mcsl_elastic_configs && last in
+              Mk_table.cell ~escape:true ~last:last add mcsl_elastic_config)
         );
       add Latex.tabular_newline;
       (* Benchmarks *)
+      let results_all = Results.from_file (file_results name) in
       ~~ List.iteri benchmarks (fun bd_i bd ->
           let inputs = ~~ List.map (Params.to_envs bd.bd_mk_input) (fun e ->
                            (Env.get_as_string e pretty_name))
@@ -647,22 +674,19 @@ let plot() =
             let bench_str = Printf.sprintf "%s (%s)" bd.bd_problem pn in
             Mk_table.cell ~escape:true ~last:false add bench_str;
             ~~ List.iteri procs (fun proc_i proc ->
-                let results_all =
-                  Results.from_file (file_results_par name)
-                in
                 let last = proc_i+1 = nb_procs in
                 let exectime_of mk_p =
-                  let [col] = (( mk_p & (mk_pretty_name pn) ) & (mk_proc proc)) Env.empty in
+                  let [col] = ( mk_p & (mk_pretty_name pn) & (mk_proc proc) & (mk_prog_of_bd bd) & (mk_impl "opt")) Env.empty in
                   let results = Results.filter col results_all in
                   Results.get_mean_of "exectime" results
                 in
                 let pretty_exectime_of =  Printf.sprintf "%.3f" in
-                let base_time = exectime_of (mk_prog_of_bd bd & mk_elastic_policy elastic_policy_disabled & mk_impl "opt") in
+                let base_time = exectime_of (mk_pretty_mcsl_config pretty_elastic_disabled_name)  in
                 let base_pretty = pretty_exectime_of base_time in
                 let _ = Mk_table.cell ~escape:true ~last:false add base_pretty in
-                ~~ List.iteri steal_policies (fun steal_policy_i steal_pol ->
-                    let last = steal_policy_i+1 = nb_steal_policies && last in
-                    let impl_time = exectime_of (mk_prog_of_bd bd & mk_elastic_policy elastic_policy_semaphore & mk_steal_policy steal_pol & mk_impl "opt") in
+                ~~ List.iteri mcsl_elastic_configs (fun mcsl_elastic_config_i mcsl_elastic_config ->
+                    let last = mcsl_elastic_config_i+1 = nb_mcsl_elastic_configs && last in
+                    let impl_time = exectime_of (mk_pretty_mcsl_config mcsl_elastic_config) in
                     let pct = string_of_percentage_change ~show_plus:true base_time impl_time in
                     Mk_table.cell ~escape:true ~last:last add pct)
             );
@@ -678,41 +702,55 @@ end
 
 module ExpSleeptime = struct
 
-let name = "sleeptime_"^arg_steal_policy
+let name = "sleeptime"
 
 let procs = List.filter (fun p -> p <> 1) procs
 
 let mk_impl = mk string "impl"
 let mk_problem = mk string "problem"
 
-let mk_runs_of_bd (bd : benchmark_descr) =
-  (mk_prog_of_bd bd) & bd.bd_mk_input
-
-let mk_mcsl_config =
-     (mk_elastic_policy elastic_policy_disabled)
-  ++ (mk_elastic_policy elastic_policy_semaphore)
-
-let mk_all_impls =
-  ((mk_impl "sta") & mk_mcsl_config)
-
 let mk_all_runs =
-  mk_all mk_runs_of_bd benchmarks
+  (mk_impl "sta") & mk_all mk_runs_of_bd benchmarks
 
 let make () = ()
 
+let file_results_baseline exp_name =
+  Printf.sprintf "results_baseline_%s.txt" exp_name
+
+let file_results exp_name =
+  Printf.sprintf "results_%s.txt" exp_name
+
+let file_tables_src_impl impl_name exp_name =
+  Printf.sprintf "tables_%s_%s.tex" impl_name exp_name
+
+let file_tables_impl impl_name exp_name =
+  Printf.sprintf "tables_%s_%s.pdf" impl_name exp_name
+
+let mcsl_elastic_configs = ~~ List.map (Params.to_envs mk_mcsl_elastic_configs) (fun e ->
+                               (Env.get_as_string e pretty_mcsl_configname))
 let run() = (
+  Mk_runs.(call (par_run_modes @ [
+    Output (file_results_baseline name);
+    Timeout 4000;
+    Args (mk_all_runs & mk_mcsl_config_elastic_disabled & (mk_list int "proc" procs))]));
   Mk_runs.(call (par_run_modes @ [
     Output (file_results name);
     Timeout 4000;
-    Args (mk_all_runs & mk_all_impls & (mk_list int "proc" procs))])))
+    Args (mk_all_runs & mk_mcsl_elastic_configs & (mk_list int "proc" procs))])))
+
 
 let check () = ()
 
-let plot() =
-  let tex_file = file_tables_src name in
-  let pdf_file = file_tables name in
+let plot_impl impl_name =
+  let tex_file = file_tables_src_impl impl_name name in
+  let pdf_file = file_tables_impl impl_name name in
+  let results_baseline = Results.from_file (file_results_baseline name) in
+  let results_impl = Results.from_file (file_results name) in
+  let baseline_name = pretty_elastic_disabled_name in
   let nb_procs = List.length procs in
-  let nb_cols_per_proc = 10 in
+  let nb_cols_for_baseline = 4 in
+  let nb_cols_per_impl = 6 in
+  let nb_cols_per_proc = nb_cols_for_baseline + nb_cols_per_impl in
   let nb_cols = nb_cols_per_proc * nb_procs in
   Mk_table.build_table tex_file pdf_file (fun add ->
       let hdr =
@@ -731,8 +769,8 @@ let plot() =
       Mk_table.cell ~escape:true ~last:false add "";
       ~~ List.iteri procs (fun proc_i proc ->
           let last = proc_i+1 = nb_procs in
-          let _ = Mk_table.cell ~escape:true ~last:false add (Latex.tabular_multicol 4 "c|" (Printf.sprintf "Nonelastic")) in
-          let _ = Mk_table.cell ~escape:true ~last:last add (Latex.tabular_multicol 6 "c|" (Printf.sprintf "Elastic")) in
+          let _ = Mk_table.cell ~escape:true ~last:false add (Latex.tabular_multicol nb_cols_for_baseline "c|" baseline_name) in
+          let _ = Mk_table.cell ~escape:true ~last:last add (Latex.tabular_multicol nb_cols_per_impl "c|" impl_name) in
           ()
         );
       add Latex.tabular_newline;
@@ -762,25 +800,25 @@ let plot() =
             let bench_str = Printf.sprintf "%s (%s)" bd.bd_problem pn in
             Mk_table.cell ~escape:true ~last:false add bench_str;
             ~~ List.iteri procs (fun proc_i proc ->
-                let results_all = Results.from_file (file_results name) in
                 let last = proc_i+1 = nb_procs in
-                let stat_of mk_mcsl_config stat =
-                  let [col] = (((mk_impl "sta") & (mk_prog_of_bd bd) & (mk_pretty_name pn) ) & (mk_proc proc) & mk_mcsl_config) Env.empty in
-                  let results = Results.filter col results_all in
+                let stat_of impl_name stat =
+                  let results = if impl_name = baseline_name then results_baseline else results_impl in
+                  let [col] = (((mk_impl "sta") & (mk_prog_of_bd bd) & (mk_pretty_name pn) ) & (mk_proc proc) & (mk_pretty_mcsl_config impl_name)) Env.empty in
+                  let results = Results.filter col results in
                   Results.get_mean_of stat results
                 in
-                let total_idle_time_ne = stat_of (mk_elastic_policy elastic_policy_disabled) "total_idle_time" in
-                let total_work_time_ne = stat_of (mk_elastic_policy elastic_policy_disabled) "total_work_time" in
-                let nb_steals_ne = stat_of (mk_elastic_policy elastic_policy_disabled) "nb_steals" in
-                let utilization_ne = stat_of (mk_elastic_policy elastic_policy_disabled) "utilization" in
+                let total_idle_time_ne = stat_of baseline_name "total_idle_time" in
+                let total_work_time_ne = stat_of baseline_name "total_work_time" in
+                let nb_steals_ne = stat_of baseline_name "nb_steals" in
+                let utilization_ne = stat_of baseline_name "utilization" in
                 let total_time_ne = total_idle_time_ne +. total_work_time_ne in
-                let total_idle_time_e = stat_of (mk_elastic_policy elastic_policy_semaphore) "total_idle_time" in
-                let total_work_time_e = stat_of (mk_elastic_policy elastic_policy_semaphore) "total_work_time" in
-                let launch_time_e = stat_of (mk_elastic_policy elastic_policy_semaphore) "launch_duration" in
-                let nb_sleeps_e = stat_of (mk_elastic_policy elastic_policy_semaphore) "nb_sleeps" in
-                let nb_steals_e = stat_of (mk_elastic_policy elastic_policy_semaphore) "nb_steals" in                
+                let total_idle_time_e = stat_of impl_name "total_idle_time" in
+                let total_work_time_e = stat_of impl_name "total_work_time" in
+                let launch_time_e = stat_of impl_name "launch_duration" in
+                let nb_sleeps_e = stat_of impl_name "nb_sleeps" in
+                let nb_steals_e = stat_of impl_name "nb_steals" in                
                 let total_time_e = total_idle_time_e +. total_work_time_e in
-                let utilization_e = stat_of (mk_elastic_policy elastic_policy_semaphore) "utilization" in
+                let utilization_e = stat_of impl_name "utilization" in
                 let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.3f" total_work_time_ne) in
                 let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.3f" total_idle_time_ne) in
                 let _ = Mk_table.cell ~escape:true ~last:false add (Printf.sprintf "%.0f" nb_steals_ne) in
@@ -795,6 +833,9 @@ let plot() =
               );
         add Latex.tabular_newline));
       add Latex.tabular_end;)
+
+let plot() =
+  ~~List.iter mcsl_elastic_configs plot_impl
   
 let all () = select make run check plot
 
