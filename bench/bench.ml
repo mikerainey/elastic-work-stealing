@@ -249,7 +249,7 @@ let mk_rand_seq = mk_rand_seq "double" dflt_nb_items
 let mk_almost_sorted_seq = mk_almost_sorted_seq "double" dflt_nb_items
 let mk_expt_seq = mk_expt_seq "double" dflt_nb_items
 let mk_seq_inputs = mk_rand_seq ++ mk_almost_sorted_seq ++ mk_expt_seq
-let mk_quicksort_inputs = mk_seq_inputs & mk_list int "cutsize" [1024; dflt_nb_items;]
+let mk_quicksort_inputs = mk_seq_inputs (* & mk_list int "cutsize" [1024; dflt_nb_items;] *)
   
 let mk_rand_points distribution dims n =
   let outfile = Printf.sprintf "rand-points-%s-%d-%d" distribution dims n in
