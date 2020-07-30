@@ -337,6 +337,17 @@ let mk_grep_input2 = mk_grep_input 1000000 100 100000 "foobar" "delay"
 
 let mk_grep_inputs = mk_grep_input1 ++ mk_grep_input2 (* ++ mk_grep_input3*)
 
+let mk_suffixarray_input n pretty_name url =
+    (mk_prog "run-getWebFile")
+  & (mk_outfile n)
+  & (mk string "!pretty_name" pretty_name)
+  & (mk string "!file_name" n)
+  & (mk string "url" url)
+
+let mk_suffixarray_inputs =
+  let chr22_url = "https://github.com/zfy0701/Parallel-LZ77/raw/master/testData/chr22.dna" in
+  mk_suffixarray_input "chr22.dna" "chr22.dna" chr22_url
+
 let input_descriptions_of mk_outputs params =
   ~~ List.map (Params.to_envs mk_outputs) (fun e ->
       List.map (Env.get_as_string e) params)
@@ -363,7 +374,8 @@ let run() =
     Timeout 4000;
     Args (    mk_rndpts_2d
            ++ mk_seq_inputs
-           ++ mk_grep_inputs 
+           ++ mk_grep_inputs
+           ++ mk_suffixarray_inputs              
            ++ mk_bfs_pure_inputs (*
            ++ mk_bfs_ligra_inputs *) )]))
 
@@ -444,6 +456,9 @@ let benchmarks : benchmark_descr list = [
 
     { bd_problem = "grep";
       bd_mk_input = mk_textsearch_inputs_from_outputs ExpGenInputs.mk_grep_inputs; };
+
+    { bd_problem = "suffixarray";
+      bd_mk_input = mk_inputs_from_outputs ExpGenInputs.mk_suffixarray_inputs; };
 
 ]
 

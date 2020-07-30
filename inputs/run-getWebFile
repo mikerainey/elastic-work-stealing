@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+ARGS="$@"
+
+url=""
+outfile=""
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+
+    -outfile)
+    outfile="$2"
+    shift
+    shift
+    ;;
+
+    -url)
+    url="$2"
+    shift
+    shift
+    ;;
+
+    *)
+    shift
+    ;;
+
+esac
+done
+
+wget -O $outfile $url

@@ -41,7 +41,7 @@ with pkgs; {
       export CMDLINE_PATH="${cmdline}"
       export MCSL_INCLUDE_PATH="../../mcsl/include/"
       export CILK_EXTRAS_PREFIX="-L ${cilkRtsWithStats}/lib -I ${cilkRtsWithStats}/include -ldl -DCILK_RUNTIME_WITH_STATS"
-      export MINI_UTS_PATH="${miniUTS}"
+      export MINI_UTS_PATH="${miniUTS}"xo
       ${hwlocFlgs}
       export PATH=${gcc}/bin/:${pview}/bin:$PATH
       '';

@@ -39,7 +39,8 @@ INCLUDE_FILES=\
 	$(wildcard $(PBBSLIB_PATH)/examples/*.h) \
 	$(wildcard $(PBBSBENCH_PATH)/common/*.h) \
 	$(wildcard $(PBBSBENCH_PATH)/breadthFirstSearch/ndBFS/*.C) \
-	$(wildcard $(PBBSBENCH_PATH)/convexHull/quickHull/*.C)
+	$(wildcard $(PBBSBENCH_PATH)/convexHull/quickHull/*.C) \
+	$(wildcard $(PBBSBENCH_PATH)/suffixArray/parallelKS/*.C)
 
 INCLUDE_PREFIX=\
 	-I $(CMDLINE_PATH)/include \
@@ -47,7 +48,8 @@ INCLUDE_PREFIX=\
 	-I $(PBBSLIB_PATH) \
 	-I $(PBBSLIB_PATH)/examples \
 	-I $(PBBSBENCH_PATH) \
-	-I $(PBBSBENCH_PATH)/common
+	-I $(PBBSBENCH_PATH)/common \
+	-I $(PBBSBENCH_PATH)/suffixArray/parallelKS/
 
 WARNINGS_PREFIX=-Wno-subobject-linkage -Wno-overflow -Wno-cpp -Wno-return-type
 COMMON_PREFIX=--std=c++17 -pthread -mcx16 $(WARNINGS_PREFIX) $(HWLOC_FLAGS) $(HWLOC_CFLAGS) #-DUSEMALLOC
@@ -153,7 +155,7 @@ BENCHMARKS=\
 	quicksort \
 	quickhull \
 	bfs \
-	uts
+	suffixarray
 
 all: \
 	$(BENCHMARKS:%=%.opt) $(BENCHMARKS:%=%.opt_elasticspin) $(BENCHMARKS:%=%.opt_elasticoff) \

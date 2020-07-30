@@ -8,6 +8,7 @@
   cmdline ? import sources.cmdline {},
   gcc ? pkgs.gcc7,
   which ? pkgs.which,
+  wget ? pkgs.wget,
   jemalloc ? pkgs.jemalloc # use jemalloc, unless this parameter equals null
 }:
 
@@ -17,7 +18,7 @@ stdenv.mkDerivation rec {
   src = dfltSrc;
   
   buildInputs =
-    [ gcc which makeWrapper ]
+    [ gcc which makeWrapper wget ]
     ++ (if jemalloc == null then [] else [ jemalloc ]);
 
   enableParallelBuilding = true;
@@ -71,6 +72,9 @@ stdenv.mkDerivation rec {
     wrapProgram $out/run-randPoints \
       --prefix PATH ":" ${pbbsbench.testData}/geometryData \
       --prefix PATH ":" $out/
+    wrapProgram $out/run-getWebFile \
+      --prefix PATH ":" $out/ \
+      --prefix PATH ":" ${wget}/bin
 
     ln -s ${pbbsbench.testData} $out/pbbsbench-testData
   '';
