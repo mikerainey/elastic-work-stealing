@@ -14,7 +14,7 @@ $ git clone git@github.com:mikerainey/pbbsbench.git
 $ git clone git@github.com:shwestrick/mini-uts.git
 ```
 
-### Nix
+### Building and experimenting with binaries using nix
 
 Using nix, we can start working on benchmarks by switching the `cpp` folder
 and loading the nix shell, as follows.
@@ -23,6 +23,46 @@ and loading the nix shell, as follows.
 ```
 $ cd elastic-work-stealing/cpp
 $ nix-shell
+```
+
+### Running experiments using nix
+
+To start, we need to build the whole benchmarking package.
+
+```
+$ cd elastic-work-stealing/nix
+$ nix-build
+```
+
+If successful, there will appear a new symlink named `result`, which 
+points to the root of the package. Next, we need to generate the 
+input data. It should be necessary to run this command only once,
+unless we have to add new input data. This command by default ouputs
+the files to `/var/tmp/infiles`.
+
+
+```
+$ ./result/pbench gen-inputs
+```
+
+Now, we can run the experiments, as follows.
+
+```
+./result/pbench baseline
+./result/pbench elastic_exectime
+./result/pbench sleeptime
+```
+
+Each of these commands will run only one time per data point. Ordinarily,
+however, we may want to run multiple times for each data point, and ultimately
+report the means. To do that, add the flag `-runs 5` to specify, for example,
+five runs be collected for each data point.
+
+If you only want to see the commands that would be executed by the benchmark
+script, but not run all of them now, you can run the following. For example:
+
+```
+./result/pbench baseline -only run --virtual_run
 ```
 
 ### Manual
