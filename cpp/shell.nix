@@ -1,3 +1,7 @@
+# in case there's an error building pview, use the following command to open the nix shell:
+# nix-shell --arg pviewSrc null
+#
+
 { pkgs   ? import <nixpkgs> {},
   stdenv ? pkgs.stdenv,
   sources ? import ../nix/local-sources.nix,
@@ -36,14 +40,21 @@ with pkgs; {
                 export HWLOC_LDFLAGS="-L ${hwloc.lib}/lib/ -lhwloc"
               '';
       in
-      let pview = import "${pviewSrc}/default.nix" {}; in
+      let pviewExport =
+	if pviewSrc == null then ""
+	else
+	  let pview = import "${pviewSrc}/default.nix" {}; in
+	  "export PATH=${pview}/bin:$PATH";
+
+      in
       ''
       export CMDLINE_PATH="${cmdline}"
       export MCSL_INCLUDE_PATH="../../mcsl/include/"
       export CILK_EXTRAS_PREFIX="-L ${cilkRtsWithStats}/lib -I ${cilkRtsWithStats}/include -ldl -DCILK_RUNTIME_WITH_STATS"
-      export MINI_UTS_PATH="${miniUTS}"xo
+      export MINI_UTS_PATH="${miniUTS}"
       ${hwlocFlgs}
-      export PATH=${gcc}/bin/:${pview}/bin:$PATH
+      export PATH=${gcc}/bin/:$PATH
+      ${pviewExport}
       '';
   };
 }
