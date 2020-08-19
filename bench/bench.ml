@@ -33,6 +33,7 @@ let arg_proc =
       in
       int_of_string str
   in
+  let default = default - 1 in (* doing this to avoid core 0 *)
   XCmd.parse_or_default_int "proc" default
 let arg_proc_step = XCmd.parse_or_default_int "proc_step" arg_proc
 
