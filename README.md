@@ -8,8 +8,8 @@ In a new folder, e.g., `elastic`, clone the following repositories.
 $ mkdir elastic
 $ cd elastic
 $ git clone git@github.com:mikerainey/elastic-work-stealing
-$ git clone git@github.com:mikerainey/mcsl -b elastic
-$ git clone git@github.com:mikerainey/pbbslib.git -b mcsl
+$ git clone git@github.com:mikerainey/mcsl
+$ git clone git@github.com:mikerainey/pbbslib.git
 $ git clone git@github.com:mikerainey/pbbsbench.git
 $ git clone git@github.com:shwestrick/mini-uts.git
 ```
