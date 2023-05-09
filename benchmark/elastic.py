@@ -13,7 +13,6 @@ from copy import deepcopy
 sys.setrecursionlimit(150000)
 
 from flexibench import table as T, benchmark as B, query as Q
-#from taskparts import *
 
 # Parameters
 # ==========
@@ -38,8 +37,20 @@ path_to_infiles = os.getcwd() + '/../../../infiles'
 benchmark_key = 'benchmark'
 benchmark_inputs = {
     'quickhull': T.mk_table1('n', 100000000),
-    'samplesort': T.mk_table1('n', 100000000)
+    'samplesort': T.mk_table1('n', 100000000),
+    'fast_fourier_transform': T.mk_table1('n', 100000000),
+    'karatsuba': T.mk_table1('n', 30000000)    
 }
+
+few_benchmarks = [ 'quickhull', 'samplesort' ]
+
+parser = argparse.ArgumentParser('Benchmark elastic task scheduling')
+parser.add_argument('--few_benchmarks', dest ='few_benchmarks',
+                    action ='store_true',
+                    help = ('run only benchmarks ' + str(few_benchmarks)))
+args = parser.parse_args()
+
+benchmark_inputs = benchmark_inputs if not(args.few_benchmarks) else dict(filter(lambda kv: kv[0] in few_benchmarks, benchmark_inputs.items()))
 
 # Key types
 # --------- 

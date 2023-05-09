@@ -10,7 +10,7 @@ let
                   pkgs.python310Packages.py-cpuinfo
                   pkgs.python310Packages.sqlalchemy
                   pkgs.python310Packages.python-sql
-                  (with import <nixpkgs> {}; pkgs.python310Packages.callPackage ../../../flexibench {})
+                  (with import <nixpkgs> {}; pkgs.python310Packages.callPackage ../../flexibench {})
                 ];
   };
 in
