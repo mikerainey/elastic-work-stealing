@@ -19,7 +19,7 @@ from flexibench import table as T, benchmark as B, query as Q
 
 timestr = time.strftime("%Y-%m-%d-%H-%M-%S")
 
-default_local_results_path = 'results-' + timestr
+default_results_path = 'results-' + timestr
 
 taskparts_home = '../../'
 path_to_benchmarks = '../../nix-packages/result/'
@@ -38,8 +38,7 @@ benchmark_key = 'benchmark'
 benchmark_inputs = {
     'quickhull': T.mk_table1('n', 100000000),
     'samplesort': T.mk_table1('n', 100000000),
-    'fast_fourier_transform': T.mk_table1('n', 100000000),
-    'karatsuba': T.mk_table1('n', 30000000)    
+    'fast_fourier_transform': T.mk_table1('n', 100000000)
 }
 
 few_benchmarks = [ 'quickhull', 'samplesort' ]
@@ -48,6 +47,9 @@ parser = argparse.ArgumentParser('Benchmark elastic task scheduling')
 parser.add_argument('--few_benchmarks', dest ='few_benchmarks',
                     action ='store_true',
                     help = ('run only benchmarks ' + str(few_benchmarks)))
+parser.add_argument('-results_path',
+                    help = 'path to a folder in which to generate results files; default: ' +
+                    default_results_path)
 args = parser.parse_args()
 
 benchmark_inputs = benchmark_inputs if not(args.few_benchmarks) else dict(filter(lambda kv: kv[0] in few_benchmarks, benchmark_inputs.items()))
@@ -77,19 +79,13 @@ def is_ranked_command_line_arg_key(k):
 def is_command_line_arg_key(k):
     return not(is_silent_key(k)) and not(is_env_arg_key(k)) and not(is_prog_key(k)) and not(is_ranked_command_line_arg_key(k))
 
-# Benchmarking configuration
-# ==========================
-
-mk_high_parallelism = T.mk_append([T.mk_cross2(T.mk_table1(benchmark_key, b), benchmark_inputs[b]) for b in benchmark_inputs])
-
 # Benmchmark runs
 # ===============
 
 #  given a row, specifies the path of the program to be run
 def program_of_row(row):
     assert(benchmark_key in row)
-    p = row[benchmark_key]
-    return path_to_binaries + p
+    return row[benchmark_key]
 
 def virtual_run_benchmarks_of_rows(rows):
     i = 1
@@ -103,15 +99,12 @@ def virtual_run_benchmarks_of_rows(rows):
                             lambda k: None if not(is_ranked_command_line_arg_key(k)) else ranked_command_line_arg_keys[k])
         i += 1
 
-rows = T.rows_of(mk_high_parallelism)
-virtual_run_benchmarks_of_rows(rows)
-
-benchmark_stats = {
-    'PARLAYLIB_TIMER_OUTFILE': {'results': []},
-    'TASKPARTS_STATS_OUTFILE': {'results': []}
+stats_info = {
+    'PARLAYLIB_TIMER_OUTFILE': {'results': [], 'tmpfile': 'timer.txt', 'jsonfile': 'timer.json'},
+    'TASKPARTS_STATS_OUTFILE': {'results': [], 'tmpfile': 'stats.txt', 'jsonfile': 'stats.json'}
 }
 
-def run_benchmark(br, stats0 = benchmark_stats,
+def run_benchmark(br, stats0 = stats_info,
                   cwd = None, timeout_sec = None, verbose = True):
     stats = deepcopy(stats0)
     br_i = deepcopy(br)
@@ -137,14 +130,52 @@ def run_benchmark(br, stats0 = benchmark_stats,
         # remove the temporary file we used for the stats output
         open(stats_path, 'w').close()
         os.unlink(stats_path)
-    return stats
+    return {'stats': stats, 'trace': br_o}
 
-for row in rows:
-    br_i = B.run_of_row(row,
-                        program_of_row = program_of_row,
-                        is_command_line_arg_key = is_command_line_arg_key,
-                        is_env_arg_key = is_env_arg_key,
-                        rank_of_command_line_arg_key =
-                        lambda k: None if not(is_ranked_command_line_arg_key(k)) else ranked_command_line_arg_keys[k])
-    results2 = run_benchmark(br_i)
-    print(json.dumps(results2, indent=2))
+def merge_dictionaries(dict1, dict2):
+    merged_dict = dict1.copy()
+    merged_dict.update(dict2)
+    return merged_dict
+
+traces_tmp_file = 'traces.txt'
+
+def json_of_tmp_file(results_txt, results_json):
+    with open(results_txt, 'r') as results:
+        lines = results.readlines()
+        ds = []
+        for line in lines:
+            ds.append(json.loads(line))
+        with open(results_json, 'w') as results:
+            results.write(json.dumps(ds, indent=2))
+            print('Emitted ' + results_json)
+
+def run_benchmarks():
+    if os.path.exists(traces_tmp_file):
+        os.remove(traces_tmp_file)
+    for k,v in stats_info.items():
+        if os.path.exists(v['tmpfile']):
+            os.remove(v['tmpfile'])
+    rows = T.rows_of(T.mk_append([T.mk_cross2(T.mk_table1(benchmark_key, b), benchmark_inputs[b])
+                                  for b in benchmark_inputs]))
+    virtual_run_benchmarks_of_rows(rows)
+    for row in rows:
+        br_i = B.run_of_row(row,
+                            program_of_row = program_of_row,
+                            is_command_line_arg_key = is_command_line_arg_key,
+                            is_env_arg_key = is_env_arg_key,
+                            rank_of_command_line_arg_key =
+                            lambda k: None if not(is_ranked_command_line_arg_key(k)) else ranked_command_line_arg_keys[k])
+        b = run_benchmark(br_i, cwd = path_to_binaries)
+        timestamp = b['trace']['benchmark_run']['timestamp']
+        with open(traces_tmp_file, 'a') as traces:
+            traces.write(json.dumps(b['trace']) + '\n')
+        for k,v in stats_info.items():
+            with open(v['tmpfile'], 'a') as results:
+                for r in b['stats'][k]['results']:
+                    r['timestamp'] = timestamp
+                    results.write(json.dumps(merge_dictionaries(row, r)) + '\n')
+    for k,v in stats_info.items():
+        json_of_tmp_file(v['tmpfile'], v['jsonfile'])
+    json_of_tmp_file(traces_tmp_file, 'traces.json')
+
+run_benchmarks()
