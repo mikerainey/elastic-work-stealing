@@ -84,7 +84,6 @@ def is_command_line_arg_key(k):
 
 #  given a row, specifies the path of the program to be run
 def program_of_row(row):
-    assert(benchmark_key in row)
     return row[benchmark_key]
 
 def virtual_run_benchmarks_of_rows(rows):
