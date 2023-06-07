@@ -30,16 +30,57 @@ path_to_benchmarks = '../../nix-packages/result/'
 sys_num_workers = psutil.cpu_count(logical=False)
 
 default_num_workers = sys_num_workers
+parlaylib_num_workers_key = 'PARLAY_NUM_THREADS'
 
 path_to_binaries = path_to_benchmarks + '/examples/'
-path_to_infiles = os.getcwd() + '/../../../infiles'
+path_to_infiles = os.environ.get('INFILES_PATH')
+
+def get_executables(folder):
+    executables = []
+    
+    for root, dirs, files in os.walk(folder):
+        for file in files:
+            filepath = os.path.join(root, file)
+            if os.access(filepath, os.X_OK):
+                executables.append(filepath)
+    
+    return executables
+
+input_types = {
+    "<n>",
+    "<num_points>",
+    "<size>",
+    "<num_vertices>",
+    "<filename>",
+    "<search_string>"
+}
 
 benchmark_key = 'benchmark'
-benchmark_inputs = {
-    'quickhull': T.mk_table1('n', 100000000),
-    'samplesort': T.mk_table1('n', 100000000),
-    'fast_fourier_transform': T.mk_table1('n', 100000000)
-}
+# benchmark_inputs = {
+#     'quickhull': T.mk_table1('n', 100000000),
+#     'samplesort': T.mk_table1('n', 100000000),
+#     'fast_fourier_transform': T.mk_table1('n', 100000000)
+# }
+
+benchmark_inputs_init = { os.path.basename(p): T.mk_unit() for p in get_executables(path_to_binaries) }
+
+benchmark_inputs = { os.path.basename(p): T.mk_unit() for p in get_executables(path_to_binaries) }
+benchmark_inputs['suffix_array'] = T.mk_table1('filename', 'chr22.dna')
+benchmark_inputs['decision_tree_c45'] = T.mk_cross2(T.mk_table1('filename', 'covtype.data.test'),
+                                                    T.mk_table1('filename', 'kddcup.data.test'))
+benchmark_inputs['tokens'] = T.mk_table1('filename', 'wikisamp.xml')
+benchmark_inputs['radix_tree'] = T.mk_table1('filename', 'wikisamp.xml')
+benchmark_inputs['suffix_tree'] = T.mk_table1('filename', 'wikisamp.xml')
+benchmark_inputs['longest_repeated_substring'] = T.mk_table1('filename', 'wikisamp.xml')
+benchmark_inputs['lasso_regression'] = T.mk_table1('filename', 'finance1000.lasso.txt')
+benchmark_inputs['rabin_karp'] = T.mk_cross2(T.mk_table1('search_string', 'xxx'),
+                                             T.mk_table1('textfilename', 'wikisamp.xml'))
+benchmark_inputs['knuth_morris_pratt'] = T.mk_cross2(T.mk_table1('search_string', 'xxx'),
+                                                     T.mk_table1('textfilename', 'orkut.adj'))
+benchmark_inputs['bigint_add'] = T.mk_table1('n', 8000000000)
+benchmark_inputs['word_counts'] = T.mk_cross2(T.mk_table1('n', 5), T.mk_table1('textfilename', 'wikisamp.xml'))
+
+benchmark_overrides = {'word_counts', 'min_spanning_tree', 'bigint_add', 'find_if'}
 
 few_benchmarks = [ 'quickhull', 'samplesort' ]
 
@@ -57,11 +98,11 @@ benchmark_inputs = benchmark_inputs if not(args.few_benchmarks) else dict(filter
 # Key types
 # --------- 
 
-ranked_command_line_arg_keys = {'n': 0}
+ranked_command_line_arg_keys = {'n': 0, 'filename': 0, 'search_string': 0, 'textfilename': 1}
 
 # keys whose associated values are to be passed as environment
 # variables
-env_arg_keys = []
+env_arg_keys = [parlaylib_num_workers_key]
 # keys that are not meant to be passed at all (just for annotating
 # rows)
 silent_keys = [ ]
@@ -148,14 +189,12 @@ def json_of_tmp_file(results_txt, results_json):
             results.write(json.dumps(ds, indent=2))
             print('Emitted ' + results_json)
 
-def run_benchmarks():
+def run_benchmarks(rows, stats_info, traces_outfile, timeout_sec = None):
     if os.path.exists(traces_tmp_file):
         os.remove(traces_tmp_file)
     for k,v in stats_info.items():
         if os.path.exists(v['tmpfile']):
             os.remove(v['tmpfile'])
-    rows = T.rows_of(T.mk_append([T.mk_cross2(T.mk_table1(benchmark_key, b), benchmark_inputs[b])
-                                  for b in benchmark_inputs]))
     virtual_run_benchmarks_of_rows(rows)
     for row in rows:
         br_i = B.run_of_row(row,
@@ -164,7 +203,7 @@ def run_benchmarks():
                             is_env_arg_key = is_env_arg_key,
                             rank_of_command_line_arg_key =
                             lambda k: None if not(is_ranked_command_line_arg_key(k)) else ranked_command_line_arg_keys[k])
-        b = run_benchmark(br_i, cwd = path_to_binaries)
+        b = run_benchmark(br_i, cwd = path_to_binaries, timeout_sec = timeout_sec)
         timestamp = b['trace']['benchmark_run']['timestamp']
         with open(traces_tmp_file, 'a') as traces:
             traces.write(json.dumps(b['trace']) + '\n')
@@ -175,6 +214,73 @@ def run_benchmarks():
                     results.write(json.dumps(merge_dictionaries(row, r)) + '\n')
     for k,v in stats_info.items():
         json_of_tmp_file(v['tmpfile'], v['jsonfile'])
-    json_of_tmp_file(traces_tmp_file, 'traces.json')
+    json_of_tmp_file(traces_tmp_file, traces_outfile)
 
-run_benchmarks()
+rows = T.rows_of(T.mk_append([T.mk_cross2(T.mk_table1(benchmark_key, b), benchmark_inputs_init[b])
+                              for b in benchmark_inputs_init]))
+run_benchmarks(rows, {}, 'traces.json')
+
+# Classify all benchmarks by their inputs
+# ---------------------------------------
+
+inputs = {}
+
+with open('traces.json', 'r') as traces:
+    tr = json.load(traces)
+    for r in tr:
+        s = r['benchmark_run']['stdout'].split()
+        if len(s) < 3:
+            i = 0
+        else:
+            i = 1
+        b = s[i]
+        cl1 = s[i+1]
+        if cl1 in inputs:
+            inputs[cl1].append(b)
+        else:
+            inputs[cl1] = [b]
+
+benchmarks_with_int_input = inputs['<n>'] + inputs['<num_points>'] + inputs['<size>'] + inputs['<num_vertices>']
+
+#print(benchmarks_with_int_input)
+#benchmarks_with_int_input = ['filter']
+
+# Find good input sizes
+# ---------------------
+
+target_time = 1.0
+failed_inputs = {}
+
+# keep doubling input size n until the wall-clock time of the benchmark exceeds target_time seconds
+for b in benchmarks_with_int_input:
+    if b in benchmark_overrides:
+        continue
+    lg = 0
+    n = -1
+    t = 0.0
+    while t < target_time:
+        if lg >= 32:
+            failed_inputs[b] = t
+            break
+        n = 2 ** lg
+        rows = T.rows_of(T.mk_append([T.mk_cross([T.mk_table1(benchmark_key, b), T.mk_table1('n', n),
+                                                  T.mk_table1(parlaylib_num_workers_key, 1)])]))
+        run_benchmarks(rows, stats_info, 'traces.json', timeout_sec = 600.0)
+        lg += 1
+        with open('timer.json', 'r') as timer:
+            r = json.load(timer) # load the timer results of the benchamrk
+            if len(r) == 0:
+                continue
+            l = r[-1] # get the last timer result in the series
+            t = l['exectime'] # get the wall-clock time
+            print('exectime ' + str(t))
+    benchmark_inputs[b] = T.mk_table1('n', n)
+    print(n)
+
+benchmarks_info = 'benchmarks.json'
+with open(benchmarks_info, 'w') as benchmarks:
+    benchmarks.write(json.dumps(benchmark_inputs, indent=2))
+
+with open('failed.json', 'w') as failed:
+    failed.write(json.dumps(failed_inputs, indent=2))
+print(failed_inputs)
