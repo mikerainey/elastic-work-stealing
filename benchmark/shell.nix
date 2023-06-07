@@ -26,5 +26,5 @@ stdenv.mkDerivation rec {
   PARLAY_HOMEGROWN="${parlay-homegrown}/examples";
   PARLAY_SERIAL="${parlay-serial}/examples";
   PARLAY_TASKPARTS="${parlay-taskparts}/examples";
-  INFILES_PATH="../../infiles";  
+  INFILES_PATH="../../infiles";
 }
