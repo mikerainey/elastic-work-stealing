@@ -269,6 +269,8 @@ def classify_benchmarks():
             if len(s) > 3 and cl1 != '<search_string>' and s[1] != 'word_counts':
                 # we hereby believe that b is a graph benchmark
                 benchmark_inputs[b] = mk_graph_infiles
+            elif b == 'filter_kruskal':
+                 benchmark_inputs[b] = mk_graph_infiles
             elif cl1 in inputs:
                 inputs[cl1].append(b)
             else:
