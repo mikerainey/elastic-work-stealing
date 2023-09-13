@@ -331,6 +331,8 @@ if args.run_experiment:
         'homegrown': {'binpath': os.environ.get('PARLAY_HOMEGROWN'),
                       'mk': T.mk_table1(parlaylib_num_workers_key, sys_num_workers)},
         'taskparts': {'binpath': os.environ.get('PARLAY_TASKPARTS'),
+                      'mk': T.mk_table1(taskparts_num_workers_key, sys_num_workers)},
+        'taskparts-ne': {'binpath': os.environ.get('PARLAY_TASKPARTS_NONELASTIC'),
                       'mk': T.mk_table1(taskparts_num_workers_key, sys_num_workers)}
     }
     for k,v in parlay_infos.items():
