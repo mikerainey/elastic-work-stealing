@@ -92,7 +92,7 @@ benchmark_inputs['word_counts'] = T.mk_cross2(T.mk_table1('n', 5),
 benchmark_inputs['bigint_add'] = T.mk_table1('n', 8000000000)
 benchmark_inputs['lasso_regression'] = T.mk_table1('filename', with_infile_prefix('finance1000.lasso.txt'))
 
-benchmark_overrides = {'word_counts', 'min_spanning_tree', 'bigint_add', 'find_if'}
+benchmark_overrides = {'word_counts', 'bigint_add', 'find_if'}
 
 few_benchmarks = [ 'quickhull', 'samplesort' ]
 few_benchmarks = [ 'tokens', 'BFS' ]
@@ -341,6 +341,7 @@ if args.run_experiment:
             'TASKPARTS_STATS_OUTFILE': {'results': [], 'tmpfile': k+'_stats.txt', 'jsonfile': k+'_stats.json'}
         }
         print('Running benchmarks for binary configuration: ' + k)
-        rows = T.rows_of(T.mk_cross2(mk_benchmarks(benchmark_inputs), v['mk']))
+        with open('benchmarks.json', 'r') as benchmarks:
+            rows = T.rows_of(T.mk_append([T.mk_cross2(T.mk_table1('benchmark', k), v) for k,v in json.load(benchmarks).items()]))
         run_benchmarks(rows, stats_info, k+'_traces.json',
                        path_to_binaries=v['binpath'], timeout_sec = 600.0)
