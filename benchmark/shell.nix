@@ -22,9 +22,12 @@ let
   };
 in
 
+# to use jemalloc: prefix the benchmark with
+#   LD_PRELOAD=`jemalloc-config --libdir`/libjemalloc.so.`jemalloc-config --revision`
+
 stdenv.mkDerivation rec {
   name = "elastic-benchmark";
-  buildInputs = [ customPython pkgs.dsq pkgs.jq ];
+  buildInputs = [ customPython pkgs.dsq pkgs.jq pkgs.jemalloc ];
   PARLAY_HOMEGROWN="${parlay-homegrown}/examples";
   PARLAY_SERIAL="${parlay-serial}/examples";
   PARLAY_TASKPARTS="${parlay-taskparts}/examples";

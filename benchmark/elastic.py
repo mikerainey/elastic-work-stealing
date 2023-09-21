@@ -105,6 +105,9 @@ parser.add_argument('--run_experiment', dest ='run_experiment',
 parser.add_argument('--few_benchmarks', dest ='few_benchmarks',
                     action ='store_true',
                     help = ('run only benchmarks ' + str(few_benchmarks)))
+parser.add_argument('--only_parallel', dest ='only_parallel',
+                    action ='store_true',
+                    help = ('run only parallel benchmarks'))
 parser.add_argument('-results_path',
                     help = 'path to a folder in which to generate results files; default: ' +
                     default_results_path)
@@ -326,15 +329,18 @@ if args.need_input_generation:
     find_target_input_sizes(benchmark_inputs, benchmarks_with_int_input)
 
 if args.run_experiment:
+    procs = [sys_num_workers] + ([] if args.only_parallel else [1])
     parlay_infos = {
-        'serial': {'binpath': os.environ.get('PARLAY_SERIAL'), 'mk': T.mk_unit()},
         'homegrown': {'binpath': os.environ.get('PARLAY_HOMEGROWN'),
-                      'mk': T.mk_table1(parlaylib_num_workers_key, sys_num_workers)},
+                      'mk': T.mk_append([T.mk_table1(parlaylib_num_workers_key, p) for p in procs])},
         'taskparts': {'binpath': os.environ.get('PARLAY_TASKPARTS'),
-                      'mk': T.mk_table1(taskparts_num_workers_key, sys_num_workers)},
+                      'mk': T.mk_append([T.mk_table1(taskparts_num_workers_key, p) for p in procs])},
         'taskparts-ne': {'binpath': os.environ.get('PARLAY_TASKPARTS_NONELASTIC'),
-                      'mk': T.mk_table1(taskparts_num_workers_key, sys_num_workers)}
+                         'mk': T.mk_append([T.mk_table1(taskparts_num_workers_key, p) for p in procs])}
     }
+    if not(args.only_parallel):
+        parlay_infos['serial'] = {'binpath': os.environ.get('PARLAY_SERIAL'),
+                                  'mk': T.mk_unit()}
     for k,v in parlay_infos.items():
         stats_info = {
             'PARLAYLIB_TIMER_OUTFILE': {'results': [], 'tmpfile': k+'_timer.txt', 'jsonfile': k+'_timer.json'},
@@ -342,6 +348,8 @@ if args.run_experiment:
         }
         print('Running benchmarks for binary configuration: ' + k)
         with open('benchmarks.json', 'r') as benchmarks:
-            rows = T.rows_of(T.mk_append([T.mk_cross2(T.mk_table1('benchmark', k), v) for k,v in json.load(benchmarks).items()]))
+            rows = T.rows_of(T.mk_append([T.mk_cross([T.mk_table1('benchmark', k), vb, v['mk']])
+                                          for k,vb in json.load(benchmarks).items()
+                                          if not(args.few_benchmarks) or k in few_benchmarks]))
         run_benchmarks(rows, stats_info, k+'_traces.json',
                        path_to_binaries=v['binpath'], timeout_sec = 600.0)
