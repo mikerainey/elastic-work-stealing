@@ -173,7 +173,8 @@ def virtual_run_benchmarks_of_rows(rows):
 
 stats_info = {
     'PARLAYLIB_TIMER_OUTFILE': {'results': [], 'tmpfile': 'timer.txt', 'jsonfile': 'timer.json'},
-    'TASKPARTS_STATS_OUTFILE': {'results': [], 'tmpfile': 'stats.txt', 'jsonfile': 'stats.json'}
+    'TASKPARTS_STATS_OUTFILE': {'results': [], 'tmpfile': 'stats.txt', 'jsonfile': 'stats.json'},
+    'PARLAYLIB_OVERALL_STATS_OUTFILE': {'results': [], 'tmpfile': 'overall.txt', 'jsonfile': 'overall.json'}
 }
 
 def run_benchmark(br, stats0 = stats_info,
@@ -344,7 +345,8 @@ if args.run_experiment:
     for k,v in parlay_infos.items():
         stats_info = {
             'PARLAYLIB_TIMER_OUTFILE': {'results': [], 'tmpfile': k+'_timer.txt', 'jsonfile': k+'_timer.json'},
-            'TASKPARTS_STATS_OUTFILE': {'results': [], 'tmpfile': k+'_stats.txt', 'jsonfile': k+'_stats.json'}
+            'TASKPARTS_STATS_OUTFILE': {'results': [], 'tmpfile': k+'_stats.txt', 'jsonfile': k+'_stats.json'},
+            'PARLAYLIB_OVERALL_STATS_OUTFILE': {'results': [], 'tmpfile': k+'_overall.txt', 'jsonfile': k+'_overall.json'}
         }
         print('Running benchmarks for binary configuration: ' + k)
         with open('benchmarks.json', 'r') as benchmarks:
