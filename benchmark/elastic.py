@@ -10,6 +10,7 @@
 import sys, time, shutil, glob, argparse, psutil, pathlib, fnmatch, os, tempfile
 import simplejson as json
 from copy import deepcopy
+from datetime import datetime
 sys.setrecursionlimit(150000)
 
 from flexibench import table as T, benchmark as B, query as Q
@@ -98,10 +99,12 @@ few_benchmarks = [ 'quickhull', 'samplesort' ]
 few_benchmarks = [ 'tokens', 'BFS' ]
 
 parser = argparse.ArgumentParser('Benchmark elastic task scheduling')
-run_experiment=False
 parser.add_argument('--run_experiment', dest ='run_experiment',
                     action ='store_true', default=False,
                     help = ('run benchmarks'))
+parser.add_argument('--commit_results', dest ='commit_results',
+                    action ='store_true', default=False,
+                    help = ('commit results to a new folder in ../results/'))
 parser.add_argument('--few_benchmarks', dest ='few_benchmarks',
                     action ='store_true',
                     help = ('run only benchmarks ' + str(few_benchmarks)))
@@ -324,6 +327,33 @@ def mk_benchmarks(benchmark_inputs):
 
 # Driver
 # =====
+
+if args.commit_results:
+    # Define the directory path
+    results_dir = '../results/'
+    # Create a formatted timestamp
+    timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    # Create a new folder with the timestamp
+    new_folder_path = os.path.join(results_dir, timestamp)
+    os.makedirs(new_folder_path)
+    # List all files in the current directory
+    files = os.listdir()
+    # Move files with the .json extension to the new folder
+    for filename in files:
+        if filename.endswith('.json') and filename != 'benchmarks.json':
+            source_path = os.path.join(os.getcwd(), filename)
+            destination_path = os.path.join(new_folder_path, filename)
+            shutil.move(source_path, destination_path)
+    # Verify that only benchmarks.json is left
+    if 'benchmarks.json' in files:
+        print("All .json files moved to the timestamped folder.")
+    else:
+        print("No .json files found to move.")
+    # Optionally, list the contents of the results directory
+    result_contents = os.listdir(results_dir)
+    print("Contents of the results directory:")
+    for item in result_contents:
+        print(item)
 
 if args.need_input_generation:
     benchmarks_with_int_input = classify_benchmarks()        
