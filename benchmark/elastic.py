@@ -36,9 +36,11 @@ taskparts_num_workers_key = 'TASKPARTS_NUM_WORKERS'
 
 path_to_infiles = os.environ.get('INFILES_PATH') + '/'
 
+custom_malloc_ld_preload_key="LD_PRELOAD"
+default_custom_malloc_ld_preload=os.environ.get('JEMALLOC_PRELOAD_PATH')
+
 def get_executables(folder):
     executables = []
-    
     for root, dirs, files in os.walk(folder):
         for file in files:
             filepath = os.path.join(root, file)
@@ -137,7 +139,7 @@ ranked_command_line_arg_keys = {'n': 0, 'filename': 0, 'search_string': 0, 'text
 
 # keys whose associated values are to be passed as environment
 # variables
-env_arg_keys = [parlaylib_num_workers_key, taskparts_num_workers_key]
+env_arg_keys = [parlaylib_num_workers_key, taskparts_num_workers_key, custom_malloc_ld_preload_key]
 # keys that are not meant to be passed at all (just for annotating
 # rows)
 silent_keys = [ ]
@@ -223,7 +225,6 @@ def json_of_tmp_file(results_txt, results_json):
             ds.append(json.loads(line))
         with open(results_json, 'w') as results:
             results.write(json.dumps(ds, indent=2))
-            #print('Emitted ' + results_json)
 
 def run_benchmarks(rows, stats_info, traces_outfile,
                    path_to_binaries = path_to_binaries, timeout_sec = None):
@@ -359,6 +360,8 @@ if args.need_input_generation:
     benchmarks_with_int_input = classify_benchmarks()        
     find_target_input_sizes(benchmark_inputs, benchmarks_with_int_input)
 
+mk_custom_malloc = T.mk_unit() if default_custom_malloc_ld_preload == None else T.mk_table1(custom_malloc_ld_preload_key, default_custom_malloc_ld_preload)
+
 if args.run_experiment:
     procs = [sys_num_workers] + ([] if args.only_parallel else [1])
     parlay_infos = {
@@ -380,7 +383,7 @@ if args.run_experiment:
         }
         print('Running benchmarks for binary configuration: ' + k)
         with open('benchmarks.json', 'r') as benchmarks:
-            rows = T.rows_of(T.mk_append([T.mk_cross([T.mk_table1('benchmark', k), vb, v['mk']])
+            rows = T.rows_of(T.mk_append([T.mk_cross([T.mk_table1('benchmark', k), vb, v['mk'], mk_custom_malloc])
                                           for k,vb in json.load(benchmarks).items()
                                           if not(args.few_benchmarks) or k in few_benchmarks]))
         run_benchmarks(rows, stats_info, k+'_traces.json',

@@ -32,5 +32,6 @@ stdenv.mkDerivation rec {
   PARLAY_SERIAL="${parlay-serial}/examples";
   PARLAY_TASKPARTS="${parlay-taskparts}/examples";
   PARLAY_TASKPARTS_NONELASTIC="${parlay-taskparts-nonelastic}/examples";
+  JEMALLOC_PRELOAD_PATH="${pkgs.jemalloc}/lib/libjemalloc.so";
   INFILES_PATH="../../infiles";
 }
