@@ -1,5 +1,5 @@
 { pkgs ? import <nixpkgs> {},
-  stdenv ? pkgs.clang14Stdenv,
+  stdenv ? pkgs.llvmPackages_14.stdenv,
   parlaylibSrc ? ./../../parlaylib,
   taskparts ? import ./../../nix-packages/pkgs/taskparts/hdronly.nix {stdenv=pkgs.stdenv;cmake=pkgs.cmake;taskpartsSrc=./../../successor;  enable-elastic-scheduling = true; },
   taskparts-nonelastic ? import ./../../nix-packages/pkgs/taskparts/hdronly.nix {stdenv=pkgs.stdenv;cmake=pkgs.cmake;taskpartsSrc=./../../successor; enable-elastic-scheduling = false; },
