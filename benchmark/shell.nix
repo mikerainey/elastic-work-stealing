@@ -7,6 +7,7 @@
   parlay-serial ? import ./../../nix-packages/pkgs/parlaylib-serial/default-examples.nix {stdenv=stdenv;fetchgit=pkgs.fetchgit;cmake=pkgs.cmake;parlaylibSrc=parlaylibSrc;},
   parlay-taskparts ? import ./../../nix-packages/pkgs/parlaylib-taskparts/default-examples.nix {stdenv=stdenv;fetchgit=pkgs.fetchgit;cmake=pkgs.cmake;parlaylibSrc=parlaylibSrc;taskparts=taskparts;},
   parlay-taskparts-nonelastic ? import ./../../nix-packages/pkgs/parlaylib-taskparts/default-examples.nix {stdenv=stdenv;fetchgit=pkgs.fetchgit;cmake=pkgs.cmake;parlaylibSrc=parlaylibSrc;taskparts=taskparts-nonelastic;}
+
 }:
 
 let
@@ -32,6 +33,7 @@ stdenv.mkDerivation rec {
   PARLAY_SERIAL="${parlay-serial}/examples";
   PARLAY_TASKPARTS="${parlay-taskparts}/examples";
   PARLAY_TASKPARTS_NONELASTIC="${parlay-taskparts-nonelastic}/examples";
+  PARLAY_OPENCILK="../../parlaylib-opencilk/examples";
   JEMALLOC_PRELOAD_PATH="${pkgs.jemalloc}/lib/libjemalloc.so";
   INFILES_PATH="../../infiles";
 }
