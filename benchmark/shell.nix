@@ -1,5 +1,5 @@
 { pkgs ? import <nixpkgs> {},
-  stdenv ? pkgs.clang14Stdenv,
+  stdenv ? pkgs.llvmPackages_14.stdenv,
   parlaylibSrc ? ./../../parlaylib,
   taskpartsSrc ? ./../../successor,
   few ? false,
@@ -37,6 +37,7 @@ stdenv.mkDerivation rec {
   PARLAY_TASKPARTS="${parlay-taskparts}/examples";
   PARLAY_TASKPARTS_NONELASTIC="${parlay-taskparts-nonelastic}/examples";
   PARLAY_TASKPARTS_YWRA="${parlay-taskparts-ywra}/examples";
+  PARLAY_OPENCILK="../../parlaylib-opencilk/examples";
   JEMALLOC_PRELOAD_PATH="${pkgs.jemalloc}/lib/libjemalloc.so";
   INFILES_PATH="../../infiles";
 }

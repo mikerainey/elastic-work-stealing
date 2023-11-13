@@ -33,6 +33,7 @@ sys_num_workers = psutil.cpu_count(logical=False)
 default_num_workers = sys_num_workers
 parlaylib_num_workers_key = 'PARLAY_NUM_THREADS'
 taskparts_num_workers_key = 'TASKPARTS_NUM_WORKERS'
+opencilk_num_workers_key = 'CILK_NWORKERS'
 
 path_to_infiles = os.environ.get('INFILES_PATH') + '/'
 
@@ -99,6 +100,7 @@ benchmark_overrides = {'word_counts', 'bigint_add', 'find_if'}
 
 few_benchmarks = [ 'quickhull', 'samplesort' ]
 few_benchmarks = [ 'tokens', 'BFS' ]
+few_benchmarks = [ 'graph_color', 'maximal_independent_set', 'radix_tree', 'suffix_tree' ]
 
 parser = argparse.ArgumentParser('Benchmark elastic task scheduling')
 parser.add_argument('--run_experiment', dest ='run_experiment',
@@ -124,6 +126,9 @@ parser.add_argument('--need_input_generation', dest ='need_input_generation',
 parser.add_argument('-target_time_secs',
                     dest ='target_time_secs', type=float, default=1.0,
                     help = ('target time for benchmarks to run'))
+parser.add_argument('--use_opencilk', dest ='use_opencilk',
+                    action ='store_true', default=False,
+                    help = ('benchmark using the opencilk compiler'))
 args = parser.parse_args()
 
 if args.benchmarks_path != None:
@@ -139,7 +144,7 @@ ranked_command_line_arg_keys = {'n': 0, 'filename': 0, 'search_string': 0, 'text
 
 # keys whose associated values are to be passed as environment
 # variables
-env_arg_keys = [parlaylib_num_workers_key, taskparts_num_workers_key, custom_malloc_ld_preload_key]
+env_arg_keys = [parlaylib_num_workers_key, taskparts_num_workers_key, opencilk_num_workers_key, custom_malloc_ld_preload_key]
 # keys that are not meant to be passed at all (just for annotating
 # rows)
 silent_keys = [ ]
@@ -375,6 +380,9 @@ if args.run_experiment:
                          'mk': T.mk_append([T.mk_table1(taskparts_num_workers_key, p) for p in procs])}
 
     }
+    if args.use_opencilk:
+        parlay_infos['opencilk'] = {'binpath': os.environ.get('PARLAY_OPENCILK'),
+                                    'mk': T.mk_append([T.mk_table1(opencilk_num_workers_key, p) for p in procs])}
     if not(args.only_parallel):
         parlay_infos['serial'] = {'binpath': os.environ.get('PARLAY_SERIAL'),
                                   'mk': T.mk_unit()}
