@@ -1,12 +1,16 @@
 { pkgs ? import <nixpkgs> {},
   stdenv ? pkgs.clang14Stdenv,
   parlaylibSrc ? ./../../parlaylib,
-  taskparts ? import ./../../nix-packages/pkgs/taskparts/hdronly.nix {stdenv=pkgs.stdenv;cmake=pkgs.cmake;taskpartsSrc=./../../successor;  enable-elastic-scheduling = true; },
-  taskparts-nonelastic ? import ./../../nix-packages/pkgs/taskparts/hdronly.nix {stdenv=pkgs.stdenv;cmake=pkgs.cmake;taskpartsSrc=./../../successor; enable-elastic-scheduling = false; },
-  parlay-homegrown ? import ./../../nix-packages/pkgs/parlaylib/default-examples.nix {stdenv=stdenv;fetchgit=pkgs.fetchgit;cmake=pkgs.cmake;parlaylibSrc=parlaylibSrc;},
-  parlay-serial ? import ./../../nix-packages/pkgs/parlaylib-serial/default-examples.nix {stdenv=stdenv;fetchgit=pkgs.fetchgit;cmake=pkgs.cmake;parlaylibSrc=parlaylibSrc;},
-  parlay-taskparts ? import ./../../nix-packages/pkgs/parlaylib-taskparts/default-examples.nix {stdenv=stdenv;fetchgit=pkgs.fetchgit;cmake=pkgs.cmake;parlaylibSrc=parlaylibSrc;taskparts=taskparts;},
-  parlay-taskparts-nonelastic ? import ./../../nix-packages/pkgs/parlaylib-taskparts/default-examples.nix {stdenv=stdenv;fetchgit=pkgs.fetchgit;cmake=pkgs.cmake;parlaylibSrc=parlaylibSrc;taskparts=taskparts-nonelastic;}
+  taskpartsSrc ? ./../../successor,
+  few ? false,
+  taskparts ? import ./../../nix-packages/pkgs/taskparts/hdronly.nix {stdenv=pkgs.stdenv;cmake=pkgs.cmake;taskpartsSrc=taskpartsSrc; },
+  taskparts-nonelastic ? import ./../../nix-packages/pkgs/taskparts/hdronly.nix {stdenv=pkgs.stdenv;cmake=pkgs.cmake;taskpartsSrc=taskpartsSrc; disable-elastic-scheduling = true; },
+  taskparts-ywra ? import ./../../nix-packages/pkgs/taskparts/hdronly.nix {stdenv=pkgs.stdenv;cmake=pkgs.cmake;taskpartsSrc=taskpartsSrc; disable-elastic-scheduling = true; use-ywra-deque=true; },
+  parlay-homegrown ? import ./../../nix-packages/pkgs/parlaylib/default-examples.nix {stdenv=stdenv;fetchgit=pkgs.fetchgit;cmake=pkgs.cmake;parlaylibSrc=parlaylibSrc; few=few;},
+  parlay-serial ? import ./../../nix-packages/pkgs/parlaylib-serial/default-examples.nix {stdenv=stdenv;fetchgit=pkgs.fetchgit;cmake=pkgs.cmake;parlaylibSrc=parlaylibSrc; few=few;},
+  parlay-taskparts ? import ./../../nix-packages/pkgs/parlaylib-taskparts/default-examples.nix {stdenv=stdenv;fetchgit=pkgs.fetchgit;cmake=pkgs.cmake;parlaylibSrc=parlaylibSrc;taskparts=taskparts; few=few;},
+  parlay-taskparts-nonelastic ? import ./../../nix-packages/pkgs/parlaylib-taskparts/default-examples.nix {stdenv=stdenv;fetchgit=pkgs.fetchgit;cmake=pkgs.cmake;parlaylibSrc=parlaylibSrc;taskparts=taskparts-nonelastic; few=few;},
+  parlay-taskparts-ywra ? import ./../../nix-packages/pkgs/parlaylib-taskparts/default-examples.nix {stdenv=stdenv;fetchgit=pkgs.fetchgit;cmake=pkgs.cmake;parlaylibSrc=parlaylibSrc;taskparts=taskparts-ywra; few=few; }
 }:
 
 let
@@ -32,6 +36,7 @@ stdenv.mkDerivation rec {
   PARLAY_SERIAL="${parlay-serial}/examples";
   PARLAY_TASKPARTS="${parlay-taskparts}/examples";
   PARLAY_TASKPARTS_NONELASTIC="${parlay-taskparts-nonelastic}/examples";
+  PARLAY_TASKPARTS_YWRA="${parlay-taskparts-ywra}/examples";
   JEMALLOC_PRELOAD_PATH="${pkgs.jemalloc}/lib/libjemalloc.so";
   INFILES_PATH="../../infiles";
 }

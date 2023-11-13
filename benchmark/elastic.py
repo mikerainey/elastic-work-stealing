@@ -370,7 +370,10 @@ if args.run_experiment:
         'taskparts': {'binpath': os.environ.get('PARLAY_TASKPARTS'),
                       'mk': T.mk_append([T.mk_table1(taskparts_num_workers_key, p) for p in procs])},
         'taskparts-ne': {'binpath': os.environ.get('PARLAY_TASKPARTS_NONELASTIC'),
+                         'mk': T.mk_append([T.mk_table1(taskparts_num_workers_key, p) for p in procs])},
+        'taskparts-ywra': {'binpath': os.environ.get('PARLAY_TASKPARTS_YWRA'),
                          'mk': T.mk_append([T.mk_table1(taskparts_num_workers_key, p) for p in procs])}
+
     }
     if not(args.only_parallel):
         parlay_infos['serial'] = {'binpath': os.environ.get('PARLAY_SERIAL'),
