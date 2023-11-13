@@ -1,0 +1,2301 @@
+[
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/karatsuba",
+      "cl_args": [
+        "16777216"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpmvvlu09c.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpxebdjs99.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmplif33u3g.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:34:55.057289",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.28771042823791504,
+      "stdout": "Time: karatsuba: 0.0531\nTime: karatsuba: 0.0468\nTime: karatsuba: 0.0462\nTime: karatsuba: 0.0455\nTime: karatsuba: 0.0455\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/filter_kruskal",
+      "cl_args": [],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpvlz0lis8.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpbjs5atkm.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp2o1ssf30.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:34:55.100199",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.04132080078125,
+      "stdout": "Usage: min_spanning_tree <n> || min_spanning_tree <filename>\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/spanning_tree",
+      "cl_args": [
+        "8388608"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp6n9mtnml.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpogea_waf.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp4g_jfa7r.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:02.632154",
+      "host": "ip-172-31-32-107",
+      "elapsed": 7.531046390533447,
+      "stdout": "num vertices = 8388607\nnum edges    = 167615122\nmax degree   = 14170\nTime: spanning_forest: 0.1787\nTime: spanning_forest: 0.1553\nTime: spanning_forest: 0.1555\nTime: spanning_forest: 0.1391\nTime: spanning_forest: 0.1766\nnumber of edges in forest: 8022788\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/push_relabel_max_flow",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp8020ando.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpwrobcq_8.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmps0k69gdm.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:21.455809",
+      "host": "ip-172-31-32-107",
+      "elapsed": 18.822298288345337,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nmax flow: initialize graph: 1.3494\ncurrent flow: 3552987 num rounds: 160\ncurrent flow: 6922634 num rounds: 257\ncurrent flow: 10134073 num rounds: 271\ncurrent flow: 12619204 num rounds: 303\ncurrent flow: 16657443 num rounds: 98\ncurrent flow: 19807909 num rounds: 155\ncurrent flow: 20780446 num rounds: 112\ncurrent flow: 20780768 num rounds: 111\nmax flow: find max flow: 6.5298\nmax flow: initialize graph: 1.3979\ncurrent flow: 3463845 num rounds: 155\ncurrent flow: 6891847 num rounds: 259\ncurrent flow: 10087989 num rounds: 271\ncurrent flow: 12675581 num rounds: 314\ncurrent flow: 17102601 num rounds: 108\ncurrent flow: 19804686 num rounds: 148\ncurrent flow: 20780357 num rounds: 108\ncurrent flow: 20780768 num rounds: 126\nmax flow: find max flow: 6.6104\nmax flow: 20780768\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/bucketed_dijkstra",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp8vb08l63.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpztjx02oj.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpupgoion4.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:23.291508",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.8343276977539062,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: bucketed_dijkstra: 0.1199\nTime: bucketed_dijkstra: 0.1104\nTime: bucketed_dijkstra: 0.1104\nnum vertices visited: 3072441\nmax distance from source: 46\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/delaunay",
+      "cl_args": [
+        "524288"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp90xadaqf.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp7bjctk8o.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpt2ilolju.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:24.210139",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.9173092842102051,
+      "stdout": "Time: delaunay: 0.1776\nTime: delaunay: 0.1669\nTime: delaunay: 0.1644\nTime: delaunay: 0.1657\nTime: delaunay: 0.1672\nnumber of triangles in the mesh = 1048578\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/rabin_karp",
+      "cl_args": [
+        "xxx",
+        "../../infiles/wikisamp.xml"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp060nmetr.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpaxia4il7.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpz117p38s.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:24.575094",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.3633735179901123,
+      "stdout": "Time: rabin_karp: 0.0628\nTime: rabin_karp: 0.0383\nTime: rabin_karp: 0.0383\nTime: rabin_karp: 0.0380\nTime: rabin_karp: 0.0387\ntotal matches = 8\nat locations: [45393324, 45393325, 45393444, 45393445, 73527734, 73527809, 74929225, 74929226]\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/kruskal",
+      "cl_args": [],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpcyc230fh.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpg0flxcp3.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpff4yfwne.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:24.617107",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.04066658020019531,
+      "stdout": "Usage: min_spanning_tree <n> || min_spanning_tree <filename>\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/tokens",
+      "cl_args": [
+        "../../infiles/wikisamp.xml"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpj7xjlw4s.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpkd85evuh.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpm5kfxn7r.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:24.736673",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.11822843551635742,
+      "stdout": "Time: tokens: 0.0196\nnumber of space separated tokens: 2420135\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/samplesort",
+      "cl_args": [
+        "67108864"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpfpfk0i72.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpyn31ljkr.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpjkmd8_cm.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:25.475744",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.7378404140472412,
+      "stdout": "Time: samplesort: 0.1847\nTime: samplesort: 0.0824\nTime: samplesort: 0.0813\nTime: samplesort: 0.0813\nTime: samplesort: 0.0801\nfirst 10 elements: [0, 0, 0, 2, 3, 3, 3, 4, 4, 5]\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/kmeans_pp",
+      "cl_args": [
+        "65536"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpngo_bhal.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp7fgujs0w.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp60_v1gx_.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:25.711484",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.23408246040344238,
+      "stdout": "Time: knn: 0.1847\n93 rounds until diff < 0.005\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/scan",
+      "cl_args": [
+        "1073741824"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp6btp875f.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpj7txx_no.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmppzc_5r6f.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:28.284145",
+      "host": "ip-172-31-32-107",
+      "elapsed": 2.5710086822509766,
+      "stdout": "Time: scan: 0.3804\nTime: scan: 0.3838\nTime: scan: 0.1673\nTime: scan: 0.1687\nTime: scan: 0.1631\nfirst 10 elements for scan on 1s: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/kcore",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp4ht2_qq2.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp3lco31jw.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpnv1yc1ev.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:34.543122",
+      "host": "ip-172-31-32-107",
+      "elapsed": 6.257856607437134,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: kcore: 4.9118\nmax core (i.e. degeneracy): 253\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/suffix_tree",
+      "cl_args": [
+        "../../infiles/wikisamp.xml"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpsu8t_f9t.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp9vjjddut.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpggy84pku.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:44.212411",
+      "host": "ip-172-31-32-107",
+      "elapsed": 9.667845726013184,
+      "stdout": "Time: suffix_tree: 1.8803\nTime: suffix_tree: 1.7267\nTime: suffix_tree: 1.8187\nTime: suffix_tree: 1.7184\nTime: suffix_tree: 1.7097\nFound string in itself\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/quickhull",
+      "cl_args": [
+        "134217728"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpiift4pn2.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpd0ho9a_w.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp9vufjvyf.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:45.162538",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.948911190032959,
+      "stdout": "Time: quickhull: 0.1715\nTime: quickhull: 0.1466\nTime: quickhull: 0.1467\nnumber of points in upper hull = 21\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/box_kdtree",
+      "cl_args": [
+        "1048576"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpautlzmjx.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp7e4329vy.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmph52c7seg.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:45.601610",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.4379751682281494,
+      "stdout": "Time: box_kdtree: 0.0829\nTime: box_kdtree: 0.0698\nTime: box_kdtree: 0.0681\nTime: box_kdtree: 0.0695\nTime: box_kdtree: 0.0690\nNumber of boxes across the leaves = 2135857\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/le_list",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpc9evnbvb.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp13n701jb.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpdjw1jlu8.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:49.170141",
+      "host": "ip-172-31-32-107",
+      "elapsed": 3.5665249824523926,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: le_list: 0.5120\nTime: le_list: 0.3815\nTime: le_list: 0.3880\nTime: le_list: 0.3793\nTime: le_list: 0.3775\nAverage LE-list size: 4.636\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/kth_smallest",
+      "cl_args": [
+        "536870912"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpzxicpjbr.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpxip257pj.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpv3j18405.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:50.179654",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.0081191062927246,
+      "stdout": "Time: kth_smallest: 0.1114\nTime: kth_smallest: 0.1035\nTime: kth_smallest: 0.1046\nTime: kth_smallest: 0.1034\nTime: kth_smallest: 0.1034\nmedian is: 268427906\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/huffman_tree",
+      "cl_args": [
+        "8388608"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpaa7hc19m.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpoba8xry6.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpkrtpjknp.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:50.788252",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.6074295043945312,
+      "stdout": "Time: huffman_tree: 0.0827\nTime: huffman_tree: 0.0685\nTime: huffman_tree: 0.0681\nTime: huffman_tree: 0.0687\nTime: huffman_tree: 0.0721\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/2d_linear_program",
+      "cl_args": [
+        "67108864"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpjaf3t1pg.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp4aimkl6w.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp5dmq08hh.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:51.801782",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.0120501518249512,
+      "stdout": "Time: 2d_linear_program: 0.2873\nTime: 2d_linear_program: 0.1239\nTime: 2d_linear_program: 0.1234\noptimal point = -1.098e-09, 1.862e-07\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/mcss",
+      "cl_args": [
+        "2147483648"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp605xxk2v.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp1gv2x89z.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp3pzh1o6t.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:52.879040",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.0761330127716064,
+      "stdout": "Time: mcss: 0.0516\nTime: mcss: 0.0538\nTime: mcss: 0.0537\nTime: mcss: 0.0531\nTime: mcss: 0.0528\nmcss = 2621543\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/nbody_fmm",
+      "cl_args": [
+        "65536"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpyecv8cg6.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpq4v6y215.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpd6dc4upx.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:53.023730",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.14352178573608398,
+      "stdout": "Time: build tree: 0.0130\nTime: up sweep: 0.0016\nTime: calculate far-field boxes: 0.0013\nTime: apply far-field interactions: 0.0213\nTime: down sweep: 0.0074\nTime: apply near-field interactions: 0.0383\nTime: TOTAL: 0.0829\n  Sampled RMS Error: 7.632e-07\n  Sampled Max Error: 6.45e-06\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/spectral_separator",
+      "cl_args": [
+        "32768"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpqidfeny0.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpp4h9h57b.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmppttr5ju0.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:54.691261",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.6664535999298096,
+      "stdout": "num vertices = 32761\nnum edges    = 259920\nmax degree   = 8\nnumber of iterations = 3801\nTime: spectral_separator: 1.6163\nnumber of edges across the cut: 2134\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/pagerank",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpy07inbq8.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp6vcy4rzv.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpsiesyalx.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:57.360615",
+      "host": "ip-172-31-32-107",
+      "elapsed": 2.668335199356079,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: 10 iters of pagerank: 0.2362\nTime: 10 iters of pagerank: 0.2375\nTime: 10 iters of pagerank: 0.2342\nTime: 10 iters of pagerank: 0.2345\nTime: 10 iters of pagerank: 0.2324\nmaximum rank = 343.9\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/cartesian_tree",
+      "cl_args": [
+        "268435456"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpboojvyf1.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp2uxxym7f.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpy68pwrn1.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:35:58.867562",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.5057728290557861,
+      "stdout": "Time: Cartesian Tree: 0.1857\nTime: Cartesian Tree: 0.1817\nTime: Cartesian Tree: 0.1274\nTime: Cartesian Tree: 0.1272\nTime: Cartesian Tree: 0.1266\ndepth of tree: 75\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/bellman_ford",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpijgg1k58.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpgjv0dzo0.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpdx38a0je.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:00.998937",
+      "host": "ip-172-31-32-107",
+      "elapsed": 2.129819631576538,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: bellman_ford: 0.1405\nTime: bellman_ford: 0.1380\nTime: bellman_ford: 0.1367\nmax reachable distance: 48.41\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/linefit",
+      "cl_args": [
+        "1073741824"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp0sqnicac.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpoekd3mbb.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp8s5ohjbo.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:04.025238",
+      "host": "ip-172-31-32-107",
+      "elapsed": 3.025120973587036,
+      "stdout": "Time: linefit: 0.1909\nTime: linefit: 0.2224\nTime: linefit: 0.2105\nTime: linefit: 0.1968\nTime: linefit: 0.2073\noffset = 1 slope = 1\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/BFS",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpij562lix.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpg44egve7.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpoxkh3yhx.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:05.583070",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.5566539764404297,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: BFS: 0.0875\nTime: BFS: 0.0794\nTime: BFS: 0.0784\nnum vertices visited: 3072441\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/word_counts",
+      "cl_args": [
+        "5",
+        "../../infiles/wikisamp.xml"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpp826c4j8.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpennzb43g.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpi5llj0xr.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:05.936038",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.3518190383911133,
+      "stdout": "Time: word_counts: 0.0626\nTime: word_counts: 0.0372\nTime: word_counts: 0.0386\nTime: word_counts: 0.0316\nTime: word_counts: 0.0326\nlink 1188323\nsublink 1187163\nanchor 1187065\nwikipedia 716669\nhttp 655085\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/longest_common_prefix",
+      "cl_args": [],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpe87vdwgs.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp3_u45fom.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpoy0rrwvo.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:05.978307",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.04111886024475098,
+      "stdout": "Usage: longest_common_prefix <filename>\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/set_cover",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpalc_y276.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp0zuxpi6d.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpm2rgiudq.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:08.704923",
+      "host": "ip-172-31-32-107",
+      "elapsed": 2.725766181945801,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: set cover: 0.4480\nTime: set cover: 0.4398\nTime: set cover: 0.4446\nall elements covered!\nset cover size = 105561\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/triangle_count",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpq6af_bld.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpalujlqiq.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmplbzxaojq.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:13.076086",
+      "host": "ip-172-31-32-107",
+      "elapsed": 4.370054006576538,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: triangle count: 3.0163\nnumber of triangles: 1255168362\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/maximal_matching",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpj7zl_x_v.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpb_6caooi.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpnr8_fi0c.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:14.891851",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.8144502639770508,
+      "stdout": "num vertices = 3072627\nnum edges    = 117185083\nmax degree   = 33313\nTime: maximal_matching: 0.0676\nTime: maximal_matching: 0.0646\nTime: maximal_matching: 0.0599\nTime: maximal_matching: 0.0593\nTime: maximal_matching: 0.0599\nnumber of matched edges: 1325346\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/quicksort",
+      "cl_args": [
+        "16777216"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpi_61ey_d.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp_rlfplp6.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpyqontuqz.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:15.307948",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.41478419303894043,
+      "stdout": "Time: quicksort: 0.0824\nTime: quicksort: 0.0482\nTime: quicksort: 0.0456\nTime: quicksort: 0.0451\nTime: quicksort: 0.0449\nfirst 10 elements: [0, 0, 0, 1, 5, 9, 9, 10, 10, 10]\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/low_diameter_decomposition",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpb8ukmd33.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp7wh3opfy.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp2zvt6m6v.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:16.753239",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.4438462257385254,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: low_diameter_decomposition: 0.0295\nTime: low_diameter_decomposition: 0.0280\nTime: low_diameter_decomposition: 0.0276\nTime: low_diameter_decomposition: 0.0277\nTime: low_diameter_decomposition: 0.0312\nnum clusters: 189\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/reduce",
+      "cl_args": [
+        "2147483648"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpb8q_f8nn.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpj4bllbw1.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpn2zavzmd.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:18.634785",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.8800439834594727,
+      "stdout": "Time: reduce: 0.0915\nTime: reduce: 0.1040\nTime: reduce: 0.1044\nTime: reduce: 0.1046\nTime: reduce: 0.1079\nsum of ones = 2147483648\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/flatten",
+      "cl_args": [
+        "2147483648"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp8io_1nhf.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpjp8kd21n.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpgnyz6lk7.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:23.490274",
+      "host": "ip-172-31-32-107",
+      "elapsed": 4.852416276931763,
+      "stdout": "Time: flatten: 0.7639\nTime: flatten: 0.7666\nTime: flatten: 0.2382\nTime: flatten: 0.2378\nTime: flatten: 0.2421\n46340*46340 = 2147395600 elements flattened\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/primes",
+      "cl_args": [
+        "1073741824"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp9nsumo68.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp__r_7njq.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpc0ikabix.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:24.242619",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.7509176731109619,
+      "stdout": "generating all primes up to 1073741824\nTime: primes: 0.1806\nTime: primes: 0.0989\nTime: primes: 0.0919\nTime: primes: 0.0910\nTime: primes: 0.0911\nnumber of primes: 54400028\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/rectangle_intersection",
+      "cl_args": [
+        "1048576"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp_d7ixgfm.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpd2h6s2ge.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpz348ly19.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:24.757201",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.5122973918914795,
+      "stdout": "Time: rectangle_intersection: 0.1016\nTime: rectangle_intersection: 0.0839\nTime: rectangle_intersection: 0.0828\nTime: rectangle_intersection: 0.0837\nTime: rectangle_intersection: 0.0837\nTotal number of intersections: 2121988\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/fast_fourier_transform",
+      "cl_args": [
+        "33554432"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmppmf00c8w.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpif5czkg2.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpisqev_rn.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:26.244635",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.485830307006836,
+      "stdout": "Time: fast_fourier_transform_transpose: 0.0817\nTime: fast_fourier_transform_transpose: 0.0720\nTime: fast_fourier_transform_transpose: 0.0592\nTime: fast_fourier_transform_transpose: 0.0595\nTime: fast_fourier_transform_transpose: 0.0592\nTime: fast_fourier_transform_transpose: 0.0590\nTime: fast_fourier_transform_transpose: 0.0595\nTime: fast_fourier_transform_transpose: 0.0600\nTime: fast_fourier_transform_transpose: 0.0597\nTime: fast_fourier_transform_transpose: 0.0591\nTime: fast_fourier_transform_transpose: 0.0592\nTime: fast_fourier_transform_transpose: 0.0590\nTime: fast_fourier_transform_transpose: 0.0594\nTime: fast_fourier_transform_transpose: 0.0585\nTime: fast_fourier_transform_transpose: 0.0584\nTime: fast_fourier_transform_transpose: 0.0596\nTime: fast_fourier_transform_transpose: 0.0596\nTime: fast_fourier_transform_transpose: 0.0585\nTime: fast_fourier_transform_transpose: 0.0584\nTime: fast_fourier_transform_transpose: 0.0589\nfirst five points of fft on length 33554432\n(1.678e+07,1.678e+07)\n(865.2,412.3)\n(-108.3,964.8)\n(-180.6,2281)\n(-887.5,2923)\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/BFS_ligra",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpgmnd37sq.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp7tyyov3p.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpdv0z9ldj.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:27.603085",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.356980562210083,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: BFS_ligra: 0.0119\nTime: BFS_ligra: 0.0115\nTime: BFS_ligra: 0.0114\nTime: BFS_ligra: 0.0113\nTime: BFS_ligra: 0.0115\nnum vertices visited: 3072441\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/bigint_add",
+      "cl_args": [
+        "8000000000"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpq8cta9pz.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp5eb6dv35.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpeu82r7lw.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:28.148596",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.5438232421875,
+      "stdout": "Time: bigint_add: 0.0568\nTime: bigint_add: 0.0572\nTime: bigint_add: 0.0312\nTime: bigint_add: 0.0309\nTime: bigint_add: 0.0306\n8000000000 bits\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/minimum_edit_distance",
+      "cl_args": [
+        "65536"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpxlt_2qch.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpuer1ze2p.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp_n4s75tt.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:29.003787",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.8538508415222168,
+      "stdout": "Time: minimum_edit_distance: 0.1696\nTime: minimum_edit_distance: 0.1630\nTime: minimum_edit_distance: 0.1595\nTime: minimum_edit_distance: 0.1595\nTime: minimum_edit_distance: 0.1608\ntotal operations = 3550246167\nedit distance = 10856\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/suffix_array",
+      "cl_args": [
+        "../../infiles/chr22.dna"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpdqnycsq4.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpt3u07fg8.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpjpjld6v6.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:31.533007",
+      "host": "ip-172-31-32-107",
+      "elapsed": 2.528022527694702,
+      "stdout": "Time: suffix_array: 0.5037\nTime: suffix_array: 0.4655\nTime: suffix_array: 0.4628\nTime: suffix_array: 0.4598\nTime: suffix_array: 0.4563\nfirst 10 entries: [26024977, 26024978, 26024979, 26024980, 26024981, 26024982, 26024983, 23800499, 26024984, 23800500]\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/oct_tree",
+      "cl_args": [
+        "8388608"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpcn_yammo.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmppvhyzylp.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpm3aj19ig.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:31.968444",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.43398427963256836,
+      "stdout": "Time: oct_tree: 0.0803\nTime: oct_tree: 0.0583\nTime: oct_tree: 0.0571\nTime: oct_tree: 0.0586\nTime: oct_tree: 0.0578\ntree size: 8388608\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/knn",
+      "cl_args": [
+        "1048576"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpf8ws8hf8.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmplljgesw2.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpk2nwlfv1.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:32.432141",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.4624338150024414,
+      "stdout": "Time: knn: 0.0741\nTime: knn: 0.0698\nTime: knn: 0.0609\nTime: knn: 0.0610\nTime: knn: 0.0611\ngenerated 10 nearest neighbor graph for 1048576 points.\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/lasso_regression",
+      "cl_args": [
+        "../../infiles/finance1000.lasso.txt"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp6it3zhku.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmptsba4_hi.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpqq_afho8.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:34.103127",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.6694655418395996,
+      "stdout": "objective = 2998.62, max_change = 0.00351182, steps = 501\nTime: lasso_regression: 1.4959\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/betweenness_centrality",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp4u6ees78.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpg9_hb5jb.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpnzbfi5xj.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:35.614590",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.510213851928711,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: betweenness_centrality: 0.0698\nTime: betweenness_centrality: 0.0679\nTime: betweenness_centrality: 0.0693\nmax betweenness centrality = 684391\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/mergesort",
+      "cl_args": [
+        "33554432"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp7574v1c5.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpyxbpmwcq.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpa73es5a_.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:36.226166",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.6102607250213623,
+      "stdout": "Time: mergesort: 0.1008\nTime: mergesort: 0.0927\nTime: mergesort: 0.0922\nTime: mergesort: 0.0919\nTime: mergesort: 0.0924\nfirst 10 elements: [0, 1, 1, 2, 2, 3, 5, 8, 10, 10]\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/radix_tree",
+      "cl_args": [
+        "../../infiles/wikisamp.xml"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp_mr_wjfs.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp063822mi.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpfuqrup4k.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:36.471658",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.24419212341308594,
+      "stdout": "Time: radix_tree: 0.0109\nTime: radix_tree: 0.0082\nTime: radix_tree: 0.0083\nTime: radix_tree: 0.0080\nTime: radix_tree: 0.0080\nbuilt radix tree on 897138 unique words\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/3d_range",
+      "cl_args": [
+        "2097152"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpqbvfg4_g.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpt_p54u_i.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp8eu52oq2.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:36.848873",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.37533998489379883,
+      "stdout": "Time: 3d_range: 0.0699\nTime: 3d_range: 0.0623\nTime: 3d_range: 0.0593\nTime: 3d_range: 0.0594\nTime: 3d_range: 0.0599\ntotal points within radius: 8710392\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/graph_color",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp4e9px4k4.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpf854po7e.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp29hy5t2s.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:40.617792",
+      "host": "ip-172-31-32-107",
+      "elapsed": 3.7676336765289307,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: graph color: 0.8204\nTime: graph color: 0.8015\nTime: graph color: 0.8029\nnumber of colors: 87\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/ray_trace",
+      "cl_args": [
+        "262144"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpzqphcnp2.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpr2dngm_n.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpr4xedkc6.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:41.470295",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.8510277271270752,
+      "stdout": "Time: ray_trace: 0.0866\nTime: ray_trace: 0.0784\nTime: ray_trace: 0.0787\nTime: ray_trace: 0.0777\nTime: ray_trace: 0.0775\nTime: ray_trace: 0.0804\nTime: ray_trace: 0.0783\nTime: ray_trace: 0.0762\nTime: ray_trace: 0.0783\nTime: ray_trace: 0.0779\n170316 rays intersect a triangle out of 262144\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/knuth_morris_pratt",
+      "cl_args": [
+        "xxx",
+        "../../infiles/wikisamp.xml"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp7dsanc7d.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpdq5sy059.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpcasz4s6_.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:41.587671",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.11542701721191406,
+      "stdout": "Time: knuth_morris_pratt: 0.0064\nTime: knuth_morris_pratt: 0.0035\nTime: knuth_morris_pratt: 0.0034\nTime: knuth_morris_pratt: 0.0035\nTime: knuth_morris_pratt: 0.0035\ntotal matches = 8\nat locations: [45393324, 45393325, 45393444, 45393445, 73527734, 73527809, 74929225, 74929226]\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/find_if",
+      "cl_args": [],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpf23by56o.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpqqz4092d.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpzqdbm_mo.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:41.629508",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.040512800216674805,
+      "stdout": "Usage: find_if <size>\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/maximal_independent_set",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpod6rvwzz.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpdiwl_rrk.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpzs61w9m9.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:43.162905",
+      "host": "ip-172-31-32-107",
+      "elapsed": 1.5324392318725586,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: MIS: 0.0550\nTime: MIS: 0.0548\nTime: MIS: 0.0575\nTime: MIS: 0.0548\nTime: MIS: 0.0543\nnumber in set: 555394\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/filter",
+      "cl_args": [
+        "2147483648"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpx3o6hokr.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp6b9mzncv.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpb93gwbdg.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:45.188796",
+      "host": "ip-172-31-32-107",
+      "elapsed": 2.0244131088256836,
+      "stdout": "Time: filter: 0.4509\nTime: filter: 0.3813\nTime: filter: 0.1435\nTime: filter: 0.1448\nTime: filter: 0.1427\nnumber of even integers up to n: 1073741825\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/range_min",
+      "cl_args": [
+        "33554432"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp1ys8_v0x.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp7dz02cdz.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp77nt3te1.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:45.665959",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.4748077392578125,
+      "stdout": "Time: range_min: 0.1190\nTime: range_min: 0.1163\nTime: range_min: 0.1135\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/longest_repeated_substring",
+      "cl_args": [
+        "../../infiles/wikisamp.xml"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp6wdz3f36.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpmn1enpm7.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpmbnout6f.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:50.787601",
+      "host": "ip-172-31-32-107",
+      "elapsed": 5.120327949523926,
+      "stdout": "Time: longest_repeated_substring: 1.2138\nTime: longest_repeated_substring: 1.1852\nTime: longest_repeated_substring: 1.1824\nlongest match has length = 1265 at positions 77504256 and 77505717\n.</abstract>\n<links>\n<sublink linktype=\"nav\"><anchor>African mythology</anchor><link>http://en.wikipedia.org/wiki/Category:African_mythology</link></sublink>\n<sublink linktype=\"nav\"><anchor>African mythology stubs</anchor><link>http://en.wikipedia.org/wiki/Category:African_mythology_stubs</link></sublink>\n<sublink linktype=\"nav\"><anchor>All articles lacking sources</anchor><link>http://en.wikipedia.org/wiki/Category:All_articles_lacking_sources</link></sublink>\n<sublink linktype=\"nav\"><anchor>All orphaned articles</anchor><link>http://en.wikipedia.org/wiki/Category:All_orphaned_articles</link></sublink>\n<sublink linktype=\"nav\"><anchor>Articles lacking sources from December 2009</anchor><link>http://en.wikipedia.org/wiki/Category:Articles_lacking_sources_from_December_2009</link></sublink>\n<sublink linktype=\"nav\"><anchor>Haiti stubs</anchor><link>http://en.wikipedia.org/wiki/Category:Haiti_stubs</link></sublink>\n<sublink linktype=\"nav\"><anchor>Orphaned articles from December 2009</anchor><link>http://en.wikipedia.org/wiki/Category:Orphaned_articles_from_December_2009</link></sublink>\n<sublink linktype=\"nav\"><anchor>Vodou gods</anchor><link>http://en.wikipedia.org/wiki/Category:Vodou_gods</link></sublink>\n</links>\n</doc>\n<doc>\n<title>Wikipedia: Bo\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/decision_tree_c45",
+      "cl_args": [
+        "../../infiles/kddcup.data.test"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpxsnt_cps.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpqwhyt1tl.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp9hndtd7u.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:51.203842",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.4149460792541504,
+      "stdout": "Time: decision_tree_c45, build    80%: 0.0633\nTime: decision_tree_c45, classify 20%: 0.0008\nTime: decision_tree_c45, build    80%: 0.0572\nTime: decision_tree_c45, classify 20%: 0.0008\nTime: decision_tree_c45, build    80%: 0.0561\nTime: decision_tree_c45, classify 20%: 0.0008\nTime: decision_tree_c45, build    80%: 0.0562\nTime: decision_tree_c45, classify 20%: 0.0008\nTime: decision_tree_c45, build    80%: 0.0577\nTime: decision_tree_c45, classify 20%: 0.0008\n195885 correct out of 195938, 99.97 percent\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/knuth_shuffle",
+      "cl_args": [
+        "33554432"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp4f16xnni.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp7lqs38wq.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmprfk50vom.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:52.197352",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.9921209812164307,
+      "stdout": "Time: knuth_shuffle: 0.1832\nTime: knuth_shuffle: 0.1635\nTime: knuth_shuffle: 0.1631\nTime: knuth_shuffle: 0.1617\nTime: knuth_shuffle: 0.1618\nfirst 10 elements: [19445932, 3113128, 6652984, 30551462, 7514090, 31431329, 20687117, 15979654, 15694097, 7247626]\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/cycle_count",
+      "cl_args": [
+        "16777216"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpfswdu2kf.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp1d4yjsa7.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpzhjqbzbn.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:52.596197",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.397519588470459,
+      "stdout": "Time: Cycle Count: 0.0977\nTime: Cycle Count: 0.0825\nTime: Cycle Count: 0.0812\nnumber of cycles: 12\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/hash_map",
+      "cl_args": [
+        "33554432"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpuom_7e7g.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpgx23k0qk.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp29j27pg2.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-13 20:36:53.434450",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.8369476795196533,
+      "stdout": "Time: hash_map : construct: 0.0451\nTime: hash_map : insert: 0.0546\nTime: hash_map : find: 0.0633\nTime: hash_map : construct: 0.0121\nTime: hash_map : insert: 0.0535\nTime: hash_map : find: 0.0622\nTime: hash_map : construct: 0.0118\nTime: hash_map : insert: 0.0531\nTime: hash_map : find: 0.0620\nTime: hash_map : construct: 0.0118\nTime: hash_map : insert: 0.0532\nTime: hash_map : find: 0.0641\nTime: hash_map : construct: 0.0120\nTime: hash_map : insert: 0.0531\nTime: hash_map : find: 0.0640\nnumber of unique keys: 0\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/min_spanning_tree",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp2ss_z_yt.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpztymbhwd.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpe_0n_kg2.json"
+        }
+      ],
+      "return_code": 127,
+      "timestamp": "23-11-13 20:36:53.438978",
+      "host": "ip-172-31-32-107",
+      "elapsed": 0.003046751022338867,
+      "stdout": "",
+      "stderr": "/nix/store/4xw8n979xpivdc46a9ndcvyhwgif00hz-bash-5.1-p16/bin/sh: line 1: /nix/store/r9n8141fhzgs8p5rg1p334plcx8zmya2-parlaylib-taskparts-examples/examples/min_spanning_tree: No such file or directory\n"
+    }
+  }
+]
