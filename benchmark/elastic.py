@@ -13,7 +13,7 @@ from copy import deepcopy
 from datetime import datetime
 sys.setrecursionlimit(150000)
 
-from flexibench import table as T, benchmark as B, query as Q
+from flexibench import table as T, benchmark as B
 
 # Parameters
 # ==========
@@ -23,7 +23,7 @@ timestr = time.strftime("%Y-%m-%d-%H-%M-%S")
 default_results_path = 'results-' + timestr
 
 taskparts_home = '../../'
-path_to_binaries = os.environ.get('PARLAY_SERIAL')
+path_to_binaries = os.environ.get('PARLAY_HOMEGROWN')
 
 # default setting for the nb of worker threads to be used by taskparts
 # (can be overridden by -num-workers); should be the count of the
@@ -372,13 +372,16 @@ if args.run_experiment:
     parlay_infos = {
         'homegrown': {'binpath': os.environ.get('PARLAY_HOMEGROWN'),
                       'mk': T.mk_append([T.mk_table1(parlaylib_num_workers_key, p) for p in procs])},
+        'homegrown-ne': {'binpath': os.environ.get('PARLAY_HOMEGROWN_NONELASTIC'),
+                      'mk': T.mk_append([T.mk_table1(parlaylib_num_workers_key, p) for p in procs])},
         'taskparts': {'binpath': os.environ.get('PARLAY_TASKPARTS'),
                       'mk': T.mk_append([T.mk_table1(taskparts_num_workers_key, p) for p in procs])},
         'taskparts-ne': {'binpath': os.environ.get('PARLAY_TASKPARTS_NONELASTIC'),
-                         'mk': T.mk_append([T.mk_table1(taskparts_num_workers_key, p) for p in procs])},
-        'taskparts-ywra': {'binpath': os.environ.get('PARLAY_TASKPARTS_YWRA'),
                          'mk': T.mk_append([T.mk_table1(taskparts_num_workers_key, p) for p in procs])}
-
+        ###################################################################################################
+        # 'taskparts-ywra': {'binpath': os.environ.get('PARLAY_TASKPARTS_YWRA'),                          #
+        #                  'mk': T.mk_append([T.mk_table1(taskparts_num_workers_key, p) for p in procs])} #
+        ###################################################################################################
     }
     if args.use_opencilk:
         parlay_infos['opencilk'] = {'binpath': os.environ.get('PARLAY_OPENCILK'),
