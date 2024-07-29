@@ -1,0 +1,30 @@
+[
+  {
+    "benchmark": "suffix_tree",
+    "filename": "../../infiles/wikisamp.xml",
+    "TASKPARTS_NUM_WORKERS": 64,
+    "LD_PRELOAD": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so",
+    "exectime": 9.06047,
+    "usertime": 486.95052,
+    "systime": 82.777356,
+    "nvcsw": 763334,
+    "nivcsw": 2084,
+    "maxrss": 9966592,
+    "nsignals": 0,
+    "timestamp": "23-11-30 20:42:46.209605"
+  },
+  {
+    "benchmark": "graph_color",
+    "filename": "../../infiles/com_orkut_sym.adj",
+    "TASKPARTS_NUM_WORKERS": 64,
+    "LD_PRELOAD": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so",
+    "exectime": 2.046539,
+    "usertime": 92.150888,
+    "systime": 33.597635,
+    "nvcsw": 187750,
+    "nivcsw": 529,
+    "maxrss": 8393728,
+    "nsignals": 0,
+    "timestamp": "23-11-30 20:42:48.594826"
+  }
+]

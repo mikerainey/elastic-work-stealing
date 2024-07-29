@@ -1,0 +1,74 @@
+[
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/nfwl2nsqzabbk91qvlbzfaf37x6ac07n-parlaylib-taskparts-examples/examples/suffix_tree",
+      "cl_args": [
+        "../../infiles/wikisamp.xml"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmpdu6mpr8q.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpp2hvoj2q.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmp01zna5sg.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-30 20:42:46.209605",
+      "host": "ip-172-31-32-107",
+      "elapsed": 9.52061939239502,
+      "stdout": "Time: suffix_tree: 1.9047\nTime: suffix_tree: 1.6841\nTime: suffix_tree: 1.8236\nTime: suffix_tree: 1.7031\nTime: suffix_tree: 1.7024\nFound string in itself\n",
+      "stderr": ""
+    }
+  },
+  {
+    "benchmark_run": {
+      "path_to_executable": "/nix/store/nfwl2nsqzabbk91qvlbzfaf37x6ac07n-parlaylib-taskparts-examples/examples/graph_color",
+      "cl_args": [
+        "../../infiles/com_orkut_sym.adj"
+      ],
+      "env_args": [
+        {
+          "var": "TASKPARTS_NUM_WORKERS",
+          "val": "64"
+        },
+        {
+          "var": "LD_PRELOAD",
+          "val": "/nix/store/ck10jnbska7d3im30v5mdbnlrgmhai0b-jemalloc-5.3.0/lib/libjemalloc.so"
+        },
+        {
+          "var": "PARLAYLIB_TIMER_OUTFILE",
+          "val": "/run/user/1000/tmp0mh90aoz.json"
+        },
+        {
+          "var": "TASKPARTS_STATS_OUTFILE",
+          "val": "/run/user/1000/tmpqcpe7604.json"
+        },
+        {
+          "var": "PARLAYLIB_OVERALL_STATS_OUTFILE",
+          "val": "/run/user/1000/tmplzeodj0e.json"
+        }
+      ],
+      "return_code": 0,
+      "timestamp": "23-11-30 20:42:48.594826",
+      "host": "ip-172-31-32-107",
+      "elapsed": 2.3833987712860107,
+      "stdout": "num vertices = 3072627\nnum edges    = 234370166\nmax degree   = 33313\nTime: graph color: 0.3910\nTime: graph color: 0.3777\nTime: graph color: 0.3763\nnumber of colors: 87\n",
+      "stderr": ""
+    }
+  }
+]
