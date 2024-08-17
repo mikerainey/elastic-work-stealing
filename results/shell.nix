@@ -1,0 +1,18 @@
+{ pkgs ? import <nixpkgs> {},
+  stdenv ? pkgs.stdenv
+}:
+
+let
+  customPython = pkgs.python310.buildEnv.override {
+    extraLibs = [ pkgs.python310Packages.jsonschema
+                  pkgs.python310Packages.simplejson
+                  pkgs.python310Packages.psutil
+                  pkgs.python310Packages.pandas
+                ];
+  };
+in
+
+stdenv.mkDerivation rec {
+  name = "elastic-benchmark";
+  buildInputs = [ customPython ];
+}
